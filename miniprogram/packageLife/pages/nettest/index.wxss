@@ -1,0 +1,4 @@
+/* 网速测试页 */
+.err-bar { border-left: 8rpx solid var(--err); }
+.ver-row { margin-bottom: var(--sp-2); display: flex; align-items: center; justify-content: space-between; }
+.retry-btn { margin-top: var(--sp-2); }

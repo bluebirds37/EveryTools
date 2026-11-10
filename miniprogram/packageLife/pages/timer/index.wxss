@@ -1,0 +1,59 @@
+/* packageLife/pages/timer —— 秒表/倒计时页样式（仅用 app.wxss 令牌） */
+.err-bar { border-left: 8rpx solid var(--err); }
+
+.seg-tabs { display: flex; margin-bottom: var(--sp-2); }
+.seg-tab {
+  flex: 1;
+  min-height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  color: var(--text-2);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  margin-right: var(--sp-2);
+}
+.seg-tab:last-child { margin-right: 0; }
+.seg-tab.on { color: var(--on-brand); background: var(--brand-grad); font-weight: 600; }
+
+.sw-card { display: flex; flex-direction: column; align-items: center; padding: var(--sp-5) var(--sp-3); }
+.sw-time { font-size: 96rpx; font-weight: 700; color: var(--text); letter-spacing: 2rpx; }
+.sw-btns { margin-top: var(--sp-4); justify-content: center; width: 100%; }
+.sw-btn { min-width: 200rpx; min-height: 88rpx; margin: 0 var(--sp-1); }
+.sw-snap { margin-top: var(--sp-4); }
+
+.lap-list { width: 100%; margin-top: var(--sp-4); }
+.lap-row { display: flex; padding: 14rpx 0; border-bottom: 2rpx solid var(--line); font-size: 24rpx; color: var(--text); }
+.lap-row:last-child { border-bottom: none; }
+.lap-head { color: var(--text-2); font-weight: 600; font-size: 22rpx; }
+.lap-row .lc { flex: 1; text-align: center; }
+
+.cd-quick { margin-bottom: var(--sp-2); }
+.cd-chip { margin: 0 var(--sp-2) var(--sp-2) 0; min-height: 64rpx; }
+
+.cd-add { display: flex; align-items: center; flex-wrap: wrap; }
+.cd-input {
+  flex: 1;
+  min-width: 96rpx;
+  min-height: 88rpx;
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  font-size: 28rpx;
+  color: var(--text);
+  margin: 0 var(--sp-1) var(--sp-1) 0;
+}
+.cd-h { max-width: 110rpx; }
+.cd-name { flex: 2; min-width: 200rpx; }
+.cd-add-btn { min-width: 140rpx; min-height: 88rpx; }
+.cd-hint { margin-top: var(--sp-1); }
+
+.cd-row { display: flex; align-items: center; justify-content: space-between; min-height: 120rpx; }
+.cd-info { display: flex; flex-direction: column; flex: 1; }
+.cd-label { font-size: 26rpx; color: var(--text-2); }
+.cd-time { font-size: 44rpx; font-weight: 600; color: var(--text); margin: var(--sp-1) 0; }
+.cd-time.done { color: var(--ok); font-size: 32rpx; }
+.cd-acts { flex-shrink: 0; }
+.cd-acts .btn { margin-left: var(--sp-1); }
+.btn-danger-ghost { color: var(--err); }

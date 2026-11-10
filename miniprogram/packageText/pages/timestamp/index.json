@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "tool-shell": "/components/tool-shell/index",
+    "param-form": "/components/param-form/index",
+    "result-panel": "/components/result-panel/index",
+    "empty-state": "/components/empty-state/index"
+  },
+  "navigationBarTitleText": "时间戳"
+}

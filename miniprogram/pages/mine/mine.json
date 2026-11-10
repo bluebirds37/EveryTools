@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "grid-icon": "/components/grid-icon/index",
+    "empty-state": "/components/empty-state/index"
+  },
+  "navigationBarTitleText": "我的"
+}

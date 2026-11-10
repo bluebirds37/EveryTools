@@ -1,0 +1,294 @@
+{
+  "pages": [
+    {
+      "path": "pages/home/home",
+      "name": "工具箱首页",
+      "description": "浏览与搜索全部工具，进入图片、视频、条码、文本、换算等常用工具"
+    },
+    {
+      "path": "pages/category/category",
+      "name": "工具分类",
+      "description": "按分类查看全部可用工具"
+    },
+    {
+      "path": "pages/search/search",
+      "name": "搜索工具",
+      "description": "按关键词查找工具箱内的具体工具"
+    },
+    {
+      "path": "pages/mine/mine",
+      "name": "我的",
+      "description": "查看收藏、最近使用的工具与设置"
+    },
+    {
+      "path": "pages/tool-detail/tool-detail",
+      "name": "工具详情",
+      "description": "查看单个工具的说明、限制与使用入口"
+    },
+    {
+      "path": "packageImage/pages/compress/index",
+      "name": "图片压缩",
+      "description": "照片瘦身，可控目标大小（FR-IMG-01）"
+    },
+    {
+      "path": "packageImage/pages/crop/index",
+      "name": "图片裁剪",
+      "description": "自由裁剪，预设比例与尺寸（FR-IMG-02）"
+    },
+    {
+      "path": "packageImage/pages/convert/index",
+      "name": "格式转换",
+      "description": "jpg、png、webp 互转（FR-IMG-03）"
+    },
+    {
+      "path": "packageImage/pages/stitch/index",
+      "name": "图片拼接",
+      "description": "多张竖排横排网格拼接长图（FR-IMG-04）"
+    },
+    {
+      "path": "packageImage/pages/watermark/index",
+      "name": "批量水印",
+      "description": "批量添加文字或 logo 水印（FR-IMG-05）"
+    },
+    {
+      "path": "packageImage/pages/cut/index",
+      "name": "九宫格切图",
+      "description": "一张图切成多宫格发朋友圈（FR-IMG-06）"
+    },
+    {
+      "path": "packageImage/pages/idphoto/index",
+      "name": "证件照",
+      "description": "一寸二寸尺寸与蓝白红底（FR-IMG-07）"
+    },
+    {
+      "path": "packageImage/pages/info/index",
+      "name": "图片信息",
+      "description": "查看参数与 EXIF 拍摄信息（FR-IMG-10）"
+    },
+    {
+      "path": "packageImage/pages/colorpick/index",
+      "name": "取色器",
+      "description": "从图片取色并提取调色板（FR-IMG-11）"
+    },
+    {
+      "path": "packageVideo/pages/compress/index",
+      "name": "视频压缩",
+      "description": "视频瘦身，可控目标体积（FR-VID-01）"
+    },
+    {
+      "path": "packageVideo/pages/clip/index",
+      "name": "视频截取",
+      "description": "精确剪出想要片段（FR-VID-02）"
+    },
+    {
+      "path": "packageVideo/pages/gif/index",
+      "name": "视频转GIF",
+      "description": "短视频转循环动图（FR-VID-04）"
+    },
+    {
+      "path": "packageVideo/pages/frames/index",
+      "name": "视频抽帧",
+      "description": "提取封面或均匀抽帧成图（FR-VID-05）"
+    },
+    {
+      "path": "packageVideo/pages/info/index",
+      "name": "视频信息",
+      "description": "查编码分辨率与码率（FR-VID-06）"
+    },
+    {
+      "path": "packageVideo/pages/audio/index",
+      "name": "提取音频",
+      "description": "从视频导出 mp3 音轨（FR-VID-07）"
+    },
+    {
+      "path": "packageQr/pages/generate/index",
+      "name": "二维码生成",
+      "description": "文字、链接、wifi 变二维码（FR-QR-01）"
+    },
+    {
+      "path": "packageQr/pages/decode/index",
+      "name": "相册识码",
+      "description": "识别截图相册里的二维码（FR-QR-02）"
+    },
+    {
+      "path": "packageQr/pages/parse/index",
+      "name": "码内容解析",
+      "description": "结构化拆解编码原文（FR-QR-03）"
+    },
+    {
+      "path": "packageQr/pages/barcode/index",
+      "name": "条形码生成",
+      "description": "code128、ean13 条码制作（FR-QR-04）"
+    },
+    {
+      "path": "packageText/pages/json/index",
+      "name": "JSON 格式化",
+      "description": "美化校验与树视图浏览（FR-TXT-01）"
+    },
+    {
+      "path": "packageText/pages/timestamp/index",
+      "name": "时间戳",
+      "description": "Unix 时间戳与日期互转（FR-TXT-02）"
+    },
+    {
+      "path": "packageText/pages/base64/index",
+      "name": "Base64",
+      "description": "文本与 Base64 双向编解码（FR-TXT-03）"
+    },
+    {
+      "path": "packageText/pages/url/index",
+      "name": "URL 编解码",
+      "description": "链接转义解析与参数编辑（FR-TXT-04）"
+    },
+    {
+      "path": "packageText/pages/hash/index",
+      "name": "哈希计算",
+      "description": "md5 与 sha 家族摘要（FR-TXT-05）"
+    },
+    {
+      "path": "packageText/pages/uuid/index",
+      "name": "UUID 生成",
+      "description": "批量生成随机 id 与口令串（FR-TXT-06）"
+    },
+    {
+      "path": "packageText/pages/regex/index",
+      "name": "正则测试",
+      "description": "高亮匹配替换带模板（FR-TXT-07）"
+    },
+    {
+      "path": "packageText/pages/stats/index",
+      "name": "字数统计",
+      "description": "字符单词与字节计数（FR-TXT-08）"
+    },
+    {
+      "path": "packageText/pages/diff/index",
+      "name": "文本对比",
+      "description": "两段文本逐行找不同（FR-TXT-09）"
+    },
+    {
+      "path": "packageText/pages/naming/index",
+      "name": "命名转换",
+      "description": "驼峰下划线命名互转（FR-TXT-10）"
+    },
+    {
+      "path": "packageText/pages/case/index",
+      "name": "大小写转换",
+      "description": "英文大小写首字母切换（FR-TXT-11）"
+    },
+    {
+      "path": "packageText/pages/multiline/index",
+      "name": "多行处理",
+      "description": "去重排序加序号批处理（FR-TXT-12）"
+    },
+    {
+      "path": "packageText/pages/radix/index",
+      "name": "进制转换",
+      "description": "二八十六进制与位运算（FR-TXT-13）"
+    },
+    {
+      "path": "packageCalc/pages/unit/index",
+      "name": "单位换算",
+      "description": "长度重量温度存储互转（FR-CAL-01）"
+    },
+    {
+      "path": "packageCalc/pages/date/index",
+      "name": "日期计算",
+      "description": "日期间隔倒数日与工作日（FR-CAL-02）"
+    },
+    {
+      "path": "packageCalc/pages/loan/index",
+      "name": "房贷计算",
+      "description": "等额本息月供与总利息（FR-CAL-03）"
+    },
+    {
+      "path": "packageCalc/pages/tax/index",
+      "name": "个税计算",
+      "description": "工资年终奖累计预扣税（FR-CAL-04）"
+    },
+    {
+      "path": "packageCalc/pages/discount/index",
+      "name": "折扣比价",
+      "description": "打折满减算最优到手价（FR-CAL-05）"
+    },
+    {
+      "path": "packageCalc/pages/percent/index",
+      "name": "百分比",
+      "description": "占比增长率与比例分配（FR-CAL-06）"
+    },
+    {
+      "path": "packageCalc/pages/random/index",
+      "name": "随机决策",
+      "description": "随机数抽签转盘分组（FR-CAL-07）"
+    },
+    {
+      "path": "packageCalc/pages/bmi/index",
+      "name": "身体指标",
+      "description": "BMI 体脂与热量建议（FR-CAL-09）"
+    },
+    {
+      "path": "packageCalc/pages/compound/index",
+      "name": "复利计算",
+      "description": "复利定投存款终值（FR-CAL-10）"
+    },
+    {
+      "path": "packageCalc/pages/calculator/index",
+      "name": "计算器",
+      "description": "科学表达式带历史记录（FR-CAL-12）"
+    },
+    {
+      "path": "packageLife/pages/compass/index",
+      "name": "指南针",
+      "description": "实时指向与方位角（FR-LIF-01）"
+    },
+    {
+      "path": "packageLife/pages/level/index",
+      "name": "水平仪",
+      "description": "检测水平气泡读数（FR-LIF-02）"
+    },
+    {
+      "path": "packageLife/pages/timer/index",
+      "name": "秒表倒计时",
+      "description": "秒表计数与多组倒计时（FR-LIF-03）"
+    },
+    {
+      "path": "packageLife/pages/nettest/index",
+      "name": "网速测试",
+      "description": "测带宽延迟与抖动（FR-LIF-07）"
+    },
+    {
+      "path": "packageLife/pages/screen/index",
+      "name": "屏幕检测",
+      "description": "全屏纯色查坏点漏光（FR-LIF-10）"
+    },
+    {
+      "path": "packageDev/pages/http/index",
+      "name": "HTTP 调试",
+      "description": "接口请求看响应耗时（FR-DEV-01）"
+    },
+    {
+      "path": "packageDev/pages/color/index",
+      "name": "颜色工具",
+      "description": "色值互转与对比度检查（FR-DEV-02）"
+    },
+    {
+      "path": "packageDev/pages/jwt/index",
+      "name": "JWT 解析",
+      "description": "本地解码 token 载荷（FR-DEV-03）"
+    },
+    {
+      "path": "packageDev/pages/cron/index",
+      "name": "Cron 表达式",
+      "description": "解析定时表达式与下次触发（FR-DEV-04）"
+    },
+    {
+      "path": "packageDev/pages/sql/index",
+      "name": "SQL 格式化",
+      "description": "美化 SQL 语句不执行（FR-DEV-05）"
+    },
+    {
+      "path": "packageDev/pages/ua/index",
+      "name": "UA 解析",
+      "description": "识别浏览器设备内核（FR-DEV-06）"
+    }
+  ]
+}

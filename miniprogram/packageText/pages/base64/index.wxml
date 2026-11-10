@@ -1,0 +1,61 @@
+<tool-shell toolId="text-base64" title="Base64" desc="文本与 Base64 双向编解码" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <view class="field-label">
+        <text>{{values.dir === 'encode' ? '输入（原文）' : '输入（Base64）'}}</text>
+        <text class="t-dim t-sm">{{input.length}} 字</text>
+      </view>
+      <textarea class="textarea" placeholder="请输入内容" value="{{input}}" bindinput="onInput" maxlength="-1" auto-height="{{false}}" />
+      <view class="row wrap input-actions">
+        <button class="btn btn-ghost btn-sm" bindtap="onPaste">粘贴</button>
+        <button class="btn btn-sm" bindtap="onClearInput">清空</button>
+        <button class="btn btn-sm" bindtap="onSwap">交换方向</button>
+        <button wx:if="{{values.dir === 'encode'}}" class="btn btn-sm" bindtap="onChooseImage">图片转 Base64</button>
+        <button wx:if="{{values.dir === 'decode' && result}}" class="btn btn-sm" bindtap="onOpenAsImage">结果作为图片</button>
+      </view>
+    </view>
+
+    <view class="card">
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <button class="btn btn-primary btn-block" bindtap="onRun" loading="{{busy}}" disabled="{{busy}}">{{values.dir === 'encode' ? '编码' : '解码'}}</button>
+
+    <view wx:if="{{error}}" class="card err-bar">
+      <view class="err-msg">{{error.message}}</view>
+      <view class="t-dim t-sm err-code">{{error.code}}</view>
+    </view>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="text"
+      text="{{result.text}}"
+      meta="{{result.meta}}"
+      showCopy="{{true}}"
+      showShare="{{true}}"
+      bind:copy="onCopy"
+      bind:share="onShare"
+    />
+    <view wx:if="{{result && result.kv}}" class="card fade-up">
+      <view wx:for="{{result.kv}}" wx:key="key" class="kv-row">
+        <text class="kv-key">{{item.key}}</text>
+        <text class="kv-val t-mono">{{item.value}}</text>
+      </view>
+    </view>
+
+    <empty-state
+      wx:if="{{!result && !error}}"
+      icon="base64"
+      title="等待输入"
+      desc="支持标准 / URL-Safe 变体与 UTF-8 / Latin-1，中文往返无损"
+    />
+
+    <view class="card">
+      <view class="card-title">内置示例（一键填入）</view>
+      <view class="wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

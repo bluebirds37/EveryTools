@@ -1,0 +1,42 @@
+
+# 依赖与构建产物
+node_modules/
+server/target/
+server/dist/
+*.o
+*.rlib
+
+# 运行期数据：用户上传的分片/转码产物/测速文件，绝不入库
+server/data/
+data/
+*.bin.tmp
+
+# 密钥与环境变量：只从环境变量注入，仓库里只保留占位符模板
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+
+# 微信开发者工具的本地私有配置（编译模式、个人设置）
+project.private.config.json
+miniprogram/project.private.config.json
+
+# 第三方参考实现：微信官方 ai-mode-demo，请自行 clone（MIT，见 README）
+ai-mode-demo/
+
+# 校验/调试临时产物
+/tmp/
+*.log
+*.png.out
+scripts/cases/.cache/
+
+# 编辑器与系统噪声
+.DS_Store
+**/.DS_Store
+.idea/
+.vscode/
+.qoder/
+__pycache__/
+*.pyc

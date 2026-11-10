@@ -1,0 +1,100 @@
+.rp {
+  padding: var(--sp-4);
+}
+.rp-img {
+  width: 100%;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+.rp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-2);
+}
+.rp-cell {
+  position: relative;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--surface-2);
+}
+.rp-cell-img {
+  width: 100%;
+  height: 200rpx;
+  display: block;
+}
+.rp-cell-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 6rpx 12rpx;
+  font-size: 22rpx;
+  color: var(--on-brand);
+  background: rgba(0, 0, 0, .45);
+}
+.rp-video {
+  width: 100%;
+  border-radius: var(--r-md);
+  background: var(--stage);
+}
+.rp-text-head {
+  margin-bottom: var(--sp-1);
+}
+.rp-text {
+  width: 100%;
+  max-height: 620rpx;
+  white-space: pre-wrap;
+}
+.rp-nowrap {
+  white-space: pre;
+}
+.rp-kv {
+  margin-top: var(--sp-1);
+}
+.rp-meta {
+  margin-top: var(--sp-3);
+  padding-top: var(--sp-2);
+  border-top: 2rpx solid var(--line);
+}
+.rp-actions {
+  margin-top: var(--sp-3);
+  gap: var(--sp-2);
+}
+/* 换行开关：视觉是小标签，点击区补足 88rpx */
+.rp-wrap {
+  min-height: 88rpx;
+  padding: 0 var(--sp-3);
+}
+.rp-btn {
+  flex: 1;
+  min-width: 180rpx;
+  min-height: 88rpx;
+  background: var(--surface-2);
+  gap: var(--sp-1);
+}
+.rp-btn-t {
+  font-size: 26rpx;
+}
+.rp-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.sk {
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  animation: skPulse 1.2s ease-in-out infinite;
+}
+.sk-line {
+  height: 28rpx;
+}
+.sk-w60 {
+  width: 60%;
+}
+.sk-block {
+  height: 320rpx;
+}
+@keyframes skPulse {
+  0%, 100% { opacity: .55; }
+  50% { opacity: 1; }
+}

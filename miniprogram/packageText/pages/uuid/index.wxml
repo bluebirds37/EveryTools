@@ -1,0 +1,46 @@
+<tool-shell toolId="text-uuid" title="UUID 生成" desc="批量生成随机 id 与口令串" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <button class="btn btn-primary btn-block" bindtap="onRun" loading="{{busy}}" disabled="{{busy}}">生成</button>
+
+    <view wx:if="{{error}}" class="card err-bar">
+      <view class="err-msg">{{error.message}}</view>
+      <view class="t-dim t-sm err-code">{{error.code}}</view>
+    </view>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="text"
+      text="{{result.text}}"
+      meta="{{result.meta}}"
+      showCopy="{{true}}"
+      showShare="{{true}}"
+      bind:copy="onCopy"
+      bind:share="onShare"
+    />
+    <view wx:if="{{result}}" class="card fade-up">
+      <view wx:for="{{result.kv}}" wx:key="key" class="kv-row">
+        <text class="kv-key">{{item.key}}</text>
+        <text class="kv-val t-mono">{{item.value}}</text>
+      </view>
+    </view>
+
+    <empty-state
+      wx:if="{{!result && !error}}"
+      icon="uuid"
+      title="等待生成"
+      desc="UUID v4 / 雪花 ID / NanoID / 自定义字符集，最多一次 1000 条"
+    />
+
+    <view class="card">
+      <view class="card-title">内置示例（一键填入）</view>
+      <view class="wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

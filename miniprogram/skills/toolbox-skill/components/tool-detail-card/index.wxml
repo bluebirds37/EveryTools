@@ -1,0 +1,17 @@
+<view class="tdc" wx:if="{{tool}}">
+  <view class="tdc-head">
+    <text class="tdc-name">{{tool.name}}</text>
+    <text class="tdc-cat">{{tool.categoryName}}</text>
+  </view>
+  <text class="tdc-desc">{{tool.desc}}</text>
+  <view class="tdc-kv" wx:if="{{tool.params}}">
+    <view class="tdc-row" wx:for="{{tool.params}}" wx:key="index">
+      <text class="tdc-key">{{index}}</text>
+      <text class="tdc-val">{{item}}</text>
+    </view>
+  </view>
+  <view class="tdc-actions">
+    <view class="tdc-btn" wx:if="{{tool.aiApi}}" bindtap="onTapUse">直接使用</view>
+    <view class="tdc-btn tdc-btn-ghost" bindtap="onTapEntry">查看工具页</view>
+  </view>
+</view>

@@ -1,0 +1,18 @@
+/* 正则测试页：仅本页特有样式 */
+.pattern-input { font-family: Menlo, Consolas, monospace; }
+.chip-row { margin-top: var(--sp-2); }
+.flag-chip, .tpl-chip { margin: 0 var(--sp-2) var(--sp-2) 0; }
+.flag-on { background: var(--brand); color: var(--on-brand); }
+.input-actions { margin-top: var(--sp-2); }
+.input-actions .btn { margin: 0 var(--sp-1) var(--sp-1) 0; }
+.hl-box { font-size: 28rpx; line-height: 1.8; word-break: break-all; }
+.hl-seg { background: var(--surface-2); color: var(--brand); border-radius: 6rpx; }
+.match-row { display: flex; align-items: flex-start; padding: var(--sp-2) 0; border-bottom: 2rpx solid var(--line); }
+.match-row:last-child { border-bottom: none; }
+.match-idx { flex-shrink: 0; width: 220rpx; font-size: 24rpx; color: var(--text-3); }
+.match-body { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.match-text { font-size: 26rpx; word-break: break-all; }
+.err-bar { border-left: 8rpx solid var(--err); }
+.err-msg { white-space: pre-wrap; font-size: 26rpx; line-height: 1.6; }
+.err-code { margin-top: var(--sp-1); }
+.sample-btn { margin: 0 var(--sp-2) var(--sp-2) 0; }

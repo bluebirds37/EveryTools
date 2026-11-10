@@ -1,0 +1,84 @@
+<tool-shell toolId="text-multiline" title="多行处理" desc="去重排序加序号批处理" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <view class="field-label">
+        <text>多行文本</text>
+        <text class="t-dim t-sm">{{input.length}} 字</text>
+      </view>
+      <textarea class="textarea" placeholder="一行一条，如列表 / 日志 / 名单" value="{{input}}" bindinput="onInput" maxlength="-1" auto-height="{{false}}" />
+      <view class="row wrap input-actions">
+        <button class="btn btn-ghost btn-sm" bindtap="onPaste">粘贴</button>
+        <button class="btn btn-sm" bindtap="onClearInput">清空</button>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">操作链（按序执行，{{steps.length}} 步）</view>
+      <view wx:if="{{!steps.length}}" class="t-dim t-sm">尚未添加操作</view>
+      <view wx:for="{{steps}}" wx:key="index" class="step-row">
+        <view class="row step-head">
+          <text class="step-no t-mono">{{index + 1}}</text>
+          <text class="step-label">{{item.label}}</text>
+          <view class="row step-ops">
+            <text class="op-btn {{index === 0 ? 'op-disabled' : ''}}" data-index="{{index}}" data-dir="up" bindtap="onMoveOp">↑</text>
+            <text class="op-btn {{index === steps.length - 1 ? 'op-disabled' : ''}}" data-index="{{index}}" data-dir="down" bindtap="onMoveOp">↓</text>
+            <text class="op-btn op-del" data-index="{{index}}" bindtap="onRemoveOp">✕</text>
+          </view>
+        </view>
+        <input
+          wx:if="{{item.hasArg}}"
+          class="arg-input"
+          placeholder="{{item.argLabel}}（{{item.argPlaceholder}}）"
+          value="{{item.arg}}"
+          data-index="{{index}}"
+          bindinput="onStepArg"
+        />
+      </view>
+      <view class="divider"></view>
+      <view class="field-label"><text>添加操作</text></view>
+      <view class="row wrap chip-row">
+        <view wx:for="{{opList}}" wx:key="id" class="tag op-chip" data-id="{{item.id}}" bindtap="onAddOp">＋ {{item.label}}</view>
+      </view>
+    </view>
+
+    <button class="btn btn-primary btn-block" bindtap="onRun" loading="{{busy}}" disabled="{{busy}}">执行处理</button>
+
+    <view wx:if="{{error}}" class="card err-bar">
+      <view class="err-msg">{{error.message}}</view>
+      <view class="t-dim t-sm err-code">{{error.code}}</view>
+    </view>
+
+    <view wx:if="{{result}}" class="card fade-up">
+      <view wx:for="{{kv}}" wx:key="key" class="kv-row">
+        <text class="kv-key">{{item.key}}</text>
+        <text class="kv-val t-mono">{{item.value}}</text>
+      </view>
+    </view>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="text"
+      text="{{result.text}}"
+      meta="{{result.meta}}"
+      showCopy="{{true}}"
+      showShare="{{true}}"
+      bind:copy="onCopy"
+      bind:share="onShare"
+    />
+
+    <empty-state
+      wx:if="{{!result && !error}}"
+      icon="multiline"
+      title="等待处理"
+      desc="18 种行操作自由组合：去重 / 排序 / 编号 / 截取 / 替换…"
+    />
+
+    <view class="card">
+      <view class="card-title">内置示例（一键验证）</view>
+      <view class="wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

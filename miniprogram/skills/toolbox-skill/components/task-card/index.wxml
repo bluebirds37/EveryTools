@@ -1,0 +1,14 @@
+<view class="tkc">
+  <view class="tkc-head">
+    <text class="tkc-title">{{card.title}}</text>
+    <text class="tkc-badge" wx:if="{{card.desc}}">{{card.desc}}</text>
+  </view>
+  <view class="tkc-params" wx:if="{{params.length}}">
+    <view class="tkc-row" wx:for="{{params}}" wx:key="key">
+      <text class="tkc-key">{{item.key}}</text>
+      <text class="tkc-val">{{item.value}}</text>
+    </view>
+  </view>
+  <text class="tkc-tip">选择图片/视频将在页面内完成，点击卡片开始</text>
+  <view class="tkc-btn" bindtap="onTapOpen">进入处理页</view>
+</view>

@@ -1,0 +1,43 @@
+<tool-shell toolId="qr-barcode" title="条形码生成" desc="Code128/EAN13/ITF 条码" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <view wx:if="{{error}}" class="card bc-err fade-up">
+      <grid-icon name="alert" size="36" color="#E5484D" />
+      <text class="grow t-sm">{{error.message}}</text>
+    </view>
+
+    <button class="btn btn-primary btn-block" disabled="{{busy}}" bindtap="onRun">
+      <view wx:if="{{busy}}" class="spinner bc-spin" />
+      <text>{{busy ? '生成中…' : '生成条形码'}}</text>
+    </button>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="image"
+      images="{{result.images}}"
+      kv="{{result.kv}}"
+      meta="{{result.meta}}"
+      text="{{result.text}}"
+      showCopy="{{true}}"
+      showSave="{{true}}"
+      bind:copy="onCopy"
+      bind:save="onSave"
+    />
+
+    <view wx:if="{{!result && !busy}}" class="card">
+      <empty-state icon="barcode" title="还没有生成条码" desc="选择码制、输入内容后点「生成条形码」" />
+    </view>
+
+    <view class="card">
+      <view class="card-title">内置示例（一键填入并生成）</view>
+      <view class="row wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm btn-ghost bc-sample" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+  <canvas type="2d" id="tb-offscreen" class="bc-canvas" />
+</tool-shell>

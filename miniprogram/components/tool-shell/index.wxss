@@ -1,0 +1,98 @@
+.ts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.ts-head {
+  padding: var(--sp-3) var(--sp-4);
+}
+.ts-icon {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: var(--sp-2);
+  flex: none;
+}
+.ts-sub {
+  margin-top: 4rpx;
+  line-height: 1.5;
+}
+.ts-beta {
+  height: 36rpx;
+  padding: 0 12rpx;
+  font-size: 22rpx;
+  margin-left: var(--sp-1);
+}
+.ts-act {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  flex: none;
+  margin-left: var(--sp-1);
+}
+.ts-act:active {
+  opacity: .6;
+}
+/* 去掉原生 button 外观，保持与星标按钮同规格 */
+.ts-share-btn {
+  padding: 0;
+  margin: 0 0 0 var(--sp-1);
+  border: none;
+  line-height: 1;
+  font-size: 0;
+}
+.ts-share-btn::after {
+  border: none;
+}
+.ts-body {
+  margin-top: var(--sp-1);
+}
+.ts-off {
+  padding: var(--sp-5) var(--sp-3);
+}
+.ts-tips {
+  margin-top: var(--sp-1);
+}
+.ts-tips-head {
+  min-height: 88rpx;
+}
+.ts-tips-title {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 26rpx;
+}
+.ts-chevron {
+  display: flex;
+  align-items: center;
+  transition: transform .2s ease;
+}
+.ts-chevron.open {
+  transform: rotate(90deg);
+}
+.ts-tips-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding-top: var(--sp-1);
+}
+.ts-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  line-height: 1.6;
+  color: var(--text-2);
+}
+.ts-tip-dot {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  margin-top: 14rpx;
+  flex: none;
+}

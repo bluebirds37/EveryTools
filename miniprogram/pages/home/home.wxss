@@ -1,0 +1,209 @@
+.home {
+  padding-top: var(--sp-3);
+  /* 给自定义 tabBar 让出空间 */
+  padding-bottom: calc(env(safe-area-inset-bottom) + 148rpx);
+}
+
+/* ---------- 顶部渐变搜索卡 ---------- */
+.hero {
+  background: var(--brand-grad);
+  border-radius: var(--r-lg);
+  padding: 34rpx 30rpx 30rpx;
+  box-shadow: 0 16rpx 36rpx rgba(59, 91, 254, 0.22);
+  color: var(--on-brand);
+}
+.hero-greet {
+  font-size: 38rpx;
+  font-weight: 700;
+  letter-spacing: .5rpx;
+  line-height: 1.35;
+}
+.hero-sub {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.82);
+}
+.hero-search {
+  margin-top: var(--sp-4);
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  height: 88rpx;
+  padding: 0 12rpx 0 24rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.22);
+  border: 2rpx solid rgba(255, 255, 255, 0.32);
+}
+.hero-search-hover {
+  background: rgba(255, 255, 255, 0.34);
+}
+.hero-search-ph {
+  flex: 1;
+  min-width: 0;
+  font-size: 27rpx;
+  color: rgba(255, 255, 255, 0.88);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.hero-search-btn {
+  height: 64rpx;
+  padding: 0 28rpx;
+  display: flex;
+  align-items: center;
+  border-radius: 999rpx;
+  background: var(--on-brand);
+  color: var(--brand);
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+/* ---------- 区块标题 ---------- */
+.sec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: var(--sp-4) 4rpx var(--sp-2);
+}
+.sec-title {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  letter-spacing: .5rpx;
+}
+.sec-badge {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sec-count {
+  font-size: 22rpx;
+  font-weight: 500;
+  color: var(--text-3);
+  background: var(--surface-2);
+  border-radius: 999rpx;
+  padding: 2rpx 14rpx;
+}
+.sec-more {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  font-size: 24rpx;
+  color: var(--text-2);
+  padding: 12rpx 0 12rpx 16rpx;
+}
+.sec-arrow {
+  font-size: 30rpx;
+  line-height: 1;
+  color: var(--text-3);
+}
+
+/* ---------- 最近使用横向滚动 ---------- */
+.recents {
+  width: 100%;
+  white-space: nowrap;
+}
+.rchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 14rpx;
+  height: 108rpx;
+  padding: 0 26rpx 0 16rpx;
+  margin-right: var(--sp-2);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.rchip-icon {
+  width: 68rpx;
+  height: 68rpx;
+  flex-shrink: 0;
+  border-radius: 18rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rchip-text {
+  min-width: 0;
+}
+.rchip-name {
+  max-width: 200rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+.rchip-time {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: var(--text-3);
+}
+
+/* ---------- 工具网格 ---------- */
+.grid {
+  display: grid;
+  gap: var(--sp-2);
+}
+.grid-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.tcard {
+  position: relative;
+  /* 网格单元默认最小宽度是 min-content，nowrap 文案会把 4 列撑出屏幕 */
+  min-width: 0;
+  background: var(--surface);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+  padding: 20rpx 6rpx 18rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+  transition: transform .15s ease, opacity .15s ease;
+}
+.tcard-hover {
+  transform: scale(.96);
+  opacity: .9;
+}
+.tcard-icon {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tcard-name {
+  width: 100%;
+  text-align: center;
+  font-size: 23rpx;
+  font-weight: 600;
+}
+.tcard-desc {
+  width: 100%;
+  text-align: center;
+  font-size: 20rpx;
+  color: var(--text-3);
+}
+.tcard-star {
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  width: 30rpx;
+  height: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- 页脚 ---------- */
+.home-foot {
+  margin-top: var(--sp-5);
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--text-3);
+  letter-spacing: 1rpx;
+}

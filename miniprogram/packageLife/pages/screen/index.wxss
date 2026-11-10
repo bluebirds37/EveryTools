@@ -1,0 +1,50 @@
+/* packageLife/pages/screen —— 全屏色层为检测用途实色（lint-ui 白名单，令牌化会破坏纯色语义） */
+.seq-row { margin-bottom: var(--sp-2); }
+.run-btn { min-height: 88rpx; }
+.err-bar { border-left: 8rpx solid var(--err); }
+
+.screen-layer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+.sc-white { background: #FFFFFF; }
+.sc-black { background: #000000; }
+.sc-red { background: #FF0000; }
+.sc-green { background: #00FF00; }
+.sc-blue { background: #0000FF; }
+.sc-gray { background: #808080; }
+.sc-grad { background: linear-gradient(135deg, #000000 0%, #7f7f7f 50%, #FFFFFF 100%); }
+
+.screen-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 200rpx;
+  transform: translateX(-50%);
+  max-width: 84%;
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  text-align: center;
+}
+.screen-hint.on-light { color: #6b7280; background: rgba(0, 0, 0, 0.08); }
+.screen-hint.on-dark { color: #d7dae2; background: rgba(255, 255, 255, 0.14); }
+
+.screen-exit {
+  position: absolute;
+  right: var(--sp-4);
+  bottom: 88rpx;
+  min-width: 176rpx;
+  min-height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999rpx;
+  border: 2rpx solid rgba(128, 128, 128, 0.55);
+  color: #9aa1ac;
+  font-size: 26rpx;
+  mix-blend-mode: difference;
+}

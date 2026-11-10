@@ -1,0 +1,4 @@
+{
+  "desc": "工具箱页面索引",
+  "rules": [{ "action": "allow", "page": "*" }]
+}

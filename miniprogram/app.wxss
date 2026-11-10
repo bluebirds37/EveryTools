@@ -1,0 +1,235 @@
+/* 全局设计令牌与现代风格外壳 —— 所有工具页共用 */
+page {
+  --brand: #3b5bfe;
+  --brand-2: #22c3d6;
+  --brand-grad: linear-gradient(135deg, #4b6cff 0%, #22c3d6 100%);
+  --bg: #f5f6fa;
+  --surface: #ffffff;
+  --surface-2: #f2f4f8;
+  --text: #171a21;
+  --text-2: #6b7280;
+  --text-3: #9aa1ac;
+  --line: rgba(23, 26, 33, 0.07);
+  --stage: #0e1116;
+  --on-brand: #ffffff;
+  --shadow: 0 8rpx 32rpx rgba(23, 26, 33, 0.06);
+  --shadow-sm: 0 2rpx 12rpx rgba(23, 26, 33, 0.05);
+  --r-lg: 28rpx;
+  --r-md: 20rpx;
+  --r-sm: 14rpx;
+  --sp-1: 8rpx;
+  --sp-2: 16rpx;
+  --sp-3: 24rpx;
+  --sp-4: 32rpx;
+  --sp-5: 48rpx;
+  --ok: #16a34a;
+  --warn: #f59e0b;
+  --err: #e5484d;
+
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+  font-size: 28rpx;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-color-scheme: dark) {
+  page {
+    --brand: #7c93ff;
+    --brand-2: #4fd8e6;
+    --brand-grad: linear-gradient(135deg, #5570ff 0%, #2ad2e0 100%);
+    --bg: #101217;
+    --surface: #171a21;
+    --surface-2: #1f232c;
+    --text: #f3f5f8;
+    --text-2: #a2a9b8;
+    --text-3: #6c7280;
+    --line: rgba(255, 255, 255, 0.08);
+    --shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.45);
+    --shadow-sm: 0 2rpx 12rpx rgba(0, 0, 0, 0.35);
+  }
+}
+
+view, text, scroll-view, button, input, textarea, image {
+  box-sizing: border-box;
+}
+
+/* ---------- 布局 ---------- */
+.page {
+  min-height: 100vh;
+  padding: 0 28rpx 40rpx;
+}
+.stack { display: flex; flex-direction: column; gap: var(--sp-3); }
+.row { display: flex; align-items: center; gap: var(--sp-2); }
+.row-between { display: flex; align-items: center; justify-content: space-between; }
+.wrap { flex-wrap: wrap; }
+.grow { flex: 1; min-width: 0; }
+.center { display: flex; align-items: center; justify-content: center; }
+
+/* ---------- 卡片 ---------- */
+.card {
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--sp-4);
+}
+.card-flat {
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  padding: var(--sp-3);
+}
+.card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  letter-spacing: .5rpx;
+  margin-bottom: var(--sp-3);
+}
+.section-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  margin: var(--sp-4) 0 var(--sp-2);
+  letter-spacing: .5rpx;
+}
+
+/* ---------- 文字 ---------- */
+.t-lg { font-size: 36rpx; font-weight: 700; }
+.t-md { font-size: 30rpx; font-weight: 600; }
+.t-sm { font-size: 24rpx; }
+.t-muted { color: var(--text-2); }
+.t-dim { color: var(--text-3); }
+.t-brand { color: var(--brand); }
+.t-mono {
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 24rpx;
+  word-break: break-all;
+}
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ---------- 按钮 ---------- */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  padding: 0 var(--sp-4);
+  border-radius: 999rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  background: var(--surface-2);
+  color: var(--text);
+  transition: opacity .15s ease, transform .15s ease;
+}
+.btn::after { border: none; }
+.btn:active { opacity: .7; transform: scale(.985); }
+.btn-primary { background: var(--brand-grad); color: #fff; box-shadow: 0 10rpx 24rpx rgba(59, 91, 254, .25); }
+.btn-ghost { background: transparent; color: var(--brand); border: 2rpx solid var(--brand); }
+.btn-sm { height: 64rpx; font-size: 26rpx; padding: 0 var(--sp-3); }
+.btn-block { width: 100%; }
+.btn[disabled] { opacity: .45; }
+/* 主按钮禁用态不能靠 opacity：白字压在浅蓝渐变上等于看不见（真机「开始压缩」就是这样）。
+   改成实心弱化底 + 次级文字色，禁用与可用一眼可分。 */
+.btn-primary[disabled] {
+  background: var(--surface-2);
+  color: var(--text-3);
+  border: 2rpx solid var(--line);
+  box-shadow: none;
+  opacity: 1;
+}
+
+/* ---------- 标签 / 徽章 ---------- */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 44rpx;
+  padding: 0 18rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  background: var(--surface-2);
+  color: var(--text-2);
+}
+.tag-active { background: rgba(59, 91, 254, .12); color: var(--brand); font-weight: 600; }
+.tag-dot::before {
+  content: "";
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: currentColor;
+  margin-right: 8rpx;
+}
+
+/* ---------- 输入 ---------- */
+.field { margin-bottom: var(--sp-3); }
+.field-label {
+  font-size: 24rpx;
+  color: var(--text-2);
+  margin-bottom: var(--sp-1);
+  display: flex;
+  justify-content: space-between;
+}
+.input, .textarea {
+  width: 100%;
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  padding: 20rpx 24rpx;
+  font-size: 28rpx;
+  color: var(--text);
+  border: 2rpx solid transparent;
+  box-sizing: border-box;
+}
+/* 原生 <input> 有自己的默认高度，只给 padding 会把数字的下半部切掉（真机可见「200」变成一条横线）：
+   显式给出行高 + 盒模型，让文字在框内垂直居中 */
+.input {
+  height: 80rpx;
+  min-height: 80rpx;
+  line-height: 40rpx;
+  padding: 18rpx 24rpx;
+}
+.input:focus, .textarea:focus { border-color: var(--brand); background: var(--surface); }
+.textarea { min-height: 220rpx; font-family: "SF Mono", Menlo, monospace; font-size: 24rpx; line-height: 1.6; }
+
+/* ---------- 代码/结果块 ---------- */
+.code-block {
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  padding: var(--sp-3);
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 24rpx;
+  line-height: 1.6;
+  word-break: break-all;
+  white-space: pre-wrap;
+  max-height: 620rpx;
+}
+.kv-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: 16rpx 0;
+  border-bottom: 2rpx solid var(--line);
+}
+.kv-row:last-child { border-bottom: none; }
+.kv-key { color: var(--text-2); font-size: 26rpx; flex-shrink: 0; }
+.kv-val { font-weight: 600; text-align: right; word-break: break-all; }
+
+/* ---------- 分隔 / 安全区 ---------- */
+.divider { height: 2rpx; background: var(--line); margin: var(--sp-3) 0; }
+.safe-bottom { height: calc(env(safe-area-inset-bottom) + 32rpx); }
+
+/* ---------- 动效 ---------- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16rpx); }
+  to { opacity: 1; transform: none; }
+}
+.fade-up { animation: fadeUp .28s ease both; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  width: 36rpx; height: 36rpx;
+  border: 4rpx solid var(--line);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}

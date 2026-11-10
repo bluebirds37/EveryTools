@@ -1,0 +1,60 @@
+<tool-shell toolId="dev-jwt" title="JWT 解析" desc="本地解码 token 载荷" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+      <view class="row">
+        <view class="btn btn-sm grow" hover-class="none" bindtap="onRun">解析</view>
+        <view class="btn btn-sm grow" hover-class="none" bindtap="onClear">清空</view>
+      </view>
+      <view class="t-sm t-dim jwt-privacy">token 只在本地解码，不发送后端、不写入埋点</view>
+    </view>
+
+    <view wx:if="{{error}}" class="card err-bar">
+      <text class="t-sm">{{error.message}}</text>
+    </view>
+
+    <empty-state wx:if="{{!result && !error && !busy}}" icon="jwt" title="等待解析" desc="粘贴三段式 JWT 后点「解析」，或使用下方内置示例" />
+
+    <view wx:if="{{result}}" class="card fade-up">
+      <view class="row-between">
+        <text class="card-title">关键信息</text>
+        <text class="tag {{result.statusTone === 'err' ? 'st-err' : result.statusTone === 'ok' ? 'st-ok' : ''}}">{{result.status.text}}</text>
+      </view>
+      <view class="rp-kv">
+        <view wx:for="{{result.kv}}" wx:key="key" class="kv-row">
+          <text class="kv-key">{{item.key}}</text>
+          <text class="kv-val t-mono">{{item.value}}</text>
+        </view>
+      </view>
+      <view wx:if="{{result.noneWarning}}" class="warn-box">{{result.noneWarning}}</view>
+      <view class="warn-box verify">{{result.verifyNote}}</view>
+    </view>
+
+    <view wx:if="{{result}}" class="card fade-up">
+      <view class="row-between seg-head">
+        <text class="card-title">Header</text>
+        <text class="t-sm t-brand" data-key="headerText" hover-class="none" bindtap="onCopyPart">复制</text>
+      </view>
+      <view class="code-block">{{result.headerText}}</view>
+      <view class="row-between seg-head">
+        <text class="card-title">Payload</text>
+        <text class="t-sm t-brand" data-key="payloadText" hover-class="none" bindtap="onCopyPart">复制</text>
+      </view>
+      <view class="code-block">{{result.payloadText}}</view>
+      <view class="row-between seg-head">
+        <text class="card-title">Signature</text>
+        <text class="t-sm t-brand" data-key="signature" hover-class="none" bindtap="onCopyPart">复制</text>
+      </view>
+      <view class="code-block">{{result.signature || '(空)'}}</view>
+    </view>
+
+    <result-panel wx:if="{{result}}" kind="text" text="{{result.text}}" meta="{{result.meta}}" showCopy="{{true}}" bind:copy="onCopy" />
+
+    <view class="card">
+      <view class="card-title">内置示例</view>
+      <view class="row wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

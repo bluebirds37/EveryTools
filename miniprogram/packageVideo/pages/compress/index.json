@@ -1,0 +1,12 @@
+{
+  "usingComponents": {
+    "tool-shell": "/components/tool-shell/index",
+    "media-picker": "/components/media-picker/index",
+    "param-form": "/components/param-form/index",
+    "task-progress": "/components/task-progress/index",
+    "result-panel": "/components/result-panel/index",
+    "grid-icon": "/components/grid-icon/index",
+    "task-drawer": "../../components/task-drawer/index"
+  },
+  "navigationBarTitleText": "视频压缩"
+}

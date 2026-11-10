@@ -1,0 +1,14 @@
+/* 日期计算页 */
+.pick-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 88rpx;
+  padding: 8rpx 0;
+  border-bottom: 2rpx solid var(--line);
+}
+.pick-row:last-child { border-bottom: none; }
+.pick-label { color: var(--text-2); font-size: 26rpx; }
+.pick-val { font-weight: 600; font-family: "SF Mono", Menlo, monospace; }
+.err-bar { border-left: 8rpx solid var(--err); }
+.sample-btn { margin: 0 var(--sp-2) var(--sp-2) 0; }

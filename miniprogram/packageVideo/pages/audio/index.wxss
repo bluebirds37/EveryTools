@@ -1,0 +1,4 @@
+@import "../../styles/video.wxss";
+
+/* 音频结果 kv 行与播放器间距 */
+.kv-row:first-of-type { margin-top: var(--sp-1); }

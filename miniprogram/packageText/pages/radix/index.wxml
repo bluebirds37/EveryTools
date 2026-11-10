@@ -1,0 +1,70 @@
+<tool-shell toolId="text-radix" title="进制转换" desc="二八十六进制与位运算" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <view class="field-label">
+        <text>输入数值（按所选进制）</text>
+        <text class="t-dim t-sm">{{input.length}} 字</text>
+      </view>
+      <input class="radix-input t-mono" placeholder="如 2a、1010、999 9999" value="{{input}}" bindinput="onInput" maxlength="512" />
+      <view class="row wrap input-actions">
+        <button class="btn btn-ghost btn-sm" bindtap="onPaste">粘贴</button>
+        <button class="btn btn-sm" bindtap="onClearInput">清空</button>
+      </view>
+    </view>
+
+    <view class="card">
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <button class="btn btn-primary btn-block" bindtap="onRun" loading="{{busy}}" disabled="{{busy}}">转换并计算</button>
+
+    <view wx:if="{{error}}" class="card err-bar">
+      <view class="err-msg">{{error.message}}</view>
+      <view class="t-dim t-sm err-code">{{error.code}}</view>
+    </view>
+
+    <view wx:if="{{result}}" class="card fade-up">
+      <view class="card-title">常用进制同屏</view>
+      <view wx:for="{{convRows}}" wx:key="key" class="kv-row">
+        <text class="kv-key">{{item.key}}</text>
+        <text class="kv-val t-mono">{{item.value}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{result}}" class="card fade-up">
+      <view class="card-title">位运算面板</view>
+      <param-form schema="{{bitSchema}}" values="{{values}}" bind:change="onParamChange" />
+      <view wx:if="{{bitNote}}" class="t-dim t-sm bit-note">{{bitNote}}</view>
+      <view wx:for="{{bitRows}}" wx:key="key" class="kv-row">
+        <text class="kv-key">{{item.key}}</text>
+        <text class="kv-val t-mono">{{item.value}}</text>
+      </view>
+    </view>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="text"
+      text="{{result.text}}"
+      meta="{{result.meta}}"
+      showCopy="{{true}}"
+      showShare="{{true}}"
+      bind:copy="onCopy"
+      bind:share="onShare"
+    />
+
+    <empty-state
+      wx:if="{{!result && !error}}"
+      icon="radix"
+      title="等待输入"
+      desc="2–36 进制互转、32/64 位补码与 AND/OR/XOR/NOT/移位"
+    />
+
+    <view class="card">
+      <view class="card-title">内置示例（一键验证）</view>
+      <view class="wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

@@ -1,0 +1,426 @@
+{
+  "apis": [
+    {
+      "name": "searchTools",
+      "description": "检索 / 浏览小程序「通用工具箱」的工具清单（业务对象：工具结果卡片）。\n【keyword 有值】按关键词命中工具的 name / keywords / desc / id，返回匹配工具列表（如「压缩图片」「JSON」「换算」）。\n【keyword 留空】返回全部在线工具并按分类分组，用于用户「有什么工具 / 随便看看 / 都能干啥」等模糊意图。\n【取值约束】keyword 必须来自用户原话，禁止编造用户没说过的关键词；用户没给具体词时留空走全部，不要瞎猜。本接口是 getToolDetail 与各 start* 接口取得合法 toolId 的唯一来源。\n【后续动作】返回 handoff 并出小程序卡片；用一句简短话术引导用户点击卡片进入首页列表挑选，禁止以 markdown 文本铺开工具清单。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "（选填）工具检索关键词，取值来自用户原话（如 压缩、裁剪、二维码、换算、JSON）。命中范围为 name/keywords/desc/id。用户只是「有什么工具/随便看看」等模糊意图时留空，返回全部在线工具。【禁止编造】禁止填写用户没说过的关键词。"
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "匹配的工具列表（已按相关度或分类排序）",
+            "items": {
+              "type": "object",
+              "properties": {
+                "toolId": { "type": "string", "description": "工具唯一 ID（kebab-case），getToolDetail 的入参来源" },
+                "name": { "type": "string", "description": "工具名称" },
+                "desc": { "type": "string", "description": "一句话功能简介（≤20 字）" },
+                "category": { "type": "string", "description": "分类 ID：image|video|qr|text|calc|life|dev" },
+                "categoryName": { "type": "string", "description": "分类中文名" },
+                "aiApi": { "type": "string", "description": "该工具对应的 AI 原子接口名；无则 null" },
+                "entry": { "type": "string", "description": "工具页路径" }
+              }
+            }
+          },
+          "total": { "type": "number", "description": "匹配总数" },
+          "keyword": { "type": "string", "description": "用户检索关键词（留空时为 null）" },
+          "groups": { "type": "array", "description": "无关键词时按分类分组的计数；有关键词时为 null" }
+        }
+      },
+      "_meta": { "ui": { "componentPath": "components/tool-list-card/index", "pagePath": "/pages/home/home" } }
+    },
+
+    {
+      "name": "getToolDetail",
+      "description": "查看单个工具的元信息与接力页可消费参数（业务对象：工具详情卡片）。\n调用前置条件：已从 searchTools 返回的 items 中获取到具体的 toolId。\n【严禁场景】禁止在未获得有效 toolId 的情况下调用本接口，禁止从用户自然语言（如「那个压缩的」）推断或拼写 toolId，禁止使用示例值。上下文中无可用 toolId 时，应先调 searchTools。\n【后续动作】本接口返回 handoff 并出小程序卡片；用一句简短话术引导用户点击卡片进入工具详情页，页面内含使用说明与「去使用」入口。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "toolId": {
+            "type": "string",
+            "description": "工具唯一 ID（kebab-case，如 image-compress）。必须来自上游接口 searchTools 返回的 items[].toolId 字段原值。【禁止编造】禁止从用户自然语言推断、翻译或改写，禁止使用文档示例值。上下文中无可用 toolId 时应先调 searchTools。"
+          }
+        },
+        "required": ["toolId"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "toolId": { "type": "string", "description": "工具唯一 ID" },
+          "name": { "type": "string", "description": "工具名称" },
+          "desc": { "type": "string", "description": "一句话功能简介" },
+          "category": { "type": "string", "description": "分类 ID" },
+          "categoryName": { "type": "string", "description": "分类中文名" },
+          "keywords": { "type": "array", "items": { "type": "string" }, "description": "召回关键词" },
+          "fr": { "type": "string", "description": "对应功能需求编号（如 FR-IMG-01）" },
+          "engine": { "type": "string", "description": "执行引擎：client|server|hybrid" },
+          "status": { "type": "string", "description": "上架状态：online|beta" },
+          "aiApi": { "type": "string", "description": "对应 AI 原子接口名；无则 null" },
+          "params": { "type": "object", "description": "工具默认参数（接力页可消费预置）" },
+          "entry": { "type": "string", "description": "工具页路径" }
+        }
+      },
+      "_meta": { "ui": { "componentPath": "components/tool-detail-card/index", "pagePath": "/pages/tool-detail/tool-detail" } }
+    },
+
+    {
+      "name": "startImageCompress",
+      "description": "准备图片压缩参数并出卡接力（业务对象：任务卡片，接力页=图片压缩）。\n调用前置条件：无（用户明确表达压缩图片意图即可调用；参数一律允许缺省用默认值）。\n【严禁场景】① 原子接口无法访问用户相册，禁止传入任何文件路径、图片 ID 或「已选图片」之类不存在的数据；② 数值必须来自用户原话，用户没提的参数不要传（用默认值），禁止猜测；③ targetKB 越界（>5120 或 <20）时接口会夹取，禁止用相同越界值重试。\n【后续动作】返回 handoff.query（toolId/orderId/targetKB/maxSide）+ payload 预置参数；用一句简短话术引导用户点击卡片进入压缩页，选图、批量与压缩执行均在页面内完成。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "targetKB": {
+            "type": "number",
+            "description": "（选填）目标体积，单位 KB。取值范围 20–5120，默认 200。仅当用户明确说了目标大小时填写，且必须换算为 KB 数字（如「200KB 以内」→200、「1MB 左右」→1024）。用户未提时不要传本字段（系统默认 200）。【禁止编造】禁止传用户没说的目标值。"
+          },
+          "maxSide": {
+            "type": "number",
+            "description": "（选填）输出最长边限制，单位 px。0=不限制（默认）；取值范围 100–8192。仅当用户明确说「限边长/缩到 XXXX 像素」时填写。用户未提时不要传（系统默认 0 不变）。【禁止编造】"
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "toolId": { "type": "string", "description": "固定 image-compress" },
+          "orderId": { "type": "string", "description": "本次 AI 接力会话 ID（对话侧生成，接力页用于找回参数）" },
+          "params": { "type": "object", "description": "归一化后的参数 {targetKB, maxSide, format}，均已夹取到合法范围" },
+          "pagePath": { "type": "string", "description": "接力页路径" },
+          "needsFileSelection": { "type": "boolean", "description": "恒为 true：选图动作发生在接力页内" }
+        }
+      },
+      "_meta": { "ui": { "componentPath": "components/task-card/index", "pagePath": "/packageImage/pages/compress/index" } }
+    },
+
+    {
+      "name": "startImageCrop",
+      "description": "准备图片裁剪参数并出卡接力（业务对象：任务卡片，接力页=图片裁剪）。\n调用前置条件：无；ratio 允许缺省（默认 free 自由裁剪）。\n【严禁场景】① 禁止传入文件路径（选图在接力页内）；② ratio 必须来自用户原话且只能取英文枚举值，用户没提比例时不要传（禁止猜一个比例）；③ 传入非法值会被回落为 free，禁止用同一非法值重试。\n【后续动作】返回 handoff.query（toolId/orderId/ratio）+ payload；引导用户点击卡片进入裁剪页，选图与框选裁剪均在页内完成。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ratio": {
+            "type": "string",
+            "description": "（选填）裁剪比例。仅允许：'free'（自由，默认）/ '1:1'（正方形）/ '4:3' / '3:4' / '16:9' / '9:16'（竖屏）/ 'original'（原图）。【仅当用户明确说了比例时才传】用户说「正方形/1比1」→'1:1'，「竖屏」→'9:16'；未提比例时不要传本字段（系统默认 'free'）。【禁止编造】禁止使用中文 label 或列表外的自造比例。",
+            "enum": ["free", "1:1", "4:3", "3:4", "16:9", "9:16", "original"]
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "toolId": { "type": "string", "description": "固定 image-crop" },
+          "orderId": { "type": "string", "description": "本次 AI 接力会话 ID" },
+          "params": { "type": "object", "description": "归一化后的参数 {ratio}（必为枚举内英文值）" },
+          "pagePath": { "type": "string", "description": "接力页路径" },
+          "needsFileSelection": { "type": "boolean", "description": "恒为 true" }
+        }
+      },
+      "_meta": { "ui": { "componentPath": "components/task-card/index", "pagePath": "/packageImage/pages/crop/index" } }
+    },
+
+    {
+      "name": "addWatermark",
+      "description": "准备批量水印参数并出卡接力（业务对象：任务卡片，接力页=批量水印）。\n调用前置条件：无；text / position 均允许缺省。\n【严禁场景】① 禁止传入图片文件或 logo 文件（选图在接力页内）；② text 必须是用户原话要加的水印文字，用户没给文字时不要传（接力页内输入），禁止编造「版权所有」之类占位文案；③ position 只能取英文九宫格枚举，非法值回落 br 且禁止重试。\n【后续动作】返回 handoff.query（toolId/orderId/text/position）+ payload；引导用户点击卡片进入水印页，选图、调样式与批量执行均在页内完成。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "（选填）水印文字内容，≤60 字（超长会被截断）。取值来源：用户原话（如「不加水印」则不应调用本接口；说「水印写 XXX」时填 XXX）。用户没给具体文字时不要传本字段（留待页内输入）。【禁止编造】禁止替用户拟文案。"
+          },
+          "position": {
+            "type": "string",
+            "description": "（选填）水印位置，九宫格英文枚举：'tl'/'tm'/'tr'/'ml'/'mc'/'mr'/'bl'/'bm'/'br'（默认 br 右下角）。【仅当用户明确说了位置时才传】「左上」→'tl'，「居中」→'mc'；未提时不要传（系统默认 'br'）。【禁止编造】禁止列表外的值或中文方位词。",
+            "enum": ["tl", "tm", "tr", "ml", "mc", "mr", "bl", "bm", "br"]
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "toolId": { "type": "string", "description": "固定 image-watermark" },
+          "orderId": { "type": "string", "description": "本次 AI 接力会话 ID" },
+          "params": { "type": "object", "description": "归一化后的参数 {type:'text', text, position}" },
+          "pagePath": { "type": "string", "description": "接力页路径" },
+          "needsFileSelection": { "type": "boolean", "description": "恒为 true" }
+        }
+      },
+      "_meta": { "ui": { "componentPath": "components/task-card/index", "pagePath": "/packageImage/pages/watermark/index" } }
+    },
+
+    {
+      "name": "startVideoCompress",
+      "description": "准备视频压缩参数并出卡接力（业务对象：任务卡片，接力页=视频压缩，云端异步任务）。\n调用前置条件：无；参数允许缺省用默认值。\n【严禁场景】① 原子接口无法访问用户相册/视频，禁止传任何视频路径或 fileId；② targetMB 取值范围 5–200MB（源文件上限 200MB、时长 ≤600s 由接力页校验），用户没提目标体积时不要传（默认 20MB）；③ resolution 只能取英文枚举。用户要的目标 >200MB 时应直接告知不支持，禁止调本接口凑数。\n【后续动作】返回 handoff.query（toolId/orderId/targetMB/resolution）+ payload；引导用户点击卡片进入压缩页选视频并发起上传（游客会在页内自动静默登录，禁止在对话侧要求用户授权）。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "targetMB": {
+            "type": "number",
+            "description": "（选填）目标体积，单位 MB。取值范围 5–200，默认 20。仅当用户明确说了目标大小时填写（「压到 20M」→20）。用户未提时不要传（系统默认 20）。【禁止编造】"
+          },
+          "resolution": {
+            "type": "string",
+            "description": "（选填）输出分辨率档位。仅允许：'source'（保持原样）/ '1080p' / '720p'（默认）/ '480p' / '360p'。【仅当用户明确说了清晰度/分辨率时才传】「标一点/省体积」→'480p'，「别降画质」→'source'；未提时不要传本字段（系统默认 '720p'）。【禁止编造】禁止列表外的写法（如 'HD'、'高清'）。",
+            "enum": ["source", "1080p", "720p", "480p", "360p"]
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "toolId": { "type": "string", "description": "固定 video-compress" },
+          "orderId": { "type": "string", "description": "本次 AI 接力会话 ID（真实后端 taskId 由接力页创建任务后产生）" },
+          "params": { "type": "object", "description": "归一化后的参数 {mode:'target', targetMB, resolution}" },
+          "pagePath": { "type": "string", "description": "接力页路径" },
+          "needsFileSelection": { "type": "boolean", "description": "恒为 true" },
+          "cloudTask": { "type": "boolean", "description": "恒为 true：走后端 ffmpeg 异步任务" }
+        }
+      },
+      "_meta": { "ui": { "componentPath": "components/task-card/index", "pagePath": "/packageVideo/pages/compress/index" } }
+    },
+
+    {
+      "name": "videoToGif",
+      "description": "准备视频转 GIF 参数并出卡接力（业务对象：任务卡片，接力页=视频转 GIF，云端任务）。\n调用前置条件：无；时间段与帧率允许缺省（默认 0–5s、12fps）。\n【严禁场景】① 禁止传视频文件（选择在接力页内）；② start/end 单位是秒，必须来自用户原话的时间点（「第 3 秒到第 10 秒」→3/10），未提时间段时不要传（默认取开头 5 秒）；③ 单段时长上限 15s，越界会被修正，禁止用同一越界值重试；④ fps 取值 5–25。\n【后续动作】返回 handoff.query（toolId/orderId/start/end/fps）+ payload；引导用户点击卡片进入 GIF 页选视频并确认时间段后转换。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "number",
+            "description": "（选填）起始时间点，单位秒。范围 0–600，默认 0。仅当用户明确了起点时传。【禁止编造】用户未提时不要传（系统默认从 0 开始）。"
+          },
+          "end": {
+            "type": "number",
+            "description": "（选填）结束时间点，单位秒。必须 > start 且 end-start ≤ 15（FR-VID-04 上限，越界自动修正为 start+15）。默认 start+5。仅当用户明确了终点时传。【禁止编造】"
+          },
+          "fps": {
+            "type": "number",
+            "description": "（选填）帧率。取值范围 5–25，默认 12。仅当用户明确说了帧率/流畅度档位时传。用户未提时不要传（系统默认 12）。【禁止编造】"
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "toolId": { "type": "string", "description": "固定 video-gif" },
+          "orderId": { "type": "string", "description": "本次 AI 接力会话 ID" },
+          "params": { "type": "object", "description": "归一化后的参数 {start, end, fps, width:480, loop:0}" },
+          "pagePath": { "type": "string", "description": "接力页路径" },
+          "needsFileSelection": { "type": "boolean", "description": "恒为 true" },
+          "cloudTask": { "type": "boolean", "description": "恒为 true" }
+        }
+      },
+      "_meta": { "ui": { "componentPath": "components/task-card/index", "pagePath": "/packageVideo/pages/gif/index" } }
+    },
+
+    {
+      "name": "extractFrames",
+      "description": "准备视频抽帧/封面参数并出卡接力（业务对象：任务卡片，接力页=提取抽帧，云端任务）。\n调用前置条件：无；count 允许缺省（默认均匀抽 6 帧）。\n【严禁场景】① 禁止传视频文件（选择在接力页内）；② count 取值 1–30，必须来自用户原话（「抽 9 张」→9），未提数量时不要传（默认 6），禁止编造；③ 越界会被夹取，禁止同值重试。\n【后续动作】返回 handoff.query（toolId/orderId/count）+ payload；引导用户点击卡片进入抽帧页选视频后执行，结果帧可在页内继续走图片压缩（工具串联）。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "description": "（选填）均匀抽帧数量。取值范围 1–30，默认 6。仅当用户明确说了张数/帧数时传。用户未提时不要传本字段（系统默认 6）。【禁止编造】"
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "toolId": { "type": "string", "description": "固定 video-frames" },
+          "orderId": { "type": "string", "description": "本次 AI 接力会话 ID" },
+          "params": { "type": "object", "description": "归一化后的参数 {mode:'count', count, format:'jpg', quality:90}" },
+          "pagePath": { "type": "string", "description": "接力页路径" },
+          "needsFileSelection": { "type": "boolean", "description": "恒为 true" },
+          "cloudTask": { "type": "boolean", "description": "恒为 true" }
+        }
+      },
+      "_meta": { "ui": { "componentPath": "components/task-card/index", "pagePath": "/packageVideo/pages/frames/index" } }
+    },
+
+    {
+      "name": "generateQrcode",
+      "description": "准备二维码生成内容并出卡接力（业务对象：任务卡片，接力页=二维码生成）。\n调用前置条件：用户明确给出了要编码的内容（网址/文本/WiFi 名等）。\n【严禁场景】① content 必填且必须来自用户原话，用户没给内容时禁止调用（应先追问），禁止编造示例网址/文案；② content ≤1000 字符，超长禁止截断后调用；③ type 只能取英文枚举，用户只给一段文字而无「网址」语境时按 'text'。\n【后续动作】返回 handoff.query（toolId/content/type）+ payload 预置内容；引导用户点击卡片进入生成页确认样式后出图保存，生成与自检回读均在页内完成。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "（必填）要编码生成二维码的内容，≤1000 字符。取值来源：用户原话（「把 www.a.com 做成二维码」→www.a.com）。【禁止编造】用户未给出内容时禁止调用本接口凑示例值，应先追问。"
+          },
+          "type": {
+            "type": "string",
+            "description": "（选填）内容类型。仅允许：'text'（默认）/ 'url' / 'wifi' / 'vcard' / 'sms' / 'tel' / 'geo'。仅当用户明确了类型时传；'url' 类型会校验 scheme（http:// 等），不通过自动按 'text' 处理。未提时不要传（系统默认 'text'）。【禁止编造】",
+            "enum": ["text", "url", "wifi", "vcard", "sms", "tel", "geo"]
+          }
+        },
+        "required": ["content"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "toolId": { "type": "string", "description": "固定 qr-generate" },
+          "params": { "type": "object", "description": "归一化后的参数 {type, contentLength}" },
+          "pagePath": { "type": "string", "description": "接力页路径" },
+          "presetContent": { "type": "boolean", "description": "恒为 true：内容已预置进 payload，页内可秒出预览" }
+        }
+      },
+      "_meta": { "ui": { "componentPath": "components/task-card/index", "pagePath": "/packageQr/pages/generate/index" } }
+    },
+
+    {
+      "name": "formatJson",
+      "description": "在对话内直接完成 JSON 格式化 / 压缩 / 校验并返回结果文本（纯计算，业务对象：结果文本，不出卡、不 handoff）。\n调用前置条件：用户提供了待处理的 JSON 文本（对话正文或明确粘贴）。\n【严禁场景】① content 必填且必须来自用户提供的原文，禁止编造或自行补全 JSON；② 解析失败时本接口返回 isError:true 并带「行:列」错误定位，请把位置转告用户请其核对，禁止替用户改文案后重试、禁止猜测缺少的符号重复调用；③ 本接口不做文件读取，用户给的是 JSON 文件时引导其粘贴文本。\n【后续动作】把结果直接回复用户即可；结果超长会截断并提示到小程序 JSON 格式化页获取完整版。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "（必填）待格式化的 JSON 文本，取值来源：用户提供的原文。【禁止编造】禁止替用户构造 JSON。"
+          },
+          "indent": {
+            "type": "string",
+            "description": "（选填）缩进。仅允许：'2'（默认）/ '4' / 'tab'。仅当用户明确指定时传，未提时不要传（默认 2 空格）。【禁止编造】",
+            "enum": ["2", "4", "tab"]
+          },
+          "sortKeys": {
+            "type": "boolean",
+            "description": "（选填）键名字母排序，默认 false。仅当用户明确说「按键排序」时传 true。"
+          },
+          "mode": {
+            "type": "string",
+            "description": "（选填）处理模式。仅允许：'pretty'（美化，默认）/ 'minify'（压缩）/ 'validate'（只校验）。仅当用户明确说了「压缩/校验」时传对应值，未提时不要传。【禁止编造】",
+            "enum": ["pretty", "minify", "validate"]
+          }
+        },
+        "required": ["content"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "valid": { "type": "boolean", "description": "JSON 是否解析成功" },
+          "mode": { "type": "string", "description": "实际执行模式" },
+          "formatted": { "type": "string", "description": "格式化结果（超长时为前 500 字符摘要，全文在 content 文本与 _meta 中）" },
+          "inputLength": { "type": "number", "description": "输入字符数" },
+          "outputLength": { "type": "number", "description": "输出字符数" },
+          "truncated": { "type": "boolean", "description": "结果是否截断" },
+          "error": { "type": "object", "description": "解析失败时的定位 {line, col, message}（isError 分支）" }
+        }
+      },
+      "_meta": { "ui": { "componentPath": "components/calc-result-card/index" } }
+    },
+
+    {
+      "name": "convertUnit",
+      "description": "在对话内直接完成单位换算并返回结果（纯计算，业务对象：结果文本，不出卡、不 handoff）。\n调用前置条件：用户给出了数值与「从什么单位到什么单位」，三者缺一不可。\n【严禁场景】① value/from/to 必须全部来自用户原话，禁止猜测目标单位（用户只说「5 公里」没说到哪换算时先追问）；② from/to 只能取支持枚举内的英文单位 key（分组：length/weight/area/volume/speed/time/data/power/pressure 与温度 c/f/k/r），禁止中文单位或列表外写法；③ 温度与非温度单位不可互转；单位不支持时直接回复「该能力暂不支持」，禁止换近义词单位反复重试。\n【后续动作】把「N from = M to」结论用一句话告知用户即可。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "description": "（必填）待换算数值，取值来源：用户原话（「5 公里」→5）。【禁止编造】"
+          },
+          "from": {
+            "type": "string",
+            "description": "（必填）源单位，英文 key、大小写不敏感。分组枚举——length: mm/cm/m/km/in/ft/yd/mi/nmi；weight: mg/g/kg/t/oz/lb；area: mm2/cm2/m2/are/ha/km2/acre/ft2/yd2/in2；volume: ml/cl/dl/l/hl/m3/cm3/dm3/gal/qt/pt/cup/floz/ft3/in3；speed: ms/kmh/mph/kn/mach；time: ms/s/min/h/d/w/month/year；data: b/bit/kb/mb/gb/tb/pb/kib/mib/gib/tib/pib；power: w/kw/mw/gw/hp/kcalh；pressure: pa/kpa/mpa/gpa/bar/mbar/atm/psi/mmhg/inhg；temperature: c/f/k/r。用户说中文单位时由 Agent 映射为对应英文 key（「公斤」→'kg'、「英里」→'mi'）。【禁止编造】禁止列表外写法。"
+          },
+          "to": {
+            "type": "string",
+            "description": "（必填）目标单位，枚举同 from，且必须与 from 同分组（温度为独立非线性组）。取值来源：用户原话；用户没说换算到哪一单位时禁止猜测，先追问。【禁止编造】"
+          },
+          "precision": {
+            "type": "number",
+            "description": "（选填）结果有效数字，0–10，默认 6。仅当用户明确要求精度时传。"
+          }
+        },
+        "required": ["value", "from", "to"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "value": { "type": "number", "description": "输入数值" },
+          "from": { "type": "string", "description": "归一化后的源单位 key" },
+          "to": { "type": "string", "description": "归一化后的目标单位 key" },
+          "result": { "type": "number", "description": "换算结果（按 precision 位有效数字）" },
+          "group": { "type": "string", "description": "所属分组 ID" },
+          "formula": { "type": "string", "description": "换算公式说明" }
+        }
+      },
+      "_meta": { "ui": { "componentPath": "components/calc-result-card/index" } }
+    },
+
+    {
+      "name": "calcDateRange",
+      "description": "在对话内直接计算两个日期的间隔并返回结果（纯计算，业务对象：结果文本，不出卡、不 handoff）。\n调用前置条件：用户给出了起始与结束两个日期；相对说法（「昨天到下周五」「3 月和 10 月差几天」）必须由 Agent 先解析成具体日期再调用。\n【严禁场景】① start/end 必填且来自用户原话解析结果，禁止用「今天」占位凑数（用户只给一个日期时先追问另一端）；② 格式 YYYY-MM-DD，不存在的日期（如 2026-02-30）接口返回 isError:true，应把原因转告用户，禁止自行改成相近日期重试；③ 工作日/节假日/倒数日等模式本接口不支持，涉及时在页内或如实回复不支持。\n【后续动作】把「相差 X 天（约 X 年 X 月 X 天，X 周零 X 天，含首尾 Y 天）」用一句话告知用户。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string",
+            "description": "（必填）起始日期，格式 YYYY-MM-DD（也接受 YYYY/MM/DD、YYYYMMDD）。取值来源：用户原话；相对日期须先按当前日期解析为具体值。【禁止编造】"
+          },
+          "end": {
+            "type": "string",
+            "description": "（必填）结束日期，格式 YYYY-MM-DD。取值来源同 start。end 早于 start 时返回间隔绝对值并标注方向。【禁止编造】"
+          }
+        },
+        "required": ["start", "end"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "start": { "type": "string", "description": "起始日期" },
+          "end": { "type": "string", "description": "结束日期" },
+          "days": { "type": "number", "description": "间隔天数（后 - 前，恒正）" },
+          "inclusiveDays": { "type": "number", "description": "含首尾两天共计天数" },
+          "direction": { "type": "string", "description": "forward（end≥start）/ backward（end<start）" },
+          "breakdown": { "type": "object", "description": "X年X月X天 分解 {years, months, days, text}" },
+          "weeks": { "type": "object", "description": "整周与余数 {whole, rest}" },
+          "meta": { "type": "object", "description": "附加信息：首末星期、是否跨闰年、月差" }
+        }
+      },
+      "_meta": { "ui": { "componentPath": "components/calc-result-card/index" } }
+    },
+
+    {
+      "name": "listHistory",
+      "description": "查看用户最近使用 / 收藏的工具并出卡接力（业务对象：工具结果卡片，接力页=我的）。\n调用前置条件：无。用户「我最近用了啥 / 我的收藏 / 上次那个工具」等查看意图时调用。\n【严禁场景】① scope 只能取英文枚举 recent/favorites/all（默认 all）；② 返回内容全部来自本地存储真实记录，无记录时如实返回空并引导挑选，禁止编造「上次用过压缩」之类的历史；③ 批量下载/清空历史等操作本接口不提供，历史管理在接力页内完成。\n【后续动作】返回 handoff（query 为空，scope 走 payload）；用一句简短话术引导用户点击卡片进入「我的」页面查看与管理。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "type": "string",
+            "description": "（选填）查看范围。仅允许：'recent'（最近使用）/ 'favorites'（收藏）/ 'all'（两者都要，默认）。仅当用户明确说了范围时传对应值；未提时不要传（系统默认 'all'）。【禁止编造】",
+            "enum": ["recent", "favorites", "all"]
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "scope": { "type": "string", "description": "实际查询范围" },
+          "recents": { "type": "array", "description": "最近使用列表 [{toolId,name,desc,category,at}]（≤20 条）" },
+          "favorites": { "type": "array", "description": "收藏列表（同结构，按收藏时间倒序）" },
+          "total": { "type": "number", "description": "记录总条数" }
+        }
+      },
+      "_meta": { "ui": { "componentPath": "components/tool-list-card/index", "pagePath": "/pages/mine/mine" } }
+    }
+  ],
+  "components": [
+    { "path": "components/tool-list-card/index", "relatedPage": "/pages/home/home" },
+    { "path": "components/tool-detail-card/index", "relatedPage": "/pages/tool-detail/tool-detail" },
+    { "path": "components/task-card/index", "relatedPage": "/packageImage/pages/compress/index" },
+    { "path": "components/calc-result-card/index", "relatedPage": "/packageText/pages/json/index" }
+  ]
+}

@@ -1,0 +1,83 @@
+<tool-shell toolId="{{toolId}}" title="{{tool.name || '证件照'}}" desc="{{tool.desc}}" tips="{{['本页不提供自动人脸检测，取景为「手动对齐」','底色替换按边界取样 + 色距阈值，只改与边框连通的背景','输出尺寸严格按规格表（默认 300dpi）','复杂背景（花纹/渐变）可能替换不完全，建议纯色背景墙']}}">
+  <view class="stack">
+
+    <view class="card">
+      <view class="card-title">选择照片</view>
+      <media-picker mediaType="image" multiple="{{false}}" maxMB="{{60}}" bind:change="onFilesChange" bind:error="onFilesError" />
+    </view>
+
+    <view wx:if="{{file}}" class="card crop-card">
+      <view class="row-between">
+        <view class="card-title no-mb">手动对齐</view>
+        <text class="tag" bindtap="onReset">复位</text>
+      </view>
+      <view
+        id="id-stage"
+        class="stage"
+        bindtouchstart="onTouchStart"
+        bindtouchmove="onTouchMove"
+        bindtouchend="onTouchEnd"
+        bindtouchcancel="onTouchEnd"
+      >
+        <image
+          class="stage-img"
+          src="{{file.path}}"
+          mode="scaleToFill"
+          style="left:{{disp.left}}px;top:{{disp.top}}px;width:{{disp.elW}}px;height:{{disp.elH}}px;transform:{{disp.transform}};"
+        />
+        <view class="mask mask-top" style="height:{{masks.top}}px"></view>
+        <view class="mask mask-bottom" style="height:{{masks.bottom}}px"></view>
+        <view class="mask mask-left" style="width:{{masks.left}}px;height:{{masks.band}}px;top:{{frame.y}}px"></view>
+        <view class="mask mask-right" style="width:{{masks.right}}px;height:{{masks.band}}px;top:{{frame.y}}px"></view>
+        <view class="frame" style="left:{{frame.x}}px;top:{{frame.y}}px;width:{{frame.w}}px;height:{{frame.h}}px">
+          <view class="guide head-top" style="top:12%"></view>
+          <view class="guide chin" style="top:32%"></view>
+          <view class="guide center"></view>
+        </view>
+        <view class="stage-tag">拖动 / 双指缩放对齐头部</view>
+      </view>
+      <view class="row-between meta-row">
+        <text class="t-sm t-mono t-brand">{{sizeText}}</text>
+        <text class="t-sm t-mono t-muted">{{mmText}}</text>
+      </view>
+      <view class="note-info t-sm">本页无人脸检测能力，取景需要你手动把头部对齐辅助线（头顶线、下巴线、中线）。</view>
+    </view>
+
+    <view class="card">
+      <view class="row-between">
+        <view class="card-title no-mb">规格与底色</view>
+        <text class="tag" bindtap="onSample">示例</text>
+      </view>
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+      <view wx:if="{{hintBg}}" class="note-warn t-sm">{{hintBg}}</view>
+    </view>
+
+    <view wx:if="{{error}}" class="card err-card">
+      <view class="row">
+        <grid-icon name="alert" size="30" color="#e5484d" />
+        <text class="t-md err-text">{{error.message}}</text>
+      </view>
+      <text class="t-sm t-dim">错误码 {{error.code}}</text>
+    </view>
+
+    <button class="btn btn-primary btn-block" disabled="{{busy || !file}}" bindtap="onRun">
+      <view wx:if="{{busy}}" class="spinner"></view>
+      <text>{{busy ? '生成中…' : '生成证件照'}}</text>
+    </button>
+
+    <block wx:if="{{result}}">
+      <view class="card fade-up">
+        <view class="card-title">证件照结果</view>
+        <image src="{{outPath}}" mode="widthFix" class="out-img" bindtap="onPreview" />
+        <view class="kv-row"><text class="kv-key">像素尺寸</text><text class="kv-val t-mono">{{sizeText}}</text></view>
+        <view class="kv-row"><text class="kv-key">打印尺寸</text><text class="kv-val t-mono">{{mmText}}</text></view>
+        <view class="kv-row"><text class="kv-key">替换像素</text><text class="kv-val t-mono">{{replaced}} px</text></view>
+        <view class="kv-row"><text class="kv-key">文件大小</text><text class="kv-val t-mono">{{result.meta}}</text></view>
+        <slider-compare before="{{file.path}}" after="{{outPath}}" />
+      </view>
+      <result-panel kind="image" images="{{result.images}}" meta="{{result.meta}}" showSave="{{true}}" bind:save="onSave" bind:action="onResultAction" />
+    </block>
+
+    <canvas type="2d" id="tb-offscreen" class="offscreen"></canvas>
+  </view>
+</tool-shell>

@@ -1,0 +1,94 @@
+<view class="pf stack">
+  <block wx:for="{{rows}}" wx:for-item="row" wx:for-index="i" wx:key="key">
+    <!-- slider：显示当前值+单位，松手才触发重算 -->
+    <view wx:if="{{row.type === 'slider'}}" class="field">
+      <view class="field-label">
+        <text>{{row.label}}</text>
+        <text class="t-mono pf-val">{{row.display}}</text>
+      </view>
+      <slider class="pf-slider" min="{{row.min}}" max="{{row.max}}" step="{{row.step}}" value="{{row.value}}" data-i="{{i}}" activeColor="{{brand}}" blockColor="{{brand}}" block-size="20" disabled="{{disabled}}" bindchanging="onSliderLive" bindchange="onSliderChange" />
+      <view wx:if="{{row.hint}}" class="pf-hint">{{row.hint}}</view>
+    </view>
+
+    <!-- number：失焦即校验范围，越界自动夹取 -->
+    <view wx:elif="{{row.type === 'number'}}" class="field">
+      <view class="field-label">
+        <text>{{row.label}}</text>
+        <text wx:if="{{row.hint}}" class="t-dim pf-range">{{row.min}}–{{row.max}}{{row.unit}}</text>
+      </view>
+      <view class="row">
+        <input class="input grow" type="digit" value="{{row.value}}" placeholder="{{row.placeholder}}" data-i="{{i}}" disabled="{{disabled}}" bindinput="onNumberInput" bindblur="onNumberBlur" />
+        <text wx:if="{{row.unit}}" class="pf-unit">{{row.unit}}</text>
+      </view>
+    </view>
+
+    <!-- segment：≤5 个选项的分段器 -->
+    <view wx:elif="{{row.type === 'segment'}}" class="field">
+      <view class="field-label"><text>{{row.label}}</text></view>
+      <view class="pf-seg">
+        <view wx:for="{{row.options}}" wx:for-item="op" wx:for-index="j" wx:key="value"
+              class="pf-seg-item {{row.value === op.value || '' + row.value === '' + op.value ? 'on' : ''}}"
+              hover-class="none" data-i="{{i}}" data-j="{{j}}" bindtap="onPickOption">{{op.label}}</view>
+      </view>
+      <view wx:if="{{row.hint}}" class="pf-hint">{{row.hint}}</view>
+    </view>
+
+    <!-- chip：预设标签，可取消选中回到自定义 -->
+    <view wx:elif="{{row.type === 'chip'}}" class="field">
+      <view class="field-label"><text>{{row.label}}</text></view>
+      <view class="row wrap pf-chips">
+        <view wx:for="{{row.options}}" wx:for-item="op" wx:for-index="j" wx:key="value"
+              class="tag {{'' + row.value === '' + op.value ? 'tag-active' : ''}}"
+              hover-class="none" data-i="{{i}}" data-j="{{j}}" bindtap="onPickOption">{{op.label}}</view>
+      </view>
+      <view wx:if="{{row.hint}}" class="pf-hint">{{row.hint}}</view>
+    </view>
+
+    <!-- switch：关闭态由页面用 showIf 隐藏依赖子参数 -->
+    <view wx:elif="{{row.type === 'switch'}}" class="field row-between pf-switch">
+      <view class="grow">
+        <view class="pf-switch-label">{{row.label}}</view>
+        <view wx:if="{{row.hint}}" class="pf-hint">{{row.hint}}</view>
+      </view>
+      <switch checked="{{row.checked}}" data-i="{{i}}" disabled="{{disabled}}" color="{{brand}}" bindchange="onSwitch" />
+    </view>
+
+    <!-- color：HEX 输入 + 常用色板 -->
+    <view wx:elif="{{row.type === 'color'}}" class="field">
+      <view class="field-label"><text>{{row.label}}</text></view>
+      <view class="row wrap pf-swatches">
+        <view wx:for="{{row.swatches}}" wx:for-item="sw" wx:key="hex" class="pf-swatch {{sw.on ? 'on' : ''}}"
+              style="background:{{sw.hex}}" hover-class="none" data-i="{{i}}" data-hex="{{sw.hex}}" bindtap="onColorTap" />
+        <input class="input pf-hex" value="{{row.value}}" data-i="{{i}}" maxlength="9" bindblur="onColorInput" />
+      </view>
+    </view>
+
+    <!-- select：>5 个选项用原生选择器 -->
+    <view wx:elif="{{row.type === 'select'}}" class="field">
+      <view class="field-label"><text>{{row.label}}</text></view>
+      <picker mode="selector" range="{{row.labels}}" value="{{row.selIndex}}" data-i="{{i}}" disabled="{{disabled}}" bindchange="onSelectChange">
+        <view class="pf-select">
+          <text class="grow ellipsis">{{row.selected ? row.selected.label : '请选择'}}</text>
+          <grid-icon name="chevron" size="28" color="{{brand}}" />
+        </view>
+      </picker>
+      <view wx:if="{{row.hint}}" class="pf-hint">{{row.hint}}</view>
+    </view>
+
+    <!-- textarea：正文输入 + 粘贴/清空 + 字数（FR-G-03） -->
+    <view wx:else class="field">
+      <view class="field-label">
+        <text>{{row.label}}</text>
+        <view class="row pf-ta-tools">
+          <text class="pf-tool" hover-class="none" data-i="{{i}}" bindtap="onPaste">粘贴</text>
+          <text class="pf-tool" hover-class="none" data-i="{{i}}" bindtap="onClear">清空</text>
+        </view>
+      </view>
+      <textarea class="textarea" value="{{row.value}}" placeholder="{{row.placeholder}}" data-i="{{i}}" disabled="{{disabled}}" bindinput="onTextarea" auto-height="{{false}}" />
+      <view class="row-between pf-ta-foot">
+        <text class="pf-hint">{{row.hint}}</text>
+        <text class="t-sm t-dim t-mono">{{row.value ? row.value.length : 0}} 字</text>
+      </view>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,48 @@
+.offscreen {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+  width: 300px;
+  height: 300px;
+}
+
+.card-title.no-mb { margin-bottom: 0; }
+
+.media-card {
+  background: var(--stage);
+  padding: var(--sp-3);
+}
+
+.preview {
+  width: 100%;
+  height: 460rpx;
+  border-radius: var(--r-md);
+}
+
+.flat-card { background: var(--surface-2); border-radius: var(--r-md); }
+.center-card { display: flex; align-items: center; justify-content: center; gap: var(--sp-2); height: 140rpx; }
+
+.err-card { border: 2rpx solid rgba(229, 72, 77, .35); }
+.err-text { color: var(--err); }
+
+.note-info {
+  border-radius: var(--r-md);
+  padding: var(--sp-2);
+  font-size: 24rpx;
+  line-height: 1.5;
+  margin-top: var(--sp-2);
+  background: var(--surface-2);
+  color: var(--text-2);
+}
+
+.kv-list { margin-top: var(--sp-2); }
+.est-row { margin-top: var(--sp-2); }
+
+.gps-box {
+  margin-top: var(--sp-3);
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  padding: var(--sp-2) var(--sp-3);
+}
+
+.tag { height: 56rpx; }

@@ -1,0 +1,16 @@
+/* 条形码生成页 —— 仅本页特有样式 */
+.bc-err {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  border-left: 8rpx solid var(--err);
+}
+.bc-spin { margin-right: var(--sp-2); }
+.bc-sample { margin: 0 var(--sp-2) var(--sp-2) 0; }
+.bc-canvas {
+  position: fixed;
+  left: -4000rpx;
+  top: -4000rpx;
+  width: 10rpx;
+  height: 10rpx;
+}

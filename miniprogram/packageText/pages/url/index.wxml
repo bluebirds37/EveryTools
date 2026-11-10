@@ -1,0 +1,72 @@
+<tool-shell toolId="text-url" title="URL 编解码" desc="链接转义解析与参数编辑" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <view class="field-label">
+        <text>{{values.scope === 'full' ? '输入（完整 URL）' : '输入（' + (values.dir === 'encode' ? '原文' : '已编码串') + '）'}}</text>
+        <text class="t-dim t-sm">{{input.length}} 字</text>
+      </view>
+      <textarea class="textarea" placeholder="例如 https://example.com/search?q=%E4%B8%AD%E6%96%87&page=2" value="{{input}}" bindinput="onInput" maxlength="-1" auto-height="{{false}}" />
+      <view class="row wrap input-actions">
+        <button class="btn btn-ghost btn-sm" bindtap="onPaste">粘贴</button>
+        <button class="btn btn-sm" bindtap="onClearInput">清空</button>
+        <button wx:if="{{values.scope === 'component'}}" class="btn btn-sm" bindtap="onSwap">交换方向</button>
+      </view>
+    </view>
+
+    <view class="card">
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <button class="btn btn-primary btn-block" bindtap="onRun" loading="{{busy}}" disabled="{{busy}}">{{values.scope === 'full' ? '解析' : (values.dir === 'encode' ? '编码' : '解码')}}</button>
+
+    <view wx:if="{{error}}" class="card err-bar">
+      <view class="err-msg">{{error.message}}</view>
+      <view class="t-dim t-sm err-code">{{error.code}}</view>
+    </view>
+
+    <view wx:if="{{parsed}}" class="card fade-up">
+      <view class="row-between">
+        <view class="card-title">query 参数（可编辑/增删，实时重建）</view>
+        <view class="tag" hover-class="none" bindtap="onAddParam">+ 参数</view>
+      </view>
+      <view wx:if="{{!parsed.params.length}}" class="t-sm t-muted">该链接没有 query 参数</view>
+      <view wx:for="{{parsed.params}}" wx:key="index" class="param-row">
+        <input class="input p-key" value="{{item[0]}}" placeholder="键" data-i="{{index}}" bindinput="onParamKey" />
+        <input class="input p-val" value="{{item[1]}}" placeholder="值" data-i="{{index}}" bindinput="onParamVal" />
+        <view class="p-del" hover-class="none" data-i="{{index}}" bindtap="onDelParam">×</view>
+      </view>
+    </view>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="text"
+      text="{{result.text}}"
+      meta="{{result.meta}}"
+      showCopy="{{true}}"
+      showShare="{{true}}"
+      bind:copy="onCopy"
+      bind:share="onShare"
+    />
+    <view wx:if="{{result && result.kv && parsed}}" class="card fade-up">
+      <view wx:for="{{result.kv}}" wx:key="key" class="kv-row">
+        <text class="kv-key">{{item.key}}</text>
+        <text class="kv-val t-mono">{{item.value}}</text>
+      </view>
+    </view>
+
+    <empty-state
+      wx:if="{{!result && !error}}"
+      icon="url"
+      title="等待输入"
+      desc="组件模式做百分号编解码；整链模式解析并编辑参数后重建"
+    />
+
+    <view class="card">
+      <view class="card-title">内置示例（一键填入）</view>
+      <view class="wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

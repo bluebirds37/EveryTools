@@ -1,0 +1,22 @@
+<view class="tlc">
+  <view class="tlc-head">
+    <text class="tlc-title">{{title}}</text>
+    <text class="tlc-count" wx:if="{{total}}">共 {{total}} 个</text>
+  </view>
+  <view class="tlc-list">
+    <view class="tlc-item" wx:for="{{items}}" wx:key="toolId" data-item="{{item}}" bindtap="onTapItem">
+      <view class="tlc-dot" style="background: {{item.accent || '#3B5BFE'}}"></view>
+      <view class="tlc-info">
+        <text class="tlc-name">{{item.name}}</text>
+        <text class="tlc-desc">{{item.desc}}</text>
+      </view>
+      <text class="tlc-cat">{{item.categoryName || item.category}}</text>
+    </view>
+  </view>
+  <view class="tlc-more" wx:if="{{total > items.length}}" bindtap="onTapMore">
+    <text>查看全部 {{total}} 个工具</text>
+  </view>
+  <view class="tlc-empty" wx:if="{{!items.length}}">
+    <text>暂无记录，去首页看看有什么工具吧</text>
+  </view>
+</view>

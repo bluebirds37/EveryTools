@@ -1,0 +1,31 @@
+/* 二维码生成页 —— 仅本页特有样式 */
+.gg-types { gap: var(--sp-2); }
+.gg-type {
+  min-height: 64rpx;
+  line-height: 1.4;
+  padding: 10rpx 26rpx;
+  height: auto;
+  border-radius: 999rpx;
+}
+.gg-logo { margin-top: var(--sp-3); }
+.gg-ratio { margin-top: var(--sp-2); }
+.gg-warn {
+  margin-top: var(--sp-1);
+  font-size: 24rpx;
+  color: var(--warn);
+}
+.gg-err {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  border-left: 8rpx solid var(--err);
+}
+.gg-spin { margin-right: var(--sp-2); }
+.gg-sample { margin: 0 var(--sp-2) var(--sp-2) 0; }
+.gg-canvas {
+  position: fixed;
+  left: -4000rpx;
+  top: -4000rpx;
+  width: 10rpx;
+  height: 10rpx;
+}

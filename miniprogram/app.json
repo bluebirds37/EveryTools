@@ -1,0 +1,158 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/category/category",
+    "pages/search/search",
+    "pages/mine/mine",
+    "pages/tool-detail/tool-detail"
+  ],
+  "subPackages": [
+    {
+      "root": "packageImage",
+      "name": "image",
+      "pages": [
+        "pages/compress/index",
+        "pages/crop/index",
+        "pages/convert/index",
+        "pages/stitch/index",
+        "pages/watermark/index",
+        "pages/cut/index",
+        "pages/idphoto/index",
+        "pages/info/index",
+        "pages/colorpick/index"
+      ]
+    },
+    {
+      "root": "packageVideo",
+      "name": "video",
+      "pages": [
+        "pages/compress/index",
+        "pages/clip/index",
+        "pages/gif/index",
+        "pages/frames/index",
+        "pages/info/index",
+        "pages/audio/index"
+      ]
+    },
+    {
+      "root": "packageQr",
+      "name": "qr",
+      "pages": [
+        "pages/generate/index",
+        "pages/decode/index",
+        "pages/barcode/index",
+        "pages/parse/index"
+      ]
+    },
+    {
+      "root": "packageText",
+      "name": "text",
+      "pages": [
+        "pages/json/index",
+        "pages/timestamp/index",
+        "pages/base64/index",
+        "pages/url/index",
+        "pages/hash/index",
+        "pages/uuid/index",
+        "pages/regex/index",
+        "pages/stats/index",
+        "pages/diff/index",
+        "pages/naming/index",
+        "pages/multiline/index",
+        "pages/radix/index",
+        "pages/case/index"
+      ]
+    },
+    {
+      "root": "packageCalc",
+      "name": "calc",
+      "pages": [
+        "pages/unit/index",
+        "pages/date/index",
+        "pages/loan/index",
+        "pages/tax/index",
+        "pages/discount/index",
+        "pages/percent/index",
+        "pages/random/index",
+        "pages/bmi/index",
+        "pages/compound/index",
+        "pages/calculator/index"
+      ]
+    },
+    {
+      "root": "packageLife",
+      "name": "life",
+      "pages": [
+        "pages/compass/index",
+        "pages/level/index",
+        "pages/timer/index",
+        "pages/nettest/index",
+        "pages/screen/index"
+      ]
+    },
+    {
+      "root": "packageDev",
+      "name": "dev",
+      "pages": [
+        "pages/http/index",
+        "pages/color/index",
+        "pages/jwt/index",
+        "pages/cron/index",
+        "pages/sql/index",
+        "pages/ua/index"
+      ]
+    },
+    {
+      "root": "skills",
+      "name": "toolbox-skill",
+      "pages": [],
+      "independent": true
+    }
+  ],
+  "preloadRule": {
+    "pages/home/home": {
+      "network": "all",
+      "packages": ["image"]
+    },
+    "pages/category/category": {
+      "network": "wifi",
+      "packages": ["text", "calc"]
+    }
+  },
+  "lazyCodeLoading": "requiredComponents",
+  "darkmode": true,
+  "themeLocation": "theme.json",
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "@navBg",
+    "navigationBarTitleText": "工具箱",
+    "navigationBarTextStyle": "@navTxt",
+    "backgroundColor": "@bg",
+    "backgroundColorTop": "@bg",
+    "backgroundColorBottom": "@bg"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "@tabOff",
+    "selectedColor": "@tabOn",
+    "backgroundColor": "@tabBg",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/home/home", "text": "工具" },
+      { "pagePath": "pages/category/category", "text": "分类" },
+      { "pagePath": "pages/mine/mine", "text": "我的" }
+    ]
+  },
+  "agent": {
+    "skills": [
+      {
+        "name": "toolbox",
+        "description": "通用工具箱：图片压缩/裁剪/水印、视频压缩/转GIF/抽帧、二维码生成与识别、JSON格式化、时间戳转换、单位换算、日期计算、房贷个税计算",
+        "path": "skills/toolbox-skill"
+      }
+    ],
+    "pageMetadata": "page-meta.json"
+  },
+  "requiredPrivateInfos": [],
+  "sitemapLocation": "sitemap.json"
+}

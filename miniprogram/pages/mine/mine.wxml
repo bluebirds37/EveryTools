@@ -1,0 +1,115 @@
+<view class="page mine">
+  <!-- 账号卡 -->
+  <view class="acc fade-up">
+    <view class="acc-avatar" style="background:{{avatarBg}};">
+      <text class="acc-avatar-text">{{avatarChar}}</text>
+    </view>
+    <view class="grow">
+      <view class="acc-row">
+        <view class="acc-state" style="background:{{avatarSoft}};">
+          <view class="acc-dot {{loggedIn ? 'acc-dot-on' : 'acc-dot-off'}}"></view>
+          <text class="acc-state-text">{{loggedIn ? '已静默登录' : '游客模式'}}</text>
+        </view>
+      </view>
+      <view class="acc-desc">{{stateDesc}}</view>
+    </view>
+    <view class="acc-count">
+      <view class="acc-count-num">{{favCount}}</view>
+      <view class="acc-count-label">收藏</view>
+    </view>
+  </view>
+
+  <!-- 我的收藏 -->
+  <view class="sec-head">
+    <view class="sec-title">我的收藏</view>
+    <view wx:if="{{favCount > 0}}" class="sec-tip">长按可取消收藏</view>
+  </view>
+  <view wx:if="{{favCount > 0}}" class="grid grid-4">
+    <view
+      wx:for="{{favorites}}"
+      wx:key="id"
+      class="fcard"
+      data-id="{{item.id}}"
+      hover-class="press"
+      bindtap="onToolTap"
+      bindlongpress="onToolLongPress"
+    >
+      <view class="fcard-icon" style="background:{{item.accentSoft}};">
+        <grid-icon name="{{item.icon}}" size="42" color="{{item.accent}}" />
+      </view>
+      <view class="fcard-name ellipsis">{{item.name}}</view>
+    </view>
+  </view>
+  <view wx:else class="fav-empty">
+    <empty-state icon="star" title="还没有收藏工具" desc="在分类页挑一个常用工具，长按卡片即可收藏" />
+    <view class="btn btn-ghost btn-sm fav-empty-btn" hover-class="press" bindtap="goCategory">
+      <text>去分类看看</text>
+    </view>
+  </view>
+
+  <!-- 最近使用 -->
+  <block wx:if="{{recentCount > 0}}">
+    <view class="sec-head">
+      <view class="sec-title">最近使用</view>
+      <view class="sec-tip">{{recentCount}} 个</view>
+    </view>
+    <view class="list fade-up">
+      <view
+        wx:for="{{recents}}"
+        wx:key="id"
+        class="list-row"
+        data-id="{{item.id}}"
+        hover-class="press"
+        bindtap="onToolTap"
+        bindlongpress="onToolLongPress"
+      >
+        <view class="list-icon" style="background:{{item.accentSoft}};">
+          <grid-icon name="{{item.icon}}" size="34" color="{{item.accent}}" />
+        </view>
+        <view class="grow">
+          <view class="list-name-row">
+            <text class="list-name">{{item.name}}</text>
+            <text wx:if="{{item.beta}}" class="list-beta">内测</text>
+          </view>
+          <view class="list-sub ellipsis">{{item.useText}} · {{item.desc}}</view>
+        </view>
+        <view class="list-time">
+          <view class="list-time-rel">{{item.timeText}}</view>
+          <view class="list-time-clock">{{item.clockText}}</view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 设置 -->
+  <view class="sec-head">
+    <view class="sec-title">设置</view>
+    <view class="sec-tip">在线工具 {{onlineCount}} 个</view>
+  </view>
+  <view class="cells fade-up">
+    <view
+      wx:for="{{cells}}"
+      wx:key="key"
+      class="cell"
+      data-key="{{item.key}}"
+      hover-class="cell-hover"
+      bindtap="onCellTap"
+      bindlongpress="onCellLongPress"
+    >
+      <view class="cell-icon">
+        <grid-icon name="{{item.icon}}" size="30" />
+      </view>
+      <view class="grow">
+        <view class="cell-title">{{item.title}}</view>
+        <view class="cell-hint ellipsis">{{item.hint}}</view>
+      </view>
+      <view wx:if="{{item.value}}" class="cell-value ellipsis">{{item.value}}</view>
+      <view class="cell-arrow">
+        <grid-icon name="chevron" size="24" />
+      </view>
+    </view>
+  </view>
+
+  <view class="mine-foot">通用工具箱 {{version}}</view>
+  <view class="safe-bottom"></view>
+</view>

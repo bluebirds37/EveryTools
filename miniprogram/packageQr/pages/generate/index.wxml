@@ -1,0 +1,80 @@
+<tool-shell toolId="qr-generate" title="二维码生成" desc="文字、链接、wifi 变二维码" tips="{{tips}}">
+  <view class="stack">
+    <!-- 类型选择 -->
+    <view class="card">
+      <view class="card-title">内容类型</view>
+      <view class="row wrap gg-types">
+        <view
+          wx:for="{{typeOptions}}"
+          wx:key="value"
+          class="tag gg-type {{values.type === item.value ? 'tag-active' : ''}}"
+          hover-class="none"
+          data-key="type"
+          data-value="{{item.value}}"
+          bindtap="onParamChangeQuick"
+        >{{item.label}}</view>
+      </view>
+    </view>
+
+    <!-- 内容输入区 -->
+    <view class="card">
+      <view class="card-title">内容</view>
+      <param-form schema="{{inputSchema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <!-- 参数区 -->
+    <view class="card">
+      <view class="card-title">样式参数</view>
+      <param-form schema="{{styleSchema}}" values="{{values}}" bind:change="onParamChange" />
+      <view class="gg-logo">
+        <view class="field-label"><text>中心 logo（可选，jpg/png）</text></view>
+        <media-picker mediaType="image" maxCount="{{1}}" accept="{{['jpg','jpeg','png','webp']}}" hint="选 logo 后纠错等级自动升到 H" bind:change="onLogoChange" bind:error="onLogoError" />
+        <view wx:if="{{logoPath}}" class="gg-ratio">
+          <param-form schema="{{[{key:'logoRatio',label:'logo 占比',type:'slider',def:15,min:5,max:25,step:1,unit:'%',precision:0}]}}" values="{{values}}" bind:change="onParamChange" />
+          <view wx:if="{{ratioWarn}}" class="gg-warn">{{ratioWarn}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 错误提示 -->
+    <view wx:if="{{error}}" class="card gg-err fade-up">
+      <grid-icon name="alert" size="36" color="#E5484D" />
+      <text class="grow t-sm">{{error.message}}</text>
+    </view>
+
+    <!-- 执行 -->
+    <button class="btn btn-primary btn-block" disabled="{{busy}}" bindtap="onRun">
+      <view wx:if="{{busy}}" class="spinner gg-spin" />
+      <text>{{busy ? '生成并自检中…' : '生成二维码'}}</text>
+    </button>
+
+    <!-- 结果 / 空态 -->
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="image"
+      images="{{result.images}}"
+      kv="{{result.kv}}"
+      meta="{{result.meta}}"
+      text="{{result.content}}"
+      showCopy="{{true}}"
+      showSave="{{true}}"
+      showShare="{{true}}"
+      bind:copy="onCopy"
+      bind:save="onSave"
+      bind:share="onPanelShare"
+    />
+    <view wx:elif="{{!busy}}" class="card">
+      <empty-state icon="qr" title="还没有生成二维码" desc="填写内容后点「生成二维码」，生成后自动回读自检" />
+    </view>
+
+    <!-- 内置示例（C9.6） -->
+    <view class="card">
+      <view class="card-title">内置示例（一键填入并生成）</view>
+      <view class="row wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm btn-ghost gg-sample" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+  <canvas type="2d" id="tb-offscreen" class="gg-canvas" />
+</tool-shell>

@@ -1,0 +1,24 @@
+/* SQL 格式化页 */
+.err-bar { border-left: 8rpx solid var(--err); }
+.note-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  margin-bottom: var(--sp-3);
+}
+.note-item {
+  font-size: 24rpx;
+  color: var(--text-2);
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  padding: 12rpx 20rpx;
+}
+.sql-block { margin-bottom: var(--sp-3); }
+.block-head { margin-bottom: var(--sp-1); }
+.sql-code {
+  max-height: 560rpx;
+  white-space: pre;
+  overflow-x: auto;
+}
+.sql-line { white-space: pre; font-size: 24rpx; }
+.sample-btn { margin: 0 var(--sp-2) var(--sp-2) 0; }

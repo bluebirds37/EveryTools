@@ -1,0 +1,95 @@
+<tool-shell toolId="{{toolId}}" title="{{tool.name || '图片裁剪'}}" desc="{{tool.desc}}" tips="{{['双指缩放、单指拖动图片，取景框固定在中央','选择尺寸预设会锁定比例并精确输出该像素尺寸','旋转与翻转后取景按输出像素重绘，不会因屏幕缩放失真','结果尺寸等于输出设置，1:1 与自定义尺寸误差为 0']}}" bind:ready="onShellReady">
+  <view class="stack">
+
+    <view class="card">
+      <view class="card-title">选择图片</view>
+      <media-picker mediaType="image" multiple="{{false}}" maxMB="{{60}}" bind:change="onFilesChange" bind:error="onFilesError" />
+    </view>
+
+    <!-- 自研裁剪交互层 -->
+    <view wx:if="{{file}}" class="card crop-card">
+      <view class="row-between">
+        <view class="card-title no-mb">取景</view>
+        <view class="row">
+          <text class="tag" bindtap="onRotateStep" data-d="-90">左转 90°</text>
+          <text class="tag" bindtap="onRotateStep" data-d="90">右转 90°</text>
+          <text class="tag" bindtap="onReset">复位</text>
+        </view>
+      </view>
+
+      <view
+        id="crop-stage"
+        class="stage"
+        bindtouchstart="onTouchStart"
+        bindtouchmove="onTouchMove"
+        bindtouchend="onTouchEnd"
+        bindtouchcancel="onTouchEnd"
+      >
+        <image
+          wx:if="{{img.width}}"
+          class="stage-img"
+          src="{{file.path}}"
+          mode="scaleToFill"
+          style="left:{{disp.left}}px;top:{{disp.top}}px;width:{{disp.elW}}px;height:{{disp.elH}}px;transform:{{disp.transform}};"
+        />
+        <view class="mask mask-top" style="height:{{masks.top}}px"></view>
+        <view class="mask mask-bottom" style="height:{{masks.bottom}}px"></view>
+        <view class="mask mask-left" style="width:{{masks.left}}px;height:{{masks.band}}px;top:{{frame.y}}px"></view>
+        <view class="mask mask-right" style="width:{{masks.right}}px;height:{{masks.band}}px;top:{{frame.y}}px"></view>
+
+        <view class="frame" style="left:{{frame.x}}px;top:{{frame.y}}px;width:{{frame.w}}px;height:{{frame.h}}px">
+          <block wx:if="{{values.showGrid}}">
+            <view class="g g-v1"></view>
+            <view class="g g-v2"></view>
+            <view class="g g-h1"></view>
+            <view class="g g-h2"></view>
+          </block>
+          <view class="c c-tl"></view>
+          <view class="c c-tr"></view>
+          <view class="c c-bl"></view>
+          <view class="c c-br"></view>
+        </view>
+      </view>
+
+      <view class="row-between meta-row">
+        <text class="t-sm t-mono t-muted">{{srcInfo}}</text>
+        <text class="t-sm t-mono t-brand">{{outInfo}}</text>
+      </view>
+      <view wx:if="{{hint}}" class="note-warn t-sm">{{hint}}</view>
+    </view>
+
+    <!-- 参数 -->
+    <view class="card">
+      <view class="row-between">
+        <view class="card-title no-mb">裁剪参数</view>
+        <text class="tag" bindtap="onSample">示例</text>
+      </view>
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <view wx:if="{{error}}" class="card err-card">
+      <text class="t-md err-text">{{error.message}}</text>
+      <text class="t-sm t-dim">错误码 {{error.code}}</text>
+    </view>
+
+    <button class="btn btn-primary btn-block" disabled="{{busy || !file}}" bindtap="onRun">
+      <view wx:if="{{busy}}" class="spinner"></view>
+      <text>{{busy ? '渲染中…' : '裁剪导出'}}</text>
+    </button>
+
+    <block wx:if="{{result}}">
+      <view class="card fade-up">
+        <view class="card-title">裁剪结果</view>
+        <slider-compare before="{{result.compareBefore}}" after="{{outPath}}" />
+        <image src="{{outPath}}" mode="widthFix" class="result-img" bindtap="onPreview" />
+        <view class="row-between">
+          <text class="t-sm t-mono t-muted">{{result.meta}}</text>
+          <text class="tag tag-active" bindtap="onSave">保存到相册</text>
+        </view>
+      </view>
+      <result-panel kind="image" images="{{result.images}}" meta="{{result.meta}}" showSave="{{true}}" bind:save="onSave" bind:action="onResultAction" />
+    </block>
+
+    <canvas type="2d" id="tb-offscreen" class="offscreen"></canvas>
+  </view>
+</tool-shell>

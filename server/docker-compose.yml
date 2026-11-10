@@ -1,0 +1,88 @@
+# 单机部署编排（docs/requirements.md R8：先按「单机 Docker + 进程内队列」设计）
+#
+# 用法：
+#   cp .env.example .env      # 填真实值；.env 已被 .dockerignore 排除，且绝不能提交
+#   docker compose config     # 只校验（本文件不含任何明文凭据，全部走 ${...} 间接引用）
+#   docker compose up -d --build
+#
+# 迁移：**没有** migration service —— 应用启动时自行执行
+#   src/db.rs::migrate() → `sqlx::migrate!("./migrations")`（SQL 编译期已嵌进二进制）。
+#
+# 镜像选择：migrations/00000000000000__init.sql 只用到通用语法
+#   （bigserial / uuid / jsonb / bytea / timestamptz / date 分区索引 / 部分索引 /
+#    CHECK 约束，代码侧用 INSERT..ON CONFLICT..RETURNING、RETURNING、xmax=0），
+#   没有 PG 14+ 专属特性 → postgres:15 足够；想用新大版本换 postgres:18 也完全兼容。
+#   若改本地已有的 pgvector/pgvector:pg18-trixie，只需保持下列 POSTGRES_* 变量名一致。
+
+name: toolbox
+
+services:
+  pg:
+    image: postgres:15
+    restart: unless-stopped
+    # 凭据一律来自 .env（缺失时直接报错，不用默认弱口令兜底）
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER must be set in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB must be set in .env}
+      TZ: UTC
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # 默认不对外暴露端口（只有 api 容器经内部网络访问）。
+    # 需要从宿主机直连时取消注释（注意本机 15433 可能已被开发库占用）：
+    # ports:
+    #   - "${PG_HOST_PORT:-15434}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    networks:
+      - toolbox
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: toolbox-server:latest
+    restart: unless-stopped
+    depends_on:
+      pg:
+        condition: service_healthy
+    # 业务配置与密钥全部来自 .env（见 .env.example 的逐项说明）
+    env_file:
+      - .env
+    environment:
+      # 覆盖 .env 里的开发用 DSN：容器内必须指向 pg 服务名，而不是 127.0.0.1:15433。
+      # 依旧是 ${...} 间接引用 —— 本文件里没有明文账号密码。
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@pg:5432/${POSTGRES_DB}
+      # 容器内路径（与 Dockerfile 保持一致；卷挂载点就是 STORAGE_DIR）
+      STORAGE_DIR: /data/uploads
+      STATIC_DIR: /data/static
+      HOST: 0.0.0.0
+      PORT: 8080
+      # 生产铁律：以下三项必须为 0/false。若本地联调需要，请在 .env 里显式覆盖并在
+      # 部署单上说明（见 .env.example 的警告）。
+      MEDIA_DRY_RUN: ${MEDIA_DRY_RUN:-0}
+      WECHAT_STUB: ${WECHAT_STUB:-0}
+      PROXY_ALLOW_PRIVATE_NETWORK: ${PROXY_ALLOW_PRIVATE_NETWORK:-false}
+    ports:
+      - "${API_HOST_PORT:-8080}:8080"
+    volumes:
+      # 上传分片/产物持久化。换成 bind mount 亦可：./data/uploads:/data/uploads
+      - uploads:/data/uploads
+    # 进程内媒体任务最长 TASK_TIMEOUT_SECS=600，给足优雅退出时间（main 捕获 SIGTERM）
+    stop_grace_period: 90s
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - toolbox
+
+volumes:
+  pgdata:
+  uploads:
+
+networks:
+  toolbox:
+    driver: bridge

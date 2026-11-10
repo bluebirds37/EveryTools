@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "grid-icon": "/components/grid-icon/index"
+  }
+}

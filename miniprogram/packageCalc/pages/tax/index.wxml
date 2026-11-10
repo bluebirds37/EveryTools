@@ -1,0 +1,47 @@
+<tool-shell toolId="calc-tax" title="个税计算" desc="累计预扣预缴 / 年终奖对比" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <view class="row-between ver-row">
+        <text class="t-sm t-muted">年度税率表</text>
+        <text class="tag tag-active">{{tableVersion}}</text>
+      </view>
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <button class="btn btn-primary btn-block" loading="{{busy}}" disabled="{{busy}}" bindtap="onRun">开始计算</button>
+
+    <view wx:if="{{error}}" class="card err-bar"><text class="t-sm">{{error.message}}</text></view>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="kv"
+      kv="{{result.kv}}"
+      meta="{{result.meta}}"
+      text="{{result.text}}"
+      showCopy="{{true}}"
+      bind:copy="onCopy"
+    />
+
+    <view wx:if="{{rows.length}}" class="card fade-up">
+      <view class="card-title">累计预扣预缴明细（逐月）</view>
+      <view class="tbl-head">
+        <text class="c">月份</text><text class="c">累计应税</text><text class="c">税率</text><text class="c">当月预扣</text><text class="c">累计预扣</text>
+      </view>
+      <view class="tr" wx:for="{{rows}}" wx:key="month">
+        <text class="c">{{item.month}}</text>
+        <text class="c t-mono">{{item.taxableCum}}</text>
+        <text class="c t-mono">{{item.rate}}</text>
+        <text class="c t-mono">{{item.taxMonth}}</text>
+        <text class="c t-mono">{{item.taxCum}}</text>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">内置示例</view>
+      <view class="wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

@@ -1,0 +1,69 @@
+@import "../../styles/video.wxss";
+
+/* ---------- 自研时间轴 ---------- */
+.tl-track {
+  position: relative;
+  height: 96rpx;
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  margin-top: var(--sp-2);
+}
+.tl-band {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--brand-grad);
+  opacity: .55;
+  border-radius: var(--r-sm);
+}
+.tl-handle {
+  position: absolute;
+  top: 8rpx;
+  bottom: 8rpx;
+  width: 24rpx;
+  margin-left: -12rpx;
+  border-radius: 12rpx;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  border: 4rpx solid var(--brand);
+}
+.tl-ticks { position: relative; height: 64rpx; margin-top: var(--sp-1); }
+.tl-tick { position: absolute; top: 0; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; }
+.tl-tick-line { width: 2rpx; height: 14rpx; background: var(--line); }
+.tl-tick-label { font-size: 22rpx; color: var(--text-3); font-family: "SF Mono", Menlo, monospace; }
+
+.tl-inputs { display: flex; gap: var(--sp-2); margin-top: var(--sp-2); }
+.tl-inputs .field { margin-bottom: 0; }
+
+/* 本地关键帧预览 chips（雪碧图不可用时保留，帧不刷新则看刻度条） */
+.tl-frames { margin-top: var(--sp-1); white-space: nowrap; }
+.tl-frame {
+  position: relative;
+  width: 200rpx;
+  flex-shrink: 0;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--v-stage, #0d0f16);
+}
+.tl-frame video { width: 200rpx; height: 112rpx; }
+.tl-frame-label {
+  position: absolute;
+  left: 8rpx;
+  bottom: 6rpx;
+  font-size: 20rpx;
+  font-family: "SF Mono", Menlo, monospace;
+  color: var(--on-brand);
+  background: rgba(0, 0, 0, .55);
+  border-radius: 999rpx;
+  padding: 2rpx 10rpx;
+}
+
+.note {
+  margin-top: var(--sp-2);
+  font-size: 24rpx;
+  color: var(--text-2);
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  padding: var(--sp-2) var(--sp-3);
+  line-height: 1.6;
+}

@@ -1,0 +1,82 @@
+<tool-shell toolId="{{toolId}}" title="视频压缩" desc="{{tool.desc}}" tips="{{tips}}">
+  <view class="stack">
+
+    <view class="card entry-row" bind:tap="onHistoryOpen">
+      <view class="left">
+        <grid-icon name="cloud" size="34" color="var(--brand)" />
+        <text>历史任务</text>
+        <text wx:if="{{historyCount}}" class="tag tag-active">{{historyCount}}</text>
+      </view>
+      <view class="chev">
+        <grid-icon name="chevron" size="28" color="var(--text-3)" />
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">选择视频</view>
+      <media-picker mediaType="video" maxMB="200" maxDuration="600" bind:change="onPick" bind:error="onPickError" />
+      <view wx:if="{{video}}" class="vstage fade-up">
+        <video src="{{video.path}}" object-fit="contain" show-center-play-btn="{{true}}" />
+        <text class="vstage-tag">预览</text>
+      </view>
+      <view wx:if="{{video}}" class="vmeta">
+        <text class="tag tag-dot">{{video.durationText}}</text>
+        <text class="tag">{{video.sizeText}}</text>
+        <text wx:if="{{video.width}}" class="tag">{{video.width}}×{{video.height}}</text>
+      </view>
+    </view>
+
+    <view class="card" wx:if="{{video}}">
+      <view class="card-title">压缩参数</view>
+      <view class="grp-title">画质与体积</view>
+      <param-form schema="{{schemaMode}}" values="{{values}}" bind:change="onParamChange" />
+      <view class="grp-title">输出规格</view>
+      <param-form schema="{{schemaOutput}}" values="{{values}}" bind:change="onParamChange" />
+      <view class="grp-title">编码速度与音频</view>
+      <param-form schema="{{schemaAudio}}" values="{{values}}" bind:change="onParamChange" />
+
+      <view class="estimate fade-up" wx:if="{{estimate}}">
+        <view>
+          <text wx:if="{{estimate.rough}}">约 </text>预估结果 <text class="num">{{estimate.predictedMB}}MB</text>
+          <text wx:if="{{estimate.eta}}"> · {{estimate.eta}}</text>
+        </view>
+        <view wx:if="{{estimate.note}}">{{estimate.note}}</view>
+      </view>
+
+      <view class="run-wrap">
+        <button class="btn btn-primary btn-block" bind:tap="onRun" disabled="{{busy}}">开始压缩</button>
+      </view>
+    </view>
+
+    <task-progress visible="{{busy || stage === 'canceled'}}" stage="{{stage}}" percent="{{percent}}" message="{{progressMsg}}" eta="{{eta}}" bind:cancel="onCancel" />
+
+    <view wx:if="{{error}}" class="err-box fade-up">
+      <text class="grow">{{error.message}}</text>
+      <button wx:if="{{error.retryable}}" class="btn btn-sm btn-ghost" bind:tap="onRun">重试</button>
+    </view>
+
+    <view wx:if="{{result}}" class="card fade-up">
+      <view class="card-title">压缩完成</view>
+      <view wx:if="{{cmp}}" class="cmp">
+        <view class="cmp-cell">
+          <view class="cmp-num t-muted">{{cmp.beforeText}}</view>
+          <view class="cmp-label">原始大小</view>
+        </view>
+        <text class="cmp-arrow">→</text>
+        <view class="cmp-cell">
+          <view class="cmp-num t-brand">{{cmp.afterText}}</view>
+          <view class="cmp-label">压缩后</view>
+        </view>
+        <view class="cmp-save">省 {{cmp.saveText}}</view>
+      </view>
+      <result-panel kind="video" video="{{result.video}}" meta="{{result.meta}}" showSave="{{true}}" bind:save="onSave" bind:action="onResultAction" />
+      <view class="act-row">
+        <button class="btn" bind:tap="onAgain" disabled="{{busy}}">再处理一次</button>
+        <button class="btn btn-ghost" bind:tap="onHistoryOpen">历史任务</button>
+      </view>
+    </view>
+
+  </view>
+
+  <task-drawer visible="{{historyOn}}" tasks="{{history}}" bind:close="onHistoryClose" bind:preview="onHistoryPreview" bind:download="onHistoryDownload" bind:delete="onHistoryDelete" bind:rerun="onHistoryRerun" />
+</tool-shell>

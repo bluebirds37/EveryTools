@@ -1,0 +1,10 @@
+<view class="es {{compact ? 'es-compact' : ''}}">
+  <view class="es-icon">
+    <grid-icon name="{{icon}}" size="72" />
+  </view>
+  <view class="es-title">{{title}}</view>
+  <view wx:if="{{desc}}" class="es-desc">{{desc}}</view>
+  <view class="es-action">
+    <slot />
+  </view>
+</view>

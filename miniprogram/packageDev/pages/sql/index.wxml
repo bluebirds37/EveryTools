@@ -1,0 +1,42 @@
+<tool-shell toolId="dev-sql" title="SQL 格式化" desc="美化 SQL 语句不执行" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+      <button class="btn btn-primary btn-block" loading="{{busy}}" disabled="{{busy}}" bindtap="onRun">{{values.mode === 'compact' ? '压缩为一行' : '美化排版'}}</button>
+    </view>
+
+    <view wx:if="{{error}}" class="card err-bar">
+      <text class="t-sm">{{error.message}}</text>
+    </view>
+
+    <empty-state wx:if="{{!result && !error && !busy}}" icon="sql" title="还没有格式化结果" desc="粘贴 SQL 后点按钮，或直接用内置示例体验" />
+
+    <view wx:if="{{result}}" class="card fade-up">
+      <view class="row-between">
+        <text class="card-title">格式化结果</text>
+        <text class="t-sm t-dim">{{result.lines}} 行 · {{result.tokens}} 记号 · {{result.cost}} ms</text>
+      </view>
+      <view wx:if="{{result.notes.length}}" class="note-list">
+        <text wx:for="{{result.notes}}" wx:key="*this" class="note-item">{{item}}</text>
+      </view>
+      <view wx:for="{{result.blocks}}" wx:key="label" class="sql-block">
+        <view class="row-between block-head">
+          <text class="t-sm t-dim">{{item.label}}</text>
+          <text class="t-sm t-brand" data-text="{{item.text}}" hover-class="none" bindtap="onCopyBlock">复制本段</text>
+        </view>
+        <scroll-view scroll-y class="code-block sql-code">
+          <text class="sql-line">{{item.text}}</text>
+        </scroll-view>
+      </view>
+    </view>
+
+    <result-panel wx:if="{{result}}" kind="text" text="{{result.text}}" meta="{{result.meta}}" showCopy="{{true}}" actions="{{actions}}" bind:copy="onCopy" bind:action="onAction" />
+
+    <view class="card">
+      <view class="card-title">内置示例</view>
+      <view class="row wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

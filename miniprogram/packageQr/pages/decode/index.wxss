@@ -1,0 +1,38 @@
+/* 相册识码页 —— 仅本页特有样式 */
+.dc-err {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  border-left: 8rpx solid var(--err);
+}
+.dc-spin { margin-right: var(--sp-2); }
+.dc-res-title { margin-bottom: 0; }
+.dc-item {
+  display: flex;
+  gap: var(--sp-2);
+  padding: var(--sp-3) 0;
+  border-bottom: 2rpx solid var(--line);
+}
+.dc-item:last-child { border-bottom: none; }
+.dc-thumb {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: var(--r-sm);
+  flex-shrink: 0;
+  background: var(--surface-2);
+}
+.dc-text {
+  margin-top: var(--sp-1);
+  font-size: 26rpx;
+  word-break: break-all;
+}
+.dc-fail { color: var(--text-3); }
+.dc-meta { margin-left: var(--sp-2); }
+.dc-acts { margin-top: var(--sp-2); gap: var(--sp-2); }
+.dc-canvas {
+  position: fixed;
+  left: -4000rpx;
+  top: -4000rpx;
+  width: 10rpx;
+  height: 10rpx;
+}

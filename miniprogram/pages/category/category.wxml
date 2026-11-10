@@ -1,0 +1,65 @@
+<view class="page cat">
+  <!-- 分类横向 tab：当前态品牌渐变下划线 + 数量徽标 -->
+  <view class="cat-tabs-wrap">
+    <scroll-view class="cat-tabs" scroll-x enable-flex scroll-into-view="{{scrollToTab}}" scroll-with-animation>
+      <view
+        wx:for="{{tabs}}"
+        wx:key="id"
+        id="tab-{{index}}"
+        class="cattab {{activeIndex === index ? 'cattab-on' : ''}}"
+        data-id="{{item.id}}"
+        bindtap="onTabTap"
+      >
+        <text class="cattab-name">{{item.name}}</text>
+        <text class="cattab-count">{{item.count}}</text>
+        <view class="cattab-line"></view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 当前分类概览 -->
+  <view class="cat-head fade-up" style="background:{{activeAccentSoft}};">
+    <view class="cat-head-icon">
+      <grid-icon name="{{activeIcon}}" size="40" color="{{activeAccent}}" />
+    </view>
+    <view class="grow">
+      <view class="cat-head-title" style="color:{{activeAccent}};">{{activeName}}工具</view>
+      <view class="cat-head-sub">共 {{tools.length}} 个 · 长按卡片可收藏或查看详情</view>
+    </view>
+    <view class="cat-head-search" hover-class="tcard-hover" bindtap="goSearch">
+      <grid-icon name="search" size="30" color="{{activeAccent}}" />
+    </view>
+  </view>
+
+  <!-- 工具 3 列网格（byCategory 顺序即排序结果） -->
+  <view class="grid grid-3">
+    <view
+      wx:for="{{tools}}"
+      wx:key="id"
+      class="gcard"
+      data-id="{{item.id}}"
+      hover-class="tcard-hover"
+      bindtap="onToolTap"
+      bindlongpress="onToolLongPress"
+    >
+      <view wx:if="{{item.fav}}" class="gcard-star">
+        <grid-icon name="starFill" size="20" color="#F59E0B" />
+      </view>
+      <view class="gcard-icon" style="background:{{item.accentSoft}};">
+        <grid-icon name="{{item.icon}}" size="52" color="{{item.accent}}" />
+      </view>
+      <view class="gcard-name ellipsis">{{item.name}}</view>
+      <view class="gcard-desc ellipsis">{{item.desc}}</view>
+      <view class="gcard-foot">
+        <text wx:if="{{item.beta}}" class="gcard-badge">内测</text>
+        <text class="gcard-engine">{{item.engineText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{tools.length === 0}}" class="cat-empty">
+    <empty-state icon="search" title="该分类暂无可用工具" desc="换个分类看看，或去搜索" />
+  </view>
+
+  <view class="safe-bottom"></view>
+</view>

@@ -1,0 +1,70 @@
+/* 自定义 tabBar 独立成树，可能拿不到 page 上的设计令牌，这里同名重申一份并给深色取值 */
+.tabbar {
+  --surface: #ffffff;
+  --text: #171a21;
+  --text-3: #9aa1ac;
+  --brand: #3b5bfe;
+  --brand-grad: linear-gradient(135deg, #4b6cff 0%, #22c3d6 100%);
+  --line: rgba(23, 26, 33, 0.07);
+
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  background: var(--surface);
+  border-top: 2rpx solid var(--line);
+  box-shadow: 0 -6rpx 24rpx rgba(23, 26, 33, 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  .tabbar {
+    --surface: #171a21;
+    --text: #f3f5f8;
+    --text-3: #6c7280;
+    --brand: #7c93ff;
+    --brand-grad: linear-gradient(135deg, #5570ff 0%, #2ad2e0 100%);
+    --line: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 -6rpx 24rpx rgba(0, 0, 0, 0.45);
+  }
+}
+
+.tabbar-inner {
+  display: flex;
+  align-items: center;
+  height: 108rpx;
+  padding: 0 var(--sp-1, 8rpx);
+}
+.tabbar-item {
+  flex: 1;
+  min-height: 108rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+}
+.tabbar-pill {
+  height: 56rpx;
+  min-width: 96rpx;
+  padding: 0 22rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s ease, transform .18s ease;
+}
+.tabbar-text {
+  font-size: 22rpx;
+  line-height: 30rpx;
+  color: var(--text-3);
+  transition: color .2s ease;
+}
+.tabbar-item-on .tabbar-pill {
+  background: var(--brand-grad);
+  transform: translateY(-2rpx);
+}
+.tabbar-item-on .tabbar-text {
+  color: var(--brand);
+  font-weight: 700;
+}

@@ -1,0 +1,95 @@
+<tool-shell toolId="{{toolId}}" title="{{tool.name || '图片信息'}}" desc="{{tool.desc}}" tips="{{tips}}">
+  <view class="stack">
+
+    <view class="card">
+      <view class="card-title">选择图片</view>
+      <media-picker mediaType="image" multiple="{{false}}" maxMB="{{60}}" bind:change="onFilesChange" bind:error="onFilesError" />
+    </view>
+
+    <view wx:if="{{file}}" class="card media-card">
+      <image wx:if="{{previewPath}}" src="{{previewPath}}" mode="aspectFit" class="preview" bindtap="onPreviewSrc" />
+      <image wx:else src="{{file.path}}" mode="aspectFit" class="preview" bindtap="onPreviewSrc" />
+      <view wx:if="{{orientation !== 1}}" class="note-info t-sm">
+        原图 EXIF 方向为 Orientation={{orientation}}（{{orientation === 6 ? '顺时针 90°' : orientation === 8 ? '逆时针 90°' : orientation === 3 ? '旋转 180°' : '需翻转'}}），上方预览已按正确方向重绘。
+      </view>
+    </view>
+
+    <view wx:if="{{error}}" class="card err-card">
+      <view class="row">
+        <grid-icon name="alert" size="30" color="#e5484d" />
+        <text class="t-md err-text">{{error.message}}</text>
+      </view>
+      <text class="t-sm t-dim">错误码 {{error.code}}</text>
+    </view>
+
+    <view wx:if="{{busy && !taskInfo}}" class="card flat-card center-card">
+      <view class="spinner"></view>
+      <text class="t-sm t-muted">读取中…</text>
+    </view>
+
+    <task-progress visible="{{!!taskInfo}}" stage="{{taskInfo.stage}}" percent="{{taskInfo.percent}}" message="{{taskInfo.message}}" bind:cancel="onCancelTask" />
+
+    <view wx:if="{{rows.length}}" class="card fade-up">
+      <view class="row-between">
+        <view class="card-title no-mb">基础信息</view>
+        <text class="tag" bindtap="onCopyAll">复制全部</text>
+      </view>
+      <view class="kv-list">
+        <view wx:for="{{rows}}" wx:key="key" class="kv-row">
+          <text class="kv-key">{{item.key}}</text>
+          <text class="kv-val t-mono">{{item.value}}</text>
+        </view>
+      </view>
+      <view wx:if="{{qualityEst}}" class="row-between est-row">
+        <text class="t-sm t-muted">压缩质量估算</text>
+        <text class="t-sm t-mono t-brand">≈ {{qualityEst}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{hasExif}}" class="card fade-up">
+      <view class="card-title">拍摄信息 EXIF</view>
+      <view class="kv-list">
+        <view wx:for="{{exifRows}}" wx:key="key" class="kv-row">
+          <text class="kv-key">{{item.key}}</text>
+          <text class="kv-val t-mono">{{item.value}}</text>
+        </view>
+      </view>
+
+      <view wx:if="{{gps}}" class="gps-box">
+        <view class="row-between" bindtap="onShowGps">
+          <text class="t-sm t-muted">拍摄位置（默认脱敏）</text>
+          <text class="tag tag-active">{{gpsShown ? '收起' : '查看位置'}}</text>
+        </view>
+        <view wx:if="{{gpsShown}}" class="kv-row">
+          <text class="kv-key">经纬度</text>
+          <text class="kv-val t-mono">{{gps.lat}}, {{gps.lng}}</text>
+        </view>
+        <view wx:if="{{gpsShown && gps.altitude}}" class="kv-row">
+          <text class="kv-key">海拔</text>
+          <text class="kv-val t-mono">{{gps.altitude}} m</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{noExif && !busy}}" class="card fade-up">
+      <view class="row">
+        <grid-icon name="info" size="30" color="#6b7280" />
+        <text class="t-md">无拍摄信息</text>
+      </view>
+      <text class="t-sm t-dim">该图片不含 EXIF 段（常见于截图、压缩或网络下载图片）。</text>
+    </view>
+
+    <view wx:if="{{cloudNeeded}}" class="card fade-up">
+      <view class="row">
+        <grid-icon name="cloud" size="30" color="#3B5BFE" />
+        <text class="t-md">{{cloudFormat}} 元数据需云端解析</text>
+      </view>
+      <text class="t-sm t-dim">本机仅解析 JPEG APP1 段，{{cloudFormat}} 走云端完整解析。</text>
+      <button class="btn btn-ghost btn-block btn-sm" disabled="{{busy}}" bindtap="onCloudExif">云端读取完整 EXIF</button>
+    </view>
+
+    <result-panel wx:if="{{result}}" kind="kv" kv="{{rows}}" meta="{{result.meta}}" showCopy="{{true}}" bind:copy="onCopyAll" bind:action="onResultAction" />
+
+    <canvas type="2d" id="tb-offscreen" class="offscreen"></canvas>
+  </view>
+</tool-shell>

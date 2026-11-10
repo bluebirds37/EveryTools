@@ -1,0 +1,46 @@
+<tool-shell toolId="{{toolId}}" title="视频信息" desc="{{tool.desc}}" tips="{{tips}}">
+  <view class="stack">
+
+    <view class="card">
+      <view class="card-title">选择视频</view>
+      <media-picker mediaType="video" maxMB="200" maxDuration="600" bind:change="onPick" bind:error="onPickError" />
+      <view wx:if="{{video}}" class="vstage fade-up">
+        <video src="{{video.path}}" object-fit="contain" show-center-play-btn="{{true}}" />
+        <text class="vstage-tag">本地探测{{video.partial ? '失败' : '完成'}}</text>
+      </view>
+      <view wx:if="{{video}}" class="vmeta">
+        <text class="tag tag-dot">{{video.durationText}}</text>
+        <text class="tag">{{video.sizeText}}</text>
+      </view>
+    </view>
+
+    <view class="card" wx:if="{{kv.length}}">
+      <view class="card-title">探测结果</view>
+      <result-panel kind="kv" kv="{{kv}}" meta="{{deepDone ? '已含云端 ffprobe 深度信息' : '本地基础信息，编码/音频流需云端深度探测'}}" />
+      <view class="act-row">
+        <button class="btn btn-primary" bind:tap="onRun" disabled="{{busy || deepDone}}">
+          <grid-icon wx:if="{{!deepDone}}" name="cloud" size="28" color="#fff" />
+          <text>{{deepDone ? '深度探测已完成' : '云端深度探测'}}</text>
+        </button>
+        <button class="btn" bind:tap="onCopyDiag">
+          <grid-icon name="copy" size="28" color="var(--text)" />
+          <text>复制诊断信息</text>
+        </button>
+      </view>
+      <view class="act-row">
+        <button class="btn btn-ghost" bind:tap="onGoCompress">
+          <grid-icon name="compress" size="28" color="var(--brand)" />
+          <text>去云端压缩</text>
+        </button>
+      </view>
+    </view>
+
+    <task-progress visible="{{busy || stage === 'canceled'}}" stage="{{stage}}" percent="{{percent}}" message="{{progressMsg}}" eta="{{eta}}" bind:cancel="onCancel" />
+
+    <view wx:if="{{error}}" class="err-box fade-up">
+      <text class="grow">{{error.message}}</text>
+      <button wx:if="{{error.retryable}}" class="btn btn-sm btn-ghost" bind:tap="onRun">重试</button>
+    </view>
+
+  </view>
+</tool-shell>

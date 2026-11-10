@@ -1,0 +1,19 @@
+/* 多行处理页：仅本页特有样式 */
+.input-actions { margin-top: var(--sp-2); }
+.input-actions .btn { margin: 0 var(--sp-1) var(--sp-1) 0; }
+.step-row { padding: var(--sp-2) 0; border-bottom: 2rpx solid var(--line); }
+.step-row:last-of-type { border-bottom: none; }
+.step-head { align-items: center; }
+.step-no { width: 48rpx; color: var(--text-3); font-size: 24rpx; }
+.step-label { flex: 1; font-size: 28rpx; }
+.step-ops { gap: 16rpx; }
+.op-btn { width: 56rpx; height: 56rpx; line-height: 56rpx; text-align: center; border-radius: var(--r-sm); background: var(--surface-2); color: var(--text-2); font-size: 26rpx; }
+.op-del { color: var(--err); }
+.op-disabled { opacity: 0.35; }
+.arg-input { margin-top: var(--sp-2); background: var(--surface-2); border-radius: var(--r-sm); padding: var(--sp-2) var(--sp-3); font-size: 26rpx; }
+.chip-row { margin-top: var(--sp-2); }
+.op-chip { margin: 0 var(--sp-2) var(--sp-2) 0; background: var(--surface-2); color: var(--text-2); }
+.err-bar { border-left: 8rpx solid var(--err); }
+.err-msg { white-space: pre-wrap; font-size: 26rpx; line-height: 1.6; }
+.err-code { margin-top: var(--sp-1); }
+.sample-btn { margin: 0 var(--sp-2) var(--sp-2) 0; }

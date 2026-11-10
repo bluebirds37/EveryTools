@@ -1,0 +1,64 @@
+<tool-shell toolId="{{toolId}}" title="{{tool.name || '九宫格切图'}}" desc="{{tool.desc}}" tips="{{['一张图切成 2–4 列 × 2–4 行','开启居中裁切后每张子图尺寸完全一致（误差 0px）','导出顺序为行优先，即朋友圈九宫格顺序','保存相册只需授权一次，中途拒绝会停止并报告已完成张数']}}">
+  <view class="stack">
+
+    <view class="card">
+      <view class="card-title">选择图片</view>
+      <media-picker mediaType="image" multiple="{{false}}" maxMB="{{60}}" bind:change="onFilesChange" bind:error="onFilesError" />
+      <view wx:if="{{planText}}" class="row-between plan-row">
+        <text class="t-sm t-mono t-muted">{{planText}}</text>
+        <text class="t-sm t-dim">{{img.width}}×{{img.height}}</text>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="row-between">
+        <view class="card-title no-mb">切分参数</view>
+        <text class="tag" bindtap="onSample">示例</text>
+      </view>
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+      <view class="divider"></view>
+      <view class="cols-row">
+        <view class="cols-label">切分预览</view>
+        <view class="mock" style="grid-template-columns:repeat({{values.cols}},1fr);grid-template-rows:repeat({{values.rows}},1fr)">
+          <view wx:for="{{values.rows * values.cols}}" wx:key="*this" class="mock-cell">
+            <text class="mock-no">{{index + 1}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{error}}" class="card err-card">
+      <view class="row">
+        <grid-icon name="alert" size="30" color="#e5484d" />
+        <text class="t-md err-text">{{error.message}}</text>
+      </view>
+      <text class="t-sm t-dim">错误码 {{error.code}}</text>
+    </view>
+
+    <button class="btn btn-primary btn-block" disabled="{{busy || !file}}" bindtap="onRun">
+      <view wx:if="{{busy}}" class="spinner"></view>
+      <text>{{busy ? progressText || '切分中…' : '开始切图'}}</text>
+    </button>
+
+    <block wx:if="{{result}}">
+      <view class="card fade-up">
+        <view class="card-title">切分结果</view>
+        <view class="cell-grid" style="grid-template-columns:repeat({{values.cols}},1fr)">
+          <view wx:for="{{cells}}" wx:key="index" class="cell-item">
+            <image src="{{item.path}}" mode="aspectFill" class="cell-img" data-i="{{index}}" bindtap="onComposeBack" />
+            <text class="cell-no">{{index + 1}}</text>
+          </view>
+        </view>
+        <view class="row-between save-row">
+          <text class="t-sm t-mono t-muted">{{result.meta}}</text>
+          <text class="tag tag-active" bindtap="onSaveAll">全部保存</text>
+        </view>
+        <text wx:if="{{saved}}" class="t-sm t-ok">已保存 {{saved}} 张</text>
+      </view>
+
+      <result-panel kind="images" images="{{result.images}}" meta="{{result.meta}}" showSave="{{true}}" bind:save="onSaveAll" bind:action="onResultAction" />
+    </block>
+
+    <canvas type="2d" id="tb-offscreen" class="offscreen"></canvas>
+  </view>
+</tool-shell>

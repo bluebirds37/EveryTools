@@ -1,0 +1,62 @@
+<tool-shell toolId="{{toolId}}" title="视频抽帧" desc="{{tool.desc}}" tips="{{tips}}">
+  <view class="stack">
+
+    <view class="card">
+      <view class="card-title">选择视频</view>
+      <media-picker mediaType="video" maxMB="200" maxDuration="600" bind:change="onPick" bind:error="onPickError" />
+      <view wx:if="{{video}}" class="vstage fade-up">
+        <video src="{{video.path}}" object-fit="contain" show-center-play-btn="{{true}}" />
+        <text class="vstage-tag">预览</text>
+      </view>
+      <view wx:if="{{video}}" class="vmeta">
+        <text class="tag tag-dot">{{video.durationText}}</text>
+        <text class="tag">{{video.sizeText}}</text>
+      </view>
+    </view>
+
+    <view class="card" wx:if="{{video}}">
+      <view class="card-title">抽帧设置</view>
+      <view class="grp-title">抽帧方式</view>
+      <param-form schema="{{schemaMode}}" values="{{values}}" bind:change="onParamChange" />
+      <view class="grp-title">输出图片</view>
+      <param-form schema="{{schemaOutput}}" values="{{values}}" bind:change="onParamChange" />
+      <view class="estimate" wx:if="{{previewTimes.length}}">
+        <text>时间点预览：</text>
+        <text class="num" wx:for="{{previewTimes}}" wx:key="index" style="margin-right: 12rpx;">{{item}}</text>
+      </view>
+
+      <view class="run-wrap">
+        <button class="btn btn-primary btn-block" bind:tap="onRun" disabled="{{busy}}">开始抽帧</button>
+      </view>
+    </view>
+
+    <task-progress visible="{{busy || stage === 'canceled'}}" stage="{{stage}}" percent="{{percent}}" message="{{progressMsg}}" eta="{{eta}}" bind:cancel="onCancel" />
+
+    <view wx:if="{{error}}" class="err-box fade-up">
+      <text class="grow">{{error.message}}</text>
+      <button wx:if="{{error.retryable}}" class="btn btn-sm btn-ghost" bind:tap="onRun">重试</button>
+    </view>
+
+    <view wx:if="{{result}}" class="card fade-up">
+      <view class="card-title">抽帧结果（{{result.images.length}} 帧）</view>
+      <view class="img-grid">
+        <view wx:for="{{result.images}}" wx:key="url" class="img-cell" data-url="{{item.url}}" bind:tap="onPreviewImage">
+          <image src="{{item.url}}" mode="aspectFill" lazy-load="{{true}}" />
+          <text class="idx">{{index + 1}}</text>
+        </view>
+      </view>
+      <result-panel kind="images" images="{{result.images}}" meta="{{result.meta}}" showSave="{{true}}" bind:save="onSave" bind:action="onResultAction" />
+      <view class="act-row">
+        <button class="btn btn-primary" bind:tap="onSaveAll" disabled="{{savingBusy}}">全部保存到相册</button>
+        <button class="btn btn-ghost" bind:tap="onGoImageCompress">
+          <grid-icon name="compress" size="28" color="var(--brand)" />
+          <text>去图片压缩</text>
+        </button>
+      </view>
+      <view class="act-row">
+        <button class="btn" bind:tap="onAgain" disabled="{{busy}}">再处理一次</button>
+      </view>
+    </view>
+
+  </view>
+</tool-shell>

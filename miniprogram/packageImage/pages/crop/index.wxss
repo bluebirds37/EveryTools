@@ -1,0 +1,77 @@
+.offscreen {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+  width: 300px;
+  height: 300px;
+}
+
+.crop-card { padding: var(--sp-4) var(--sp-3); }
+.card-title.no-mb { margin-bottom: 0; }
+.card-title + .row { margin-bottom: var(--sp-3); }
+
+/* 深色媒体底板 + 圆角，取景舞台 */
+.stage {
+  position: relative;
+  width: 100%;
+  height: 620rpx;
+  margin-top: var(--sp-3);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--stage);
+  touch-action: none;
+}
+
+.stage-img {
+  position: absolute;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.mask { position: absolute; background: rgba(6, 8, 12, 0.66); }
+.mask-top { left: 0; right: 0; top: 0; }
+.mask-bottom { left: 0; right: 0; bottom: 0; }
+.mask-left { left: 0; }
+.mask-right { right: 0; }
+
+.frame {
+  position: absolute;
+  border: 2rpx solid rgba(255, 255, 255, 0.85);
+  box-sizing: border-box;
+}
+
+/* 三分构图网格 */
+.g { position: absolute; background: rgba(255, 255, 255, 0.28); }
+.g-v1 { left: 33.333%; top: 0; bottom: 0; width: 1rpx; }
+.g-v2 { left: 66.666%; top: 0; bottom: 0; width: 1rpx; }
+.g-h1 { top: 33.333%; left: 0; right: 0; height: 1rpx; }
+.g-h2 { top: 66.666%; left: 0; right: 0; height: 1rpx; }
+
+.c { position: absolute; width: 34rpx; height: 34rpx; border-color: var(--brand-2); border-style: solid; }
+.c-tl { left: -2rpx; top: -2rpx; border-width: 6rpx 0 0 6rpx; }
+.c-tr { right: -2rpx; top: -2rpx; border-width: 6rpx 6rpx 0 0; }
+.c-bl { left: -2rpx; bottom: -2rpx; border-width: 0 0 6rpx 6rpx; }
+.c-br { right: -2rpx; bottom: -2rpx; border-width: 0 6rpx 6rpx 0; }
+
+.meta-row { margin-top: var(--sp-2); }
+
+.note-warn {
+  border-radius: var(--r-md);
+  padding: var(--sp-2);
+  font-size: 24rpx;
+  background: rgba(245, 158, 11, .12);
+  color: var(--warn);
+  margin-top: var(--sp-2);
+}
+
+.err-card { border: 2rpx solid rgba(229, 72, 77, .35); }
+.err-text { color: var(--err); }
+
+.result-img {
+  width: 100%;
+  border-radius: var(--r-md);
+  margin: var(--sp-2) 0;
+  background: var(--surface-2);
+}
+
+.tag { height: 56rpx; align-items: center; }

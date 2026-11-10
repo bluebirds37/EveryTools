@@ -1,0 +1,76 @@
+<tool-shell toolId="{{toolId}}" title="{{tool.name || '格式转换'}}" desc="{{tool.desc}}" tips="{{['支持相册与相机图片，单次最多 20 张','透明图片转 JPG 会按所选颜色铺底，不会出现黑底','WebP 编码由云端完成，开启后会创建后台任务','转 PNG 属于无损重编码，体积通常比原 JPG 大']}}" bind:ready="onShellReady">
+  <view class="stack">
+
+    <view class="card">
+      <view class="card-title">选择图片</view>
+      <media-picker mediaType="image" multiple="{{true}}" maxCount="{{20}}" maxMB="{{40}}" bind:change="onFilesChange" bind:error="onFilesError" />
+      <view wx:if="{{files.length}}" class="row-between files-row">
+        <text class="t-sm t-muted">已选 {{files.length}} 张</text>
+        <text class="tag" bindtap="onCheckHead">识别文件头</text>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="row-between">
+        <view class="card-title no-mb">转换参数</view>
+        <text class="tag" bindtap="onSample">示例</text>
+      </view>
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+      <view wx:if="{{values.toFormat === 'webp' || values.cloudWebp}}" class="row-between cloud-row" bindtap="onToggleCloud">
+        <text class="t-sm">云端转 WebP（已{{values.cloudWebp ? '开启' : '关闭'}}）</text>
+        <view class="switch {{values.cloudWebp ? 'on' : ''}}"><text class="switch-knob"></text></view>
+      </view>
+      <view wx:if="{{note}}" class="note-info t-sm">{{note}}</view>
+    </view>
+
+    <view wx:if="{{error}}" class="card err-card">
+      <view class="row">
+        <grid-icon name="alert" size="30" color="#e5484d" />
+        <text class="t-md err-text">{{error.message}}</text>
+      </view>
+      <text class="t-sm t-dim">错误码 {{error.code}}</text>
+    </view>
+
+    <button class="btn btn-primary btn-block" disabled="{{busy || !files.length}}" bindtap="onRun">
+      <view wx:if="{{busy}}" class="spinner"></view>
+      <text>{{busy ? '转换中…' : '开始转换'}}</text>
+    </button>
+
+    <task-progress visible="{{busy && values.toFormat === 'webp'}}" stage="{{taskInfo.stage}}" percent="{{taskInfo.percent}}" message="{{taskInfo.message}}" bind:cancel="onCancelTask" />
+
+    <view wx:if="{{busy && values.toFormat !== 'webp'}}" class="card flat-card">
+      <view class="row-between">
+        <text class="t-sm t-muted">{{progress.text}}</text>
+        <text class="t-sm t-mono">{{progress.percent}}%</text>
+      </view>
+      <view class="bar"><view class="bar-in" style="width:{{progress.percent}}%"></view></view>
+    </view>
+
+    <block wx:if="{{result}}">
+      <view class="card fade-up">
+        <view class="card-title">转换结果</view>
+        <view class="row wrap metric">
+          <view class="metric-item"><text class="m-val">{{summary.inText}}</text><text class="m-key">转换前</text></view>
+          <view class="metric-item"><text class="m-val">{{summary.outText}}</text><text class="m-key">转换后</text></view>
+          <view class="metric-item accent">
+            <text class="m-val">{{summary.deltaPct > 0 ? '+' : ''}}{{summary.deltaPct}}%</text>
+            <text class="m-key">{{summary.deltaPct > 0 ? '体积增加' : '体积减少'}}</text>
+          </view>
+        </view>
+        <slider-compare wx:if="{{result.compareBefore}}" before="{{result.compareBefore}}" after="{{items[0].path}}" />
+        <view wx:if="{{items.length}}" class="name-list">
+          <view wx:for="{{items}}" wx:key="index" class="row-between name-row">
+            <text class="t-sm t-mono ellipsis">{{item.name || item.label}}</text>
+            <text class="t-sm {{item.failed ? 't-err' : (item.delta > 0 ? 't-warn' : 't-ok')}}">
+              {{item.failed ? '失败' : (item.delta > 0 ? '+' : '-') + item.deltaKB + 'KB'}}
+            </text>
+          </view>
+        </view>
+      </view>
+
+      <result-panel kind="{{result.kind}}" images="{{result.images}}" compareBefore="{{result.compareBefore}}" meta="{{result.meta}}" showSave="{{true}}" bind:save="onSave" bind:action="onResultAction" />
+    </block>
+
+    <canvas type="2d" id="tb-offscreen" class="offscreen"></canvas>
+  </view>
+</tool-shell>

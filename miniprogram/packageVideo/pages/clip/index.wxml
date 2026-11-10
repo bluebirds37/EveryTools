@@ -1,0 +1,102 @@
+<tool-shell toolId="{{toolId}}" title="视频截取" desc="{{tool.desc}}" tips="{{tips}}">
+  <view class="stack">
+
+    <view class="card">
+      <view class="card-title">选择视频</view>
+      <media-picker mediaType="video" maxMB="200" maxDuration="600" bind:change="onPick" bind:error="onPickError" />
+      <view wx:if="{{video}}" class="vstage fade-up">
+        <video id="clip-player" src="{{video.path}}" object-fit="contain" show-center-play-btn="{{true}}" />
+        <text class="vstage-tag">{{durationText}}</text>
+      </view>
+      <view wx:if="{{video}}" class="vmeta">
+        <text class="tag tag-dot">{{video.sizeText}}</text>
+        <text class="tag">片段 {{spanText}}</text>
+      </view>
+    </view>
+
+    <view class="card" wx:if="{{video}}">
+      <view class="card-title">时间轴</view>
+      <!-- 自研时间轴：touch 坐标 → 秒数换算全部走 utils/timeline.js（纯函数） -->
+      <view
+        class="tl-track"
+        id="tl-track"
+        data-role="track"
+        bindtouchstart="onTrackTouchStart"
+        bindtouchmove="onTrackTouchMove"
+        bindtouchend="onTrackTouchEnd"
+      >
+        <view class="tl-band" style="left: {{startPct}}%; width: {{endPct - startPct}}%;"></view>
+        <view class="tl-handle tl-handle-start" style="left: {{startPct}}%;"></view>
+        <view class="tl-handle tl-handle-end" style="left: {{endPct}}%;"></view>
+      </view>
+      <!-- 雪碧图不可用时的降级刻度条 -->
+      <view class="tl-ticks">
+        <view wx:for="{{ticks}}" wx:key="sec" class="tl-tick" style="left: {{item.percent}}%;">
+          <view class="tl-tick-line"></view>
+          <text class="tl-tick-label">{{item.label}}</text>
+        </view>
+      </view>
+
+      <view class="tl-inputs">
+        <view class="field grow">
+          <view class="field-label"><text>开始（秒，0.1 精度）</text></view>
+          <input class="input t-mono" type="digit" value="{{startText}}" data-key="startSec" bindblur="onTimeInput" bindconfirm="onTimeInput" />
+        </view>
+        <view class="field grow">
+          <view class="field-label"><text>结束（秒）</text></view>
+          <input class="input t-mono" type="digit" value="{{endText}}" data-key="endSec" bindblur="onTimeInput" bindconfirm="onTimeInput" />
+        </view>
+      </view>
+
+      <view class="grp-title">片段预览（本地关键帧 {{frames.length}} 帧）</view>
+      <scroll-view scroll-x class="tl-frames" enhanced show-scrollbar="{{false}}">
+        <view class="row" style="gap: var(--sp-2);">
+          <view wx:for="{{frames}}" wx:key="sec" class="tl-frame">
+            <video src="{{video.path}}" initial-time="{{item.sec}}" muted object-fit="cover" show-center-play-btn="{{false}}" controls="{{false}}" />
+            <text class="tl-frame-label">{{item.label}}</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="card" wx:if="{{video}}">
+      <view class="card-title">截取设置</view>
+      <view class="grp-title">切割方式</view>
+      <param-form schema="{{schemaCut}}" values="{{values}}" bind:change="onParamChange" />
+      <view class="note" wx:if="{{values.fastCut}}">快速模式直接拷贝流：起止点会吸附到最近关键帧，可能有 ±2s 偏差（不重编码、速度快）。</view>
+      <view class="note" wx:else>默认重编码，起止帧精确到 0.1s。</view>
+
+      <view class="run-wrap">
+        <button class="btn btn-primary btn-block" bind:tap="onRun" disabled="{{busy}}">开始截取</button>
+      </view>
+    </view>
+
+    <task-progress visible="{{busy || stage === 'canceled'}}" stage="{{stage}}" percent="{{percent}}" message="{{progressMsg}}" bind:cancel="onCancel" />
+
+    <view wx:if="{{error}}" class="err-box fade-up">
+      <text class="grow">{{error.message}}</text>
+      <button wx:if="{{error.retryable}}" class="btn btn-sm btn-ghost" bind:tap="onRun">重试</button>
+    </view>
+
+    <view wx:if="{{result}}" class="card fade-up">
+      <view class="card-title">截取完成</view>
+      <view wx:if="{{cmp}}" class="cmp">
+        <view class="cmp-cell">
+          <view class="cmp-num t-muted">{{cmp.beforeText}}</view>
+          <view class="cmp-label">原始大小</view>
+        </view>
+        <text class="cmp-arrow">→</text>
+        <view class="cmp-cell">
+          <view class="cmp-num t-brand">{{cmp.afterText}}</view>
+          <view class="cmp-label">截取后</view>
+        </view>
+        <view class="cmp-save">省 {{cmp.saveText}}</view>
+      </view>
+      <result-panel kind="video" video="{{result.video}}" meta="{{result.meta}}" showSave="{{true}}" bind:save="onSave" bind:action="onResultAction" />
+      <view class="act-row">
+        <button class="btn" bind:tap="onAgain" disabled="{{busy}}">再处理一次</button>
+      </view>
+    </view>
+
+  </view>
+</tool-shell>

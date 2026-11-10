@@ -1,0 +1,47 @@
+<tool-shell toolId="{{toolId}}" title="提取音频" desc="{{tool.desc}}" tips="{{tips}}">
+  <view class="stack">
+
+    <view class="card">
+      <view class="card-title">选择视频</view>
+      <media-picker mediaType="video" maxMB="200" maxDuration="600" bind:change="onPick" bind:error="onPickError" />
+      <view wx:if="{{video}}" class="vstage fade-up">
+        <video src="{{video.path}}" object-fit="contain" show-center-play-btn="{{true}}" />
+        <text class="vstage-tag">预览</text>
+      </view>
+      <view wx:if="{{video}}" class="vmeta">
+        <text class="tag tag-dot">{{video.durationText}}</text>
+        <text class="tag">{{video.sizeText}}</text>
+      </view>
+    </view>
+
+    <view class="card" wx:if="{{video}}">
+      <view class="card-title">音频参数</view>
+      <view class="grp-title">编码</view>
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+
+      <view class="run-wrap">
+        <button class="btn btn-primary btn-block" bind:tap="onRun" disabled="{{busy}}">提取音频</button>
+      </view>
+    </view>
+
+    <task-progress visible="{{busy || stage === 'canceled'}}" stage="{{stage}}" percent="{{percent}}" message="{{progressMsg}}" eta="{{eta}}" bind:cancel="onCancel" />
+
+    <view wx:if="{{error}}" class="err-box fade-up">
+      <text class="grow">{{error.message}}</text>
+      <button wx:if="{{error.retryable}}" class="btn btn-sm btn-ghost" bind:tap="onRun">重试</button>
+    </view>
+
+    <view wx:if="{{result}}" class="card fade-up">
+      <view class="card-title">音频已生成</view>
+      <view class="kv-row" wx:for="{{result.kv}}" wx:key="key">
+        <text class="kv-key">{{item.key}}</text>
+        <text class="kv-val t-mono">{{item.value}}</text>
+      </view>
+      <result-panel kind="video" video="{{result.video}}" meta="{{result.meta}}" showSave="{{true}}" bind:save="onSave" bind:action="onResultAction" />
+      <view class="act-row">
+        <button class="btn" bind:tap="onAgain" disabled="{{busy}}">再处理一次</button>
+      </view>
+    </view>
+
+  </view>
+</tool-shell>

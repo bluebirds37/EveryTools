@@ -1,0 +1,43 @@
+.tp {
+  padding: var(--sp-4);
+}
+.tp-main {
+  margin-left: var(--sp-2);
+}
+.tp-pct {
+  color: var(--brand);
+  font-weight: 700;
+  min-width: 96rpx;
+  text-align: right;
+}
+.tp-bar {
+  margin-top: var(--sp-3);
+  height: 12rpx;
+  border-radius: 999rpx;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.tp-bar-fill {
+  height: 100%;
+  border-radius: 999rpx;
+  background: var(--brand-grad);
+  transition: width .25s ease;
+}
+.tp-ok {
+  background: var(--ok);
+}
+.tp-err {
+  background: var(--err);
+}
+.tp-dim {
+  background: var(--text-3);
+}
+.tp-foot {
+  margin-top: var(--sp-3);
+}
+.tp-cancel {
+  color: var(--err);
+  min-width: 160rpx;
+  min-height: 88rpx;
+  text-align: center;
+}

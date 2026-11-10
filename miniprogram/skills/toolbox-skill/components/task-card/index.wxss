@@ -1,0 +1,10 @@
+.tkc { padding: 24rpx; border-radius: 28rpx; background: var(--card, #fff); }
+.tkc-head { display: flex; align-items: baseline; }
+.tkc-title { font-size: 32rpx; font-weight: 600; color: var(--text, #1F2430); }
+.tkc-badge { margin-left: 12rpx; font-size: 22rpx; color: #3B5BFE; background: rgba(59, 91, 254, 0.1); padding: 4rpx 14rpx; border-radius: 20rpx; }
+.tkc-row { display: flex; margin-top: 12rpx; font-size: 24rpx; }
+.tkc-key { width: 200rpx; color: var(--text-3, #8A93A6); }
+.tkc-val { flex: 1; color: var(--text, #1F2430); }
+.tkc-tip { display: block; margin-top: 16rpx; font-size: 22rpx; color: var(--text-3, #8A93A6); }
+.tkc-btn { margin-top: 20rpx; height: 88rpx; line-height: 88rpx; text-align: center; border-radius: 44rpx; background: linear-gradient(135deg, #3B5BFE, #6A8BFF); color: #fff; font-size: 28rpx; }
+.tkc-btn:active { transform: scale(0.97); }

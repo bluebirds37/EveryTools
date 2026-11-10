@@ -1,0 +1,35 @@
+# Docker 构建上下文裁剪（server/ 目录为上下文根）
+#
+# 原则：只排除「构建/运行不需要」或「绝不能进镜像」的东西。
+# ⚠️ migrations/ **不能**排除：src/db.rs 用 sqlx::migrate!("./migrations") 在编译期把
+#    迁移 SQL 编进二进制（运行镜像因此不需要 migrations 目录，但 builder 阶段必须有）。
+
+# 编译产物：容器内重新 release 构建，宿主机 target/ 绝不能进上下文
+target/
+
+# 热更新产物（docker-compose.update.yml 挂进容器的二进制，见 scripts/update.sh）
+dist/
+
+# 运行期数据（用户上传的分片/产物、构建期生成的测速文件）
+data/
+
+# 密钥：.env 只从宿主机注入，绝不进上下文/镜像层
+.env
+.env.*
+
+# 部署工件本身不属于构建上下文
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker-compose.*.yml
+
+# 只保留镜像需要的脚本：live_smoke.sh 是宿主机冒烟脚本（需要外部 DB/微信凭据），不进镜像
+scripts/*
+!scripts/gen_speedtest_files.sh
+
+# 版本控制 / 编辑器 / 系统噪声
+.git/
+.gitignore
+.idea/
+.vscode/
+**/.DS_Store

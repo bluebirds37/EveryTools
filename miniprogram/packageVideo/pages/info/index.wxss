@@ -1,0 +1,4 @@
+@import "../../styles/video.wxss";
+
+/* 串联/复制按钮行内文字间距 */
+.act-row text { margin-left: 8rpx; }

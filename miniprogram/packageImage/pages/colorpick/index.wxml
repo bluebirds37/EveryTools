@@ -1,0 +1,143 @@
+<tool-shell toolId="{{toolId}}" title="{{tool.name || '取色器'}}" desc="{{tool.desc}}" tips="{{tips}}">
+  <view class="stack">
+
+    <view class="card">
+      <view class="card-title">选择图片</view>
+      <media-picker mediaType="image" multiple="{{false}}" maxMB="{{40}}" bind:change="onFilesChange" bind:error="onFilesError" />
+    </view>
+
+    <view class="card">
+      <view class="row-between">
+        <view class="card-title no-mb">模式</view>
+        <text class="tag" bindtap="onSample">示例</text>
+      </view>
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <view wx:if="{{file}}" class="card pick-card">
+      <view class="row-between">
+        <view class="card-title no-mb">取景取色</view>
+        <text class="t-sm t-dim">{{img.width}}×{{img.height}}</text>
+      </view>
+      <view
+        id="cp-stage"
+        class="stage"
+        bindtouchstart="onStageTouchStart"
+        bindtouchmove="onStageTouch"
+      >
+        <image src="{{file.path}}" mode="aspectFit" class="stage-img" style="left:{{fit.left}}px;top:{{fit.top}}px;width:{{fit.w}}px;height:{{fit.h}}px" />
+        <view wx:if="{{cross.show}}" class="cross" style="left:{{cross.x}}px;top:{{cross.y}}px">
+          <view class="cross-h"></view>
+          <view class="cross-v"></view>
+          <view class="cross-dot" style="background:{{color.hex}}"></view>
+        </view>
+      </view>
+      <view class="row lens-row">
+        <canvas wx:if="{{values.magnifier}}" type="2d" id="cp-lens" class="lens"></canvas>
+        <view wx:if="{{color}}" class="swatch-big" style="background:{{color.hex}}"></view>
+        <view wx:if="{{color}}" class="grow">
+          <view wx:for="{{formats}}" wx:key="key" class="row-between fmt-row" data-v="{{item.value}}" bindtap="onCopy">
+            <text class="t-sm t-muted">{{item.key}}</text>
+            <text class="t-mono fmt-val">{{item.value}}</text>
+          </view>
+        </view>
+        <text wx:if="{{!color}}" class="t-sm t-dim">在图片上滑动即可取色，点击色值复制</text>
+      </view>
+    </view>
+
+    <!-- 主色板 -->
+    <view wx:if="{{values.mode === 'palette' && palette.length}}" class="card fade-up">
+      <view class="row-between">
+        <view class="card-title no-mb">主色板 · Median-Cut</view>
+        <text class="tag" bindtap="onRun">重新提取</text>
+      </view>
+      <view class="pal-strip">
+        <view
+          wx:for="{{palette}}"
+          wx:key="hex"
+          class="pal-cell"
+          style="background:{{item.hex}};flex:{{item.count}}"
+          data-hex="{{item.hex}}"
+          bindtap="onPickSwatch"
+        >
+          <text class="pal-ratio">{{item.ratio}}%</text>
+        </view>
+      </view>
+      <view class="pal-list">
+        <view wx:for="{{palette}}" wx:key="hex" class="row-between pal-row" data-v="{{item.hex}}" bindtap="onCopy">
+          <view class="row">
+            <view class="dot" style="background:{{item.hex}}"></view>
+            <text class="t-mono">{{item.hex}}</text>
+            <text class="t-sm t-dim">{{item.name}} · {{item.ratio}}%</text>
+          </view>
+          <text class="t-sm t-dim">{{item.hsl.h}}°/{{item.hsl.s}}%</text>
+        </view>
+      </view>
+      <view wx:if="{{shades.length}}" class="divider"></view>
+      <view wx:if="{{shades.length}}" class="shade-row">
+        <text class="t-sm t-muted">主色色阶</text>
+        <view class="shade-list">
+          <view wx:for="{{shades}}" wx:key="hex" class="shade" style="background:{{item.hex}}" data-v="{{item.hex}}" bindtap="onCopy">
+            <text class="shade-l">{{item.l}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 对比度 -->
+    <view wx:if="{{values.mode === 'contrast'}}" class="card fade-up">
+      <view class="card-title">WCAG 对比度</view>
+      <view class="row cc-row">
+        <view class="cc-box">
+          <text class="t-sm t-muted">前景 A</text>
+          <input class="input cc-input t-mono" value="{{contrastA}}" data-w="a" bindinput="onContrastInput" />
+          <view class="swatch-sm" style="background:{{contrastA}}"></view>
+        </view>
+        <view class="cc-box">
+          <text class="t-sm t-muted">背景 B</text>
+          <input class="input cc-input t-mono" value="{{contrastB}}" data-w="b" bindinput="onContrastInput" />
+          <view class="swatch-sm" style="background:{{contrastB}}"></view>
+        </view>
+      </view>
+      <view class="row-between cc-action">
+        <text class="t-sm t-dim">取色后点选可设为 A，再点一次设为 B</text>
+        <text class="tag tag-active" bindtap="onSwap">互换</text>
+      </view>
+      <view class="demo" style="background:{{contrastB}};color:{{contrastA}}">
+        <text class="demo-lg">大字号示例 Aa 123</text>
+        <text class="demo-sm">正文示例：通用工具箱 2026</text>
+      </view>
+      <view class="cc-result">
+        <view class="row-between">
+          <text class="t-sm t-muted">对比度</text>
+          <text class="t-lg t-mono">{{contrast}}</text>
+        </view>
+        <block wx:if="{{wcag}}">
+          <view class="row wrap wcag-row">
+            <text class="tag {{wcag.normalAA ? 'tag-pass' : 'tag-fail'}}">正文 AA {{wcag.normalAA ? '通过' : '不通过'}}</text>
+            <text class="tag {{wcag.normalAAA ? 'tag-pass' : 'tag-fail'}}">正文 AAA {{wcag.normalAAA ? '通过' : '不通过'}}</text>
+            <text class="tag {{wcag.largeAA ? 'tag-pass' : 'tag-fail'}}">大字 AA {{wcag.largeAA ? '通过' : '不通过'}}</text>
+            <text class="tag {{wcag.largeAAA ? 'tag-pass' : 'tag-fail'}}">大字 AAA {{wcag.largeAAA ? '通过' : '不通过'}}</text>
+          </view>
+          <text class="t-sm t-brand">{{wcag.text}}</text>
+        </block>
+      </view>
+    </view>
+
+    <view wx:if="{{error}}" class="card err-card">
+      <view class="row">
+        <grid-icon name="alert" size="30" color="#e5484d" />
+        <text class="t-md err-text">{{error.message}}</text>
+      </view>
+      <text class="t-sm t-dim">错误码 {{error.code}}</text>
+    </view>
+
+    <button class="btn btn-primary btn-block" disabled="{{busy || !file}}" bindtap="onRun">
+      <text>{{values.mode === 'palette' ? '提取主色板' : values.mode === 'contrast' ? '计算对比度' : '整理取色结果'}}</text>
+    </button>
+
+    <result-panel wx:if="{{result}}" kind="{{result.kind}}" kv="{{result.kv}}" meta="{{result.meta}}" showCopy="{{true}}" bind:copy="onCopyAll" bind:action="onResultAction" />
+
+    <canvas type="2d" id="tb-offscreen" class="offscreen"></canvas>
+  </view>
+</tool-shell>

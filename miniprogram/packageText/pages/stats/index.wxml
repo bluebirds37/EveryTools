@@ -1,0 +1,71 @@
+<tool-shell toolId="text-stats" title="字数统计" desc="字符单词与字节计数" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <view class="field-label">
+        <text>输入文本</text>
+        <text class="t-dim t-sm">{{input.length}} 字</text>
+      </view>
+      <textarea class="textarea" placeholder="请输入要统计的文本" value="{{input}}" bindinput="onInput" maxlength="-1" auto-height="{{false}}" />
+      <view class="row wrap input-actions">
+        <button class="btn btn-ghost btn-sm" bindtap="onPaste">粘贴</button>
+        <button class="btn btn-sm" bindtap="onClearInput">清空</button>
+      </view>
+    </view>
+
+    <view class="card">
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <button class="btn btn-primary btn-block" bindtap="onRun" loading="{{busy}}" disabled="{{busy}}">统计</button>
+
+    <view wx:if="{{error}}" class="card err-bar">
+      <view class="err-msg">{{error.message}}</view>
+      <view class="t-dim t-sm err-code">{{error.code}}</view>
+    </view>
+
+    <view wx:if="{{result}}" class="card fade-up">
+      <view wx:for="{{kv}}" wx:key="key" class="kv-row">
+        <text class="kv-key">{{item.key}}</text>
+        <text class="kv-val t-mono">{{item.value}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{result && top.length}}" class="card fade-up">
+      <view class="card-title">高频词/字</view>
+      <view class="wrap">
+        <view wx:for="{{top}}" wx:key="word" class="tag word-chip">{{item.word}} × {{item.count}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{result && extremes}}" class="card fade-up">
+      <view class="card-title">最长行内容</view>
+      <view class="long-line t-mono">{{extremes.maxLine}}</view>
+    </view>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="text"
+      text="{{result.text}}"
+      meta="{{result.meta}}"
+      showCopy="{{true}}"
+      showShare="{{true}}"
+      bind:copy="onCopy"
+      bind:share="onShare"
+    />
+
+    <empty-state
+      wx:if="{{!result && !error}}"
+      icon="stats"
+      title="等待输入"
+      desc="字符 / 中文 / 单词 / 标点 / Emoji / 行段落 / UTF-8 字节一次全算"
+    />
+
+    <view class="card">
+      <view class="card-title">内置示例（一键验证）</view>
+      <view class="wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

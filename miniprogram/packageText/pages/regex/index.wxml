@@ -1,0 +1,105 @@
+<tool-shell toolId="text-regex" title="正则测试" desc="高亮匹配替换带模板" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <view class="field-label">
+        <text>正则表达式</text>
+        <text class="t-dim t-sm">/{{values.pattern || ''}}/{{values.flags}}</text>
+      </view>
+      <textarea class="textarea pattern-input" placeholder="如 (\d{4})-(\d{2})-(\d{2})" value="{{values.pattern}}" bindinput="onPattern" maxlength="-1" auto-height="{{false}}" />
+      <view class="row wrap chip-row">
+        <view
+          wx:for="{{flagList}}"
+          wx:key="flag"
+          class="tag flag-chip {{values.flags.indexOf(item.flag) >= 0 ? 'flag-on' : ''}}"
+          data-flag="{{item.flag}}"
+          bindtap="onToggleFlag"
+        >{{item.label}}</view>
+      </view>
+      <view class="divider"></view>
+      <view class="field-label"><text>常用模板</text></view>
+      <view class="row wrap chip-row">
+        <view wx:for="{{templates}}" wx:key="name" class="tag tpl-chip" data-index="{{index}}" bindtap="onTemplate">{{item.name}}</view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="field-label">
+        <text>样本文本</text>
+        <text class="t-dim t-sm">{{text.length}} 字</text>
+      </view>
+      <textarea class="textarea" placeholder="请输入待匹配的文本" value="{{text}}" bindinput="onText" maxlength="-1" auto-height="{{false}}" />
+      <view class="row wrap input-actions">
+        <button class="btn btn-ghost btn-sm" bindtap="onPaste">粘贴</button>
+        <button class="btn btn-sm" bindtap="onClearText">清空</button>
+      </view>
+    </view>
+
+    <view class="card">
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <button class="btn btn-primary btn-block" bindtap="onRun" loading="{{busy}}" disabled="{{busy}}">{{values.mode === 'replace' ? '替换预览' : '开始匹配'}}</button>
+
+    <view wx:if="{{error}}" class="card err-bar">
+      <view class="err-msg">{{error.message}}</view>
+      <view class="t-dim t-sm err-code">{{error.code}}</view>
+    </view>
+
+    <view wx:if="{{segments}}" class="card fade-up">
+      <view class="card-title">匹配高亮</view>
+      <view class="hl-box">
+        <text wx:for="{{segments}}" wx:key="index" class="{{item.hl ? 'hl-seg' : ''}}">{{item.text}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{matchRows.length}}" class="card fade-up">
+      <view class="card-title">分组明细（前 {{matchRows.length}} 条，点击复制）</view>
+      <view
+        wx:for="{{matchRows}}"
+        wx:key="index"
+        class="match-row"
+        data-text="{{item.text}}"
+        bindtap="onCopyMatch"
+      >
+        <text class="match-idx t-mono">#{{index + 1}} @{{item.index}}</text>
+        <view class="match-body">
+          <text class="match-text t-mono">{{item.text}}</text>
+          <text class="t-dim t-sm">分组：{{item.groupsText}}{{item.namedText ? '（' + item.namedText + '）' : ''}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{result}}" class="card fade-up">
+      <view wx:for="{{result.kv}}" wx:key="key" class="kv-row">
+        <text class="kv-key">{{item.key}}</text>
+        <text class="kv-val t-mono">{{item.value}}</text>
+      </view>
+    </view>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="text"
+      text="{{result.text}}"
+      meta="{{result.meta}}"
+      showCopy="{{true}}"
+      showShare="{{true}}"
+      bind:copy="onCopy"
+      bind:share="onShare"
+    />
+
+    <empty-state
+      wx:if="{{!result && !error}}"
+      icon="regex"
+      title="等待匹配"
+      desc="内置灾难回溯拦截与 1 秒超时保护，放心测试表达式"
+    />
+
+    <view class="card">
+      <view class="card-title">内置示例（一键验证）</view>
+      <view class="wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

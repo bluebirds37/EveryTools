@@ -1,0 +1,21 @@
+<view class="tabbar">
+  <view class="tabbar-inner">
+    <view
+      wx:for="{{list}}"
+      wx:key="text"
+      class="tabbar-item {{selected === index ? 'tabbar-item-on' : ''}}"
+      data-index="{{index}}"
+      data-path="{{item.pagePath}}"
+      bindtap="onTap"
+    >
+      <view class="tabbar-pill">
+        <grid-icon
+          name="{{item.icon}}"
+          size="42"
+          color="{{selected === index ? '#FFFFFF' : '#9AA1AC'}}"
+        />
+      </view>
+      <text class="tabbar-text">{{item.text}}</text>
+    </view>
+  </view>
+</view>

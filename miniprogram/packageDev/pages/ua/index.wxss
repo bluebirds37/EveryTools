@@ -1,0 +1,10 @@
+/* UA 解析页 */
+.err-bar { border-left: 8rpx solid var(--err); }
+.ua-summary { line-height: 1.5; }
+.wx-card { border-left: 8rpx solid var(--brand-2); }
+.rule-list { display: flex; flex-direction: column; gap: var(--sp-1); margin-bottom: var(--sp-3); }
+.rule-item { display: flex; align-items: center; gap: var(--sp-2); }
+.rule-re { flex: 1; min-width: 0; color: var(--text-2); font-size: 22rpx; word-break: break-all; }
+.ua-raw { margin-top: var(--sp-3); max-height: 260rpx; overflow-y: auto; }
+.env-note { margin-top: var(--sp-2); line-height: 1.5; }
+.sample-btn { margin: 0 var(--sp-2) var(--sp-2) 0; }

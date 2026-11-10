@@ -1,0 +1,95 @@
+<tool-shell toolId="dev-http" title="HTTP 调试" desc="接口请求看响应耗时" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <view class="field">
+        <view class="field-label">
+          <text>请求地址</text>
+          <text class="t-sm t-dim">{{values.proxy ? '后端代理' : '本机请求'}}</text>
+        </view>
+        <input class="input" value="{{values.url}}" placeholder="https://api.example.com/v1/users" bindinput="onUrlInput" />
+      </view>
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+      <button class="btn btn-primary btn-block" loading="{{busy}}" disabled="{{busy}}" bindtap="onRun">发送请求</button>
+      <view wx:if="{{busy}}" class="row busy-row">
+        <view class="spinner" />
+        <text class="t-sm t-muted">请求中 · 超时 {{values.timeout}} 秒（{{values.proxy ? '经服务端转发' : '本机 wx.request'}}）</text>
+      </view>
+      <view wx:if="{{!busy && !values.proxy}}" class="t-sm t-dim base-note">本机请求只能命中小程序后台配置的合法域名；代理基址 {{apiBase}}</view>
+    </view>
+
+    <view wx:if="{{error}}" class="card err-bar fade-up">
+      <text class="t-sm">{{error.message}}</text>
+      <view wx:if="{{error.hint}}" class="t-sm t-dim err-hint">{{error.hint}}</view>
+      <view wx:if="{{error.suggestProxy}}" class="btn btn-sm btn-ghost err-act" hover-class="none" bindtap="onRetryProxy">改用后端代理重试</view>
+    </view>
+
+    <empty-state wx:if="{{!result && !error && !busy}}" icon="http" title="还没有发出请求" desc="填好地址点「发送请求」，状态码、耗时、大小、响应头与响应体都会列出来" />
+
+    <view wx:if="{{result}}" class="card fade-up">
+      <view class="row-between">
+        <text class="tag status tag-{{result.tone}}">HTTP {{result.statusCode}}</text>
+        <text class="t-sm t-dim">{{result.engine === 'server' ? '后端代理' : '本机请求'}}</text>
+      </view>
+      <view class="metrics">
+        <view class="metric">
+          <text class="m-val">{{result.durationText}}</text>
+          <text class="m-key">耗时</text>
+        </view>
+        <view class="metric">
+          <text class="m-val">{{result.sizeText}}</text>
+          <text class="m-key">响应大小</text>
+        </view>
+        <view class="metric">
+          <text class="m-val">{{result.headerCount}}</text>
+          <text class="m-key">响应头</text>
+        </view>
+        <view class="metric">
+          <text class="m-val">{{result.isJson ? 'JSON' : '文本'}}</text>
+          <text class="m-key">响应类型</text>
+        </view>
+      </view>
+      <view class="t-sm t-dim req-line">{{result.requestLine}}</view>
+      <view wx:if="{{result.truncated}}" class="t-sm warn-text">响应超过安全展示长度，已截断显示（完整大小 {{result.sizeText}}）</view>
+      <view class="row wrap act-row">
+        <view class="btn btn-sm" hover-class="none" bindtap="onCopyBody">复制响应体</view>
+        <view class="btn btn-sm" hover-class="none" bindtap="onCopyHeaders">复制响应头</view>
+        <view class="btn btn-sm" hover-class="none" bindtap="onCopyCurl">复制 cURL</view>
+      </view>
+    </view>
+
+    <view wx:if="{{result && result.headerRows.length}}" class="card fade-up">
+      <view class="card-title">响应头</view>
+      <view class="rp-kv">
+        <view wx:for="{{result.headerRows}}" wx:key="key" class="kv-row">
+          <text class="kv-key">{{item.key}}</text>
+          <text class="kv-val t-mono">{{item.value}}</text>
+        </view>
+      </view>
+    </view>
+
+    <result-panel wx:if="{{result}}" kind="text" text="{{result.bodyText}}" meta="{{result.meta}}" showCopy="{{true}}" bind:copy="onCopy" />
+
+    <view class="card">
+      <view class="row-between">
+        <text class="card-title">历史记录</text>
+        <text wx:if="{{history.length}}" class="t-sm t-brand" hover-class="none" bindtap="onClearHistory">清空</text>
+      </view>
+      <view wx:if="{{!history.length}}" class="t-sm t-dim">还没有请求记录（最多保留 20 条，只记录方法/地址/状态/耗时，不记录正文）</view>
+      <view wx:for="{{history}}" wx:key="at" class="his-row" data-index="{{index}}" hover-class="none" bindtap="onPickHistory">
+        <text class="tag his-method">{{item.method}}</text>
+        <view class="grow">
+          <text class="his-url ellipsis">{{item.url}}</text>
+          <text class="t-sm t-dim">{{item.status}} · {{item.cost}} ms · {{item.size}}</text>
+        </view>
+        <grid-icon name="chevron" size="26" />
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">内置示例</view>
+      <view class="row wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

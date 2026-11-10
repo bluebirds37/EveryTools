@@ -1,0 +1,39 @@
+<tool-shell toolId="calc-unit" title="单位换算" desc="10 组类别双向实时换算" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+      <view class="row swap-row">
+        <button class="btn btn-ghost btn-sm" bindtap="onSwap">交换单位 ⇄</button>
+      </view>
+    </view>
+
+    <view wx:if="{{error}}" class="card err-bar">
+      <text class="t-sm">{{error.message}}</text>
+    </view>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="kv"
+      kv="{{result.kv}}"
+      meta="{{result.meta}}"
+      text="{{result.text}}"
+      showCopy="{{true}}"
+      bind:copy="onCopy"
+    />
+
+    <view wx:if="{{history.length}}" class="card">
+      <view class="card-title">最近换算（点击复用数值）</view>
+      <view class="wrap hist">
+        <view wx:for="{{history}}" wx:key="*this" class="tag hist-tag" data-index="{{index}}" bindtap="onUseHistory">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">内置示例</view>
+      <view class="wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

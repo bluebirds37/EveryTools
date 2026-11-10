@@ -1,0 +1,6 @@
+@import "../../styles/video.wxss";
+
+/* 抽帧结果数量徽标 */
+.card-title { display: flex; align-items: center; justify-content: space-between; }
+
+.act-row text { margin-left: 8rpx; }

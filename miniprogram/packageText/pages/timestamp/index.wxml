@@ -1,0 +1,60 @@
+<tool-shell toolId="text-timestamp" title="时间戳" desc="Unix 时间戳与日期互转" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <view class="row-between">
+        <text class="t-sm t-muted">当前时间</text>
+        <text class="t-mono">{{clock}}</text>
+      </view>
+      <view class="divider" />
+      <view class="field-label">
+        <text>输入（时间戳或日期）</text>
+        <text class="t-dim t-sm">{{input.length}} 字</text>
+      </view>
+      <textarea class="textarea textarea-sm" placeholder="1700000000 / 1755052800123 / 2026-10-13 18:00:00" value="{{input}}" bindinput="onInput" maxlength="-1" auto-height="{{false}}" />
+      <view class="row wrap input-actions">
+        <button class="btn btn-ghost btn-sm" bindtap="onPaste">粘贴</button>
+        <button class="btn btn-sm" bindtap="onClearInput">清空</button>
+        <button class="btn btn-sm" bindtap="onNow">现在</button>
+        <button class="btn btn-sm" bindtap="onTodayZero">今天 0 点</button>
+      </view>
+    </view>
+
+    <view class="card">
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <button class="btn btn-primary btn-block" bindtap="onRun" loading="{{busy}}" disabled="{{busy}}">转换</button>
+
+    <view wx:if="{{error}}" class="card err-bar">
+      <view class="err-msg">{{error.message}}</view>
+      <view class="t-dim t-sm err-code">{{error.code}}</view>
+    </view>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="kv"
+      kv="{{result.kv}}"
+      text="{{result.text}}"
+      meta="{{result.meta}}"
+      showCopy="{{true}}"
+      showShare="{{true}}"
+      bind:copy="onCopy"
+      bind:share="onShare"
+    />
+
+    <empty-state
+      wx:if="{{!result && !error}}"
+      icon="timestamp"
+      title="等待输入"
+      desc="自动识别 10 位秒级与 13 位毫秒时间戳，日期文本可反向得时间戳"
+    />
+
+    <view class="card">
+      <view class="card-title">内置示例（一键填入）</view>
+      <view class="wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

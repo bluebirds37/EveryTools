@@ -1,0 +1,88 @@
+<tool-shell toolId="dev-color" title="颜色工具" desc="色值互转与对比度检查" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <view class="field">
+        <view class="field-label">
+          <text>颜色输入</text>
+          <text class="t-sm t-brand" hover-class="none" bindtap="onPaste">粘贴</text>
+        </view>
+        <view class="row">
+          <input class="input grow" value="{{values.color}}" placeholder="#3B5BFE / rgb(59,91,254) / hsl(230,99%,61%)" bindinput="onColorInput" />
+          <view class="swatch" style="background:{{live.ok ? live.swatch : 'transparent'}}" />
+        </view>
+        <view wx:if="{{live && !live.ok}}" class="t-sm err-text">{{live.hint}}</view>
+      </view>
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+      <button class="btn btn-primary btn-block" loading="{{busy}}" disabled="{{busy}}" bindtap="onRun">生成结果</button>
+    </view>
+
+    <view wx:if="{{error}}" class="card err-bar">
+      <text class="t-sm">{{error.message}}</text>
+    </view>
+
+    <empty-state wx:if="{{!result && !error && !busy}}" icon="color" title="还没有结果" desc="输入色值可实时查看四种格式，点「生成结果」得到完整报告与判定" />
+
+    <view wx:if="{{live && live.ok}}" class="card fade-up">
+      <view class="card-title">实时互转</view>
+      <view wx:for="{{live.rows}}" wx:key="key" class="kv-row" data-value="{{item.value}}" hover-class="none" bindtap="onCopyValue">
+        <text class="kv-key">{{item.key}}</text>
+        <text class="kv-val t-mono">{{item.value}}</text>
+      </view>
+      <view class="t-sm t-dim live-tip">点任意一行可复制该格式</view>
+    </view>
+
+    <view wx:if="{{result && result.mode === 'contrast'}}" class="card fade-up">
+      <view class="card-title">对比预览</view>
+      <view class="contrast-demo">
+        <view class="contrast-box" style="background:{{result.demo[1].swatch}};color:{{result.demoText}}">
+          <text class="cd-lg">正文 16px Aa</text>
+          <text class="cd-sm">大号文字 24px 粗体 Aa</text>
+        </view>
+      </view>
+      <view class="rp-kv">
+        <view wx:for="{{result.kv}}" wx:key="key" class="kv-row">
+          <text class="kv-key">{{item.key}}</text>
+          <text class="kv-val">{{item.value}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{result && result.mode === 'scale'}}" class="card fade-up">
+      <view class="card-title">明暗色阶</view>
+      <view class="scale-grid">
+        <view wx:for="{{result.mixScale}}" wx:key="hex" class="scale-cell" data-value="{{item.hex}}" hover-class="none" bindtap="onCopyValue">
+          <view class="scale-chip" style="background:{{item.hex}}" />
+          <text class="scale-label">{{item.label}}</text>
+          <text class="scale-hex t-mono">{{item.hex}}</text>
+        </view>
+      </view>
+      <view class="divider" />
+      <view class="card-title">HSL 明度阶梯</view>
+      <view class="scale-grid">
+        <view wx:for="{{result.ramp}}" wx:key="hex" class="scale-cell" data-value="{{item.hex}}" hover-class="none" bindtap="onCopyValue">
+          <view class="scale-chip" style="background:{{item.hex}}" />
+          <text class="scale-label">{{item.label}}</text>
+          <text class="scale-hex t-mono">{{item.hex}}</text>
+        </view>
+      </view>
+      <view class="divider" />
+      <view class="card-title">配色关系</view>
+      <view class="scale-grid">
+        <view wx:for="{{result.harmony}}" wx:key="hex" class="scale-cell" data-value="{{item.tone.hex}}" hover-class="none" bindtap="onCopyValue">
+          <view class="scale-chip" style="background:{{item.tone.hex}}" />
+          <text class="scale-label">{{item.name}}</text>
+          <text class="scale-hex t-mono">{{item.tone.hex}}</text>
+        </view>
+      </view>
+    </view>
+
+    <result-panel wx:if="{{result}}" kind="{{result.mode === 'convert' ? 'kv' : 'text'}}" kv="{{result.kv}}" text="{{result.text}}" meta="{{result.meta}}" showCopy="{{true}}" bind:copy="onCopy" />
+
+    <view class="card">
+      <view class="card-title">内置示例</view>
+      <view class="row wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

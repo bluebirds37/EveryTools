@@ -1,0 +1,10 @@
+{
+  "usingComponents": {
+    "tool-shell": "/components/tool-shell/index",
+    "param-form": "/components/param-form/index",
+    "result-panel": "/components/result-panel/index",
+    "media-picker": "/components/media-picker/index",
+    "grid-icon": "/components/grid-icon/index"
+  },
+  "navigationBarTitleText": "取色器"
+}

@@ -1,0 +1,27 @@
+<view class="mp">
+  <view class="mp-grid">
+    <view wx:for="{{files}}" wx:key="path" class="mp-cell">
+      <image wx:if="{{item.kind === 'video'}}" class="mp-thumb" src="{{item.thumb || item.path}}" mode="aspectFill" data-i="{{index}}" bindtap="preview" />
+      <image wx:else class="mp-thumb" src="{{item.path}}" mode="aspectFill" data-i="{{index}}" bindtap="preview" />
+      <view wx:if="{{item.kind === 'video'}}" class="mp-badge mp-badge-play">
+        <grid-icon name="video" size="20" color="#FFFFFF" />
+      </view>
+      <view wx:if="{{item.sizeLabel || item.durLabel}}" class="mp-badge mp-badge-info ellipsis">{{item.sizeLabel}}{{item.durLabel ? ' · ' + item.durLabel : ''}}</view>
+      <view class="mp-del" hover-class="none" data-i="{{index}}" bindtap="onRemove">
+        <view class="mp-del-in">
+          <grid-icon name="close" size="24" color="#FFFFFF" />
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{canAdd}}" class="mp-add {{picking ? 'mp-disabled' : ''}}" hover-class="none" bindtap="onPick">
+      <grid-icon name="plus" size="48" />
+      <view class="mp-add-t">{{picking ? '读取中' : '添加'}}</view>
+    </view>
+  </view>
+
+  <view class="row-between mp-foot">
+    <text class="t-sm t-muted">{{hint}}</text>
+    <text wx:if="{{totalText}}" class="tag">{{totalText}}</text>
+  </view>
+</view>

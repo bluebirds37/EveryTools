@@ -1,0 +1,24 @@
+@import "../../styles/video.wxss";
+
+/* GIF 结果展示：深色 16:9 舞台，宽度自适应 */
+.gif-stage {
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--v-stage);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320rpx;
+  margin-bottom: var(--sp-2);
+}
+.gif-img { width: 100%; }
+
+.note {
+  margin-top: var(--sp-2);
+  font-size: 24rpx;
+  color: var(--text-2);
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  padding: var(--sp-2) var(--sp-3);
+  line-height: 1.6;
+}

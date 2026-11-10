@@ -1,0 +1,42 @@
+/* 随机数与决策页 */
+.err-bar { border-left: 8rpx solid var(--err); }
+.sample-btn { margin: 0 var(--sp-2) var(--sp-2) 0; }
+
+.wheel-card { display: flex; flex-direction: column; align-items: center; }
+.wheel-wrap { position: relative; width: 560rpx; height: 600rpx; }
+.wheel-pointer {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: -18rpx;
+  width: 0;
+  height: 0;
+  border-left: 18rpx solid transparent;
+  border-right: 18rpx solid transparent;
+  border-top: 30rpx solid var(--text);
+  z-index: 2;
+}
+.wheel {
+  position: absolute;
+  top: 40rpx;
+  left: 0;
+  width: 560rpx;
+  height: 560rpx;
+  border-radius: 50%;
+  border: 8rpx solid var(--surface-2);
+  box-shadow: 0 0 0 6rpx var(--line);
+}
+.wheel-label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 160rpx;
+  margin-left: -80rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--on-brand);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.wheel-note { text-align: center; }

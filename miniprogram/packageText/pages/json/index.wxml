@@ -1,0 +1,71 @@
+<tool-shell toolId="text-json" title="JSON 格式化" desc="美化校验与树视图浏览" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <view class="field-label">
+        <text>输入（JSON 文本）</text>
+        <text class="t-dim t-sm">{{input.length}} 字</text>
+      </view>
+      <textarea class="textarea" placeholder="粘贴或输入 JSON…" value="{{input}}" bindinput="onInput" maxlength="-1" auto-height="{{false}}" />
+      <view class="row input-actions">
+        <button class="btn btn-ghost btn-sm" bindtap="onPaste">粘贴</button>
+        <button class="btn btn-sm" bindtap="onClearInput">清空</button>
+      </view>
+    </view>
+
+    <view class="card">
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <button class="btn btn-primary btn-block" bindtap="onRun" loading="{{busy}}" disabled="{{busy}}">执行</button>
+
+    <view wx:if="{{error}}" class="card err-bar">
+      <view class="err-msg">{{error.message}}</view>
+      <view class="t-dim t-sm err-code">{{error.code}}</view>
+    </view>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="{{result.kv ? 'kv' : 'text'}}"
+      kv="{{result.kv}}"
+      text="{{result.text}}"
+      meta="{{result.meta}}"
+      showCopy="{{true}}"
+      showShare="{{true}}"
+      bind:copy="onCopy"
+      bind:share="onShare"
+    />
+
+    <view wx:if="{{tree}}" class="card fade-up">
+      <view class="row-between tree-head">
+        <view class="card-title">树视图 · {{tree.rows.length}}/{{tree.all.length}} 节点</view>
+        <view class="tag" hover-class="none" bindtap="onCopyAll">复制 JSON</view>
+      </view>
+      <view wx:if="{{tree.truncated}}" class="t-sm t-muted">节点数超过 20000 上限，仅展示前部分</view>
+      <scroll-view scroll-y class="tree-scroll">
+        <view wx:for="{{tree.rows}}" wx:key="id" class="tree-row" style="padding-left:{{item.depth * 28}}rpx">
+          <view wx:if="{{item.expandable}}" class="tree-toggle" hover-class="none" data-id="{{item.id}}" catchtap="onToggleNode">{{collapsed[item.id] ? '+' : '-'}}</view>
+          <view wx:else class="tree-toggle invisible">-</view>
+          <view class="tree-key t-mono" hover-class="none" data-pointer="{{item.pointer}}" catchtap="onCopyPointer">{{item.key}}</view>
+          <text class="tree-type">{{item.type}} · {{item.childCount}}</text>
+          <text class="tree-preview t-mono">{{item.preview}}</text>
+        </view>
+      </scroll-view>
+      <view class="t-sm t-dim tree-hint">点「+/-」折叠展开，点键名路径复制 JSON Pointer</view>
+    </view>
+
+    <empty-state
+      wx:if="{{!result && !tree && !error}}"
+      icon="json"
+      title="等待输入"
+      desc="粘贴 JSON 后点「执行」，支持美化 / 压缩 / 校验 / 树视图"
+    />
+
+    <view class="card">
+      <view class="card-title">内置示例（一键填入）</view>
+      <view class="wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

@@ -1,0 +1,82 @@
+.offscreen {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+  width: 300px;
+  height: 300px;
+}
+
+.files-row { margin-top: var(--sp-2); }
+
+.cloud-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-2) 0;
+}
+
+.switch {
+  width: 92rpx;
+  height: 52rpx;
+  border-radius: 999rpx;
+  background: var(--surface-2);
+  border: 2rpx solid var(--line);
+  display: flex;
+  align-items: center;
+  padding: 4rpx;
+  flex-shrink: 0;
+}
+
+.switch.on { background: var(--brand-grad); border-color: transparent; }
+.switch-knob {
+  width: 42rpx;
+  height: 42rpx;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  transition: transform .18s ease;
+}
+.switch.on .switch-knob { transform: translateX(40rpx); }
+
+.note-info {
+  border-radius: var(--r-md);
+  padding: var(--sp-2);
+  font-size: 24rpx;
+  line-height: 1.5;
+  background: var(--surface-2);
+  color: var(--text-2);
+  margin-top: var(--sp-2);
+}
+
+.flat-card { background: var(--surface-2); border-radius: var(--r-md); }
+.bar { height: 10rpx; border-radius: 999rpx; background: var(--line); overflow: hidden; margin-top: var(--sp-2); }
+.bar-in { height: 100%; border-radius: 999rpx; background: var(--brand-grad); transition: width .25s ease; }
+
+.err-card { border: 2rpx solid rgba(229, 72, 77, .35); }
+.err-text { color: var(--err); }
+.t-err { color: var(--err); }
+.t-warn { color: var(--warn); }
+.t-ok { color: var(--ok); }
+
+.metric { gap: var(--sp-2); margin-bottom: var(--sp-3); }
+.metric-item {
+  flex: 1;
+  min-width: 180rpx;
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  padding: var(--sp-3) var(--sp-2);
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+.metric-item.accent { background: rgba(59, 91, 254, .1); }
+.metric-item.accent .m-val { color: var(--brand); }
+.m-val { font-size: 32rpx; font-weight: 700; font-family: "SF Mono", Menlo, monospace; }
+.m-key { font-size: 22rpx; color: var(--text-2); }
+
+.name-list { margin-top: var(--sp-3); }
+.name-row {
+  padding: 14rpx 0;
+  border-bottom: 2rpx solid var(--line);
+}
+.name-row:last-child { border-bottom: none; }

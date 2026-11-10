@@ -1,0 +1,12 @@
+/* 单位换算页：仅本页特有样式 */
+.swap-row { margin-top: var(--sp-2); }
+.err-bar { border-left: 8rpx solid var(--err); }
+.hist { gap: var(--sp-2); }
+.hist-tag {
+  max-width: 100%;
+  min-height: 56rpx;
+  line-height: 1.4;
+  padding: 8rpx 20rpx;
+  height: auto;
+}
+.sample-btn { margin: 0 var(--sp-2) var(--sp-2) 0; }

@@ -1,0 +1,12 @@
+.tdc { padding: 24rpx; border-radius: 28rpx; background: var(--card, #fff); }
+.tdc-head { display: flex; align-items: baseline; }
+.tdc-name { font-size: 32rpx; font-weight: 600; color: var(--text, #1F2430); }
+.tdc-cat { margin-left: 12rpx; font-size: 22rpx; color: var(--text-3, #8A93A6); }
+.tdc-desc { display: block; margin-top: 8rpx; font-size: 24rpx; color: var(--text-2, #5A6478); }
+.tdc-row { display: flex; margin-top: 12rpx; font-size: 24rpx; }
+.tdc-key { width: 200rpx; color: var(--text-3, #8A93A6); }
+.tdc-val { flex: 1; color: var(--text, #1F2430); }
+.tdc-actions { display: flex; margin-top: 24rpx; }
+.tdc-btn { flex: 1; height: 88rpx; line-height: 88rpx; text-align: center; border-radius: 44rpx; background: linear-gradient(135deg, #3B5BFE, #6A8BFF); color: #fff; font-size: 28rpx; }
+.tdc-btn:active { transform: scale(0.97); }
+.tdc-btn-ghost { margin-left: 16rpx; background: transparent; border: 2rpx solid #3B5BFE; color: #3B5BFE; }

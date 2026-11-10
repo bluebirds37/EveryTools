@@ -1,0 +1,21 @@
+<view wx:if="{{visible}}" class="tp card fade-up">
+  <view class="row">
+    <view wx:if="{{active}}" class="spinner" />
+    <grid-icon wx:else name="{{icon}}" size="40" color="{{tone === 'ok' ? '#16A34A' : tone === 'err' ? '#E5484D' : '#9AA1AC'}}" />
+    <view class="grow tp-main">
+      <view class="t-md ellipsis">{{text}}</view>
+      <view wx:if="{{eta}}" class="t-sm t-dim">预计 {{eta}}</view>
+    </view>
+    <view class="tp-pct t-mono">{{pct}}%</view>
+  </view>
+
+  <view class="tp-bar">
+    <view class="tp-bar-fill tp-{{tone}}" style="width:{{pct}}%"></view>
+  </view>
+
+  <view class="row tp-foot">
+    <view class="tag">{{label}}</view>
+    <view class="grow" />
+    <view wx:if="{{active && showCancel}}" class="btn btn-sm tp-cancel" hover-class="none" bindtap="onCancel">取消</view>
+  </view>
+</view>

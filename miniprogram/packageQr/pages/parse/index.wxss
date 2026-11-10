@@ -1,0 +1,13 @@
+/* 码内容解析页 —— 仅本页特有样式 */
+.ps-err {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  border-left: 8rpx solid var(--err);
+}
+.ps-sample { margin: 0 var(--sp-2) var(--sp-2) 0; }
+.ps-raw {
+  margin-top: var(--sp-2);
+  max-height: 320rpx;
+  overflow: hidden;
+}

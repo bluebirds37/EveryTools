@@ -1,0 +1,74 @@
+<tool-shell toolId="dev-ua" title="UA 解析" desc="识别浏览器设备内核" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+      <button class="btn btn-primary btn-block" loading="{{busy}}" disabled="{{busy}}" bindtap="onRun">解析 UA</button>
+    </view>
+
+    <view wx:if="{{error}}" class="card err-bar">
+      <text class="t-sm">{{error.message}}</text>
+    </view>
+
+    <empty-state wx:if="{{!result && !error && !busy}}" icon="ua" title="还没有解析结果" desc="粘贴 UA 后点「解析 UA」，或点内置示例看微信/小程序等特判" />
+
+    <view wx:if="{{result}}" class="card fade-up">
+      <text class="t-md ua-summary">{{result.summary}}</text>
+      <view class="divider" />
+      <view class="rp-kv">
+        <view wx:for="{{result.kv}}" wx:key="key" class="kv-row">
+          <text class="kv-key">{{item.key}}</text>
+          <text class="kv-val">{{item.value}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{result && result.wechatIn}}" class="card fade-up wx-card">
+      <view class="card-title">微信环境特判</view>
+      <view class="rp-kv">
+        <view wx:for="{{result.wechat}}" wx:key="key" class="kv-row">
+          <text class="kv-key">{{item.key}}</text>
+          <text class="kv-val">{{item.value}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{result && values.showRaw !== false}}" class="card fade-up">
+      <view class="card-title">命中规则与分段</view>
+      <view wx:if="{{result.matched.length}}" class="rule-list">
+        <view wx:for="{{result.matched}}" wx:key="rule" class="rule-item">
+          <text class="tag">{{item.cat}}</text>
+          <text class="t-mono rule-re">{{item.rule}}</text>
+        </view>
+      </view>
+      <view wx:else class="t-sm t-dim">没有命中专门规则，结果按兜底判定</view>
+      <view wx:for="{{result.parts}}" wx:key="label" class="kv-row">
+        <text class="kv-key">{{item.label}}</text>
+        <text class="kv-val t-mono">{{item.value}}</text>
+      </view>
+      <view class="code-block ua-raw">{{result.raw}}</view>
+    </view>
+
+    <result-panel wx:if="{{result}}" kind="text" text="{{result.text}}" meta="{{result.meta}}" showCopy="{{true}}" bind:copy="onCopy" />
+
+    <view wx:if="{{env}}" class="card">
+      <view class="row-between">
+        <text class="card-title">本机运行环境</text>
+        <text class="t-sm t-brand" hover-class="none" bindtap="onCopyEnv">复制</text>
+      </view>
+      <view class="rp-kv">
+        <view wx:for="{{env.rows}}" wx:key="key" class="kv-row">
+          <text class="kv-key">{{item.key}}</text>
+          <text class="kv-val">{{item.value}}</text>
+        </view>
+      </view>
+      <view class="t-sm t-dim env-note">{{env.note}}</view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">内置示例</view>
+      <view class="row wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

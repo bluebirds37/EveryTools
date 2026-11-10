@@ -1,0 +1,133 @@
+<view class="page search-page">
+  <!-- 顶部搜索条（吸顶） -->
+  <view class="bar">
+    <view class="bar-box">
+      <view class="bar-icon">
+        <grid-icon name="search" size="30" />
+      </view>
+      <input
+        class="bar-input"
+        value="{{keyword}}"
+        focus="{{focusInput}}"
+        placeholder="搜索工具、格式或功能"
+        placeholder-class="bar-ph"
+        confirm-type="search"
+        bindinput="onInput"
+        bindconfirm="onConfirm"
+      />
+      <view wx:if="{{keyword}}" class="bar-clear" catchtap="onClearKeyword">
+        <grid-icon name="close" size="24" />
+      </view>
+    </view>
+    <view class="bar-cancel" bindtap="onCancel">取消</view>
+  </view>
+
+  <!-- 空输入态：大家都在用 + 搜索历史 -->
+  <block wx:if="{{mode === 'idle'}}">
+    <view class="block fade-up">
+      <view class="block-head">
+        <view class="block-title">大家都在用</view>
+      </view>
+      <view class="hot-wrap">
+        <view
+          wx:for="{{hot}}"
+          wx:key="id"
+          class="hot-chip"
+          data-id="{{item.id}}"
+          hover-class="press"
+          bindtap="onResultTap"
+        >
+          <view class="hot-icon" style="background:{{item.accentSoft}};">
+            <grid-icon name="{{item.icon}}" size="28" color="{{item.accent}}" />
+          </view>
+          <text class="hot-name">{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{history.length > 0}}" class="block fade-up">
+      <view class="block-head">
+        <view class="block-title">搜索历史</view>
+        <view class="block-action" bindtap="onClearHistory">
+          <grid-icon name="close" size="22" />
+          <text class="block-action-text">清空</text>
+        </view>
+      </view>
+      <view class="his-wrap">
+        <view wx:for="{{history}}" wx:key="*this" class="his-item">
+          <text class="his-word" data-word="{{item}}" bindtap="onTapHistory">{{item}}</text>
+          <view class="his-del" data-word="{{item}}" catchtap="onDeleteHistory">
+            <grid-icon name="close" size="18" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:else class="idle-tip">输入关键词即可搜索全部工具，支持名称、描述与关键词匹配</view>
+  </block>
+
+  <!-- 结果态：按分类分组 + 命中片段高亮 -->
+  <block wx:elif="{{mode === 'result'}}">
+    <view class="res-count">{{hitCount > 0 ? '找到 ' + hitCount + ' 个工具' : '没有找到相关工具'}}</view>
+
+    <view wx:for="{{groups}}" wx:key="id" wx:for-item="group" class="group fade-up">
+      <view class="group-head">
+        <view class="group-badge" style="background:{{group.accentSoft}};">
+          <grid-icon name="{{group.icon}}" size="24" color="{{group.accent}}" />
+        </view>
+        <text class="group-name">{{group.name}}</text>
+        <text class="group-num">{{group.items.length}}</text>
+      </view>
+
+      <view class="group-list">
+        <view
+          wx:for="{{group.items}}"
+          wx:key="id"
+          wx:for-item="item"
+          class="res-row"
+          data-id="{{item.id}}"
+          hover-class="press"
+          bindtap="onResultTap"
+          bindlongpress="onResultLongPress"
+        >
+          <view class="res-icon" style="background:{{item.accentSoft}};">
+            <grid-icon name="{{item.icon}}" size="38" color="{{item.accent}}" />
+          </view>
+          <view class="grow">
+            <view class="res-name-row">
+              <text class="res-name">
+                <text wx:for="{{item.nameParts}}" wx:key="k" wx:for-item="p" class="{{p.hl ? 'hl' : ''}}">{{p.t}}</text>
+              </text>
+              <text wx:if="{{item.beta}}" class="res-beta">内测</text>
+            </view>
+            <view class="res-desc">
+              <text wx:for="{{item.descParts}}" wx:key="k" wx:for-item="p" class="{{p.hl ? 'hl' : ''}}">{{p.t}}</text>
+            </view>
+            <view class="res-tags">
+              <text class="res-engine">{{item.engineText}}</text>
+              <view wx:for="{{item.keywordParts}}" wx:key="raw" wx:for-item="kw" class="res-tag">
+                <text wx:for="{{kw.parts}}" wx:key="k" wx:for-item="p" class="{{p.hl ? 'hl' : ''}}">{{p.t}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="res-arrow">
+            <grid-icon name="chevron" size="24" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{noResult}}" class="no-result fade-up">
+      <empty-state icon="search" title="没有找到相关工具" desc="换个说法再试，或把需求反馈给我们" />
+      <view class="btn btn-primary btn-sm no-result-btn" hover-class="press" bindtap="onFeedback">
+        <view class="no-result-btn-icon">
+          <grid-icon name="copy" size="26" color="#FFFFFF" />
+        </view>
+        <text>反馈需求</text>
+      </view>
+      <view class="no-result-tip">复制反馈模板，填上使用场景后发送即可</view>
+    </view>
+  </block>
+
+  <view class="safe-bottom"></view>
+</view>

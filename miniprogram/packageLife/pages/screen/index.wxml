@@ -1,0 +1,41 @@
+<tool-shell toolId="life-screen" title="屏幕检测" desc="全屏纯色查坏点漏光" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <view class="row-between seq-row">
+        <text class="t-sm t-muted">当前色序</text>
+        <text class="tag">{{seqLabel}} · {{values.autoNext ? '自动 ' + values.interval + 's' : '手动单击'}}</text>
+      </view>
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <button class="btn btn-primary btn-block run-btn" disabled="{{busy}}" bindtap="onRun">进入全屏测试</button>
+
+    <view wx:if="{{error}}" class="card err-bar"><text class="t-sm">{{error.message}}</text></view>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="text"
+      text="{{result.text}}"
+      meta="{{result.meta}}"
+      showCopy="{{true}}"
+      bind:copy="onCopy"
+    />
+
+    <empty-state
+      wx:else
+      title="尚未开始检测"
+      desc="选择色序后进入全屏，逐档纯色下检查坏点、漏光与子像素；双击退出"
+      icon="screen"
+    />
+  </view>
+</tool-shell>
+
+<view wx:if="{{fullscreen}}" class="screen-layer {{colorClass}}" bindtap="onScreenTap">
+  <view wx:if="{{values.showHint}}" class="screen-hint {{stageHint === 'dark' ? 'on-dark' : 'on-light'}}">
+    <text>单击下一档 · 双击退出 · {{stepNo}}/{{stepTotal}}：{{stage}}</text>
+  </view>
+  <view wx:if="{{values.showHint}}" class="screen-exit" catchtap="onExitButton">
+    <text>退出</text>
+  </view>
+</view>

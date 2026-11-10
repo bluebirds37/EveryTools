@@ -1,0 +1,41 @@
+<tool-shell toolId="calc-random" title="随机数与决策" desc="整数 / 不重复 / 硬币 / 转盘 / 分组 / 抽签" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <view wx:if="{{values.mode==='wheel'&&wheelSectors.length}}" class="card wheel-card">
+      <view class="wheel-wrap">
+        <view class="wheel-pointer"></view>
+        <view class="wheel" style="{{wheelStyle}}">
+          <view wx:if="{{wheelShowLabels}}" class="wheel-label" wx:for="{{wheelSectors}}" wx:key="index" style="transform: rotate({{item.angle}}deg) translateY(-196rpx) rotate({{-item.angle}}deg);">{{item.name}}</view>
+        </view>
+      </view>
+      <view wx:if="{{!wheelShowLabels}}" class="t-sm t-muted wheel-note">{{wheelSectors.length}} 个扇区较多，文字省略，以指针停止结果为准</view>
+    </view>
+
+    <button class="btn btn-primary btn-block" loading="{{busy}}" disabled="{{busy}}" bindtap="onRun">{{values.mode==='wheel'?'开始转盘':'开始'}}</button>
+
+    <button wx:if="{{remainCount===0}}" class="btn btn-block" bindtap="onResetPool">重置候选池</button>
+
+    <view wx:if="{{error}}" class="card err-bar"><text class="t-sm">{{error.message}}</text></view>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="kv"
+      kv="{{result.kv}}"
+      meta="{{result.meta}}"
+      text="{{result.text}}"
+      showCopy="{{true}}"
+      bind:copy="onCopy"
+    />
+
+    <view class="card">
+      <view class="card-title">内置示例</view>
+      <view class="wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

@@ -1,0 +1,276 @@
+.mine {
+  padding-top: var(--sp-3);
+  /* 给自定义 tabBar 让出空间 */
+  padding-bottom: calc(env(safe-area-inset-bottom) + 148rpx);
+}
+
+.press {
+  opacity: .72;
+}
+
+/* ---------- 账号卡 ---------- */
+.acc {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 30rpx var(--sp-4);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.acc-avatar {
+  width: 112rpx;
+  height: 112rpx;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+}
+.acc-avatar-text {
+  font-size: 46rpx;
+  font-weight: 700;
+  color: var(--on-brand);
+  line-height: 1;
+}
+.acc-row {
+  display: flex;
+  align-items: center;
+}
+.acc-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 10rpx;
+  height: 48rpx;
+  padding: 0 20rpx;
+  border-radius: 999rpx;
+}
+.acc-state-text {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--text);
+}
+.acc-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+}
+.acc-dot-on {
+  background: var(--ok);
+}
+.acc-dot-off {
+  background: var(--warn);
+}
+.acc-desc {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: var(--text-2);
+}
+.acc-count {
+  flex-shrink: 0;
+  text-align: center;
+}
+.acc-count-num {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: var(--brand);
+  line-height: 1.1;
+}
+.acc-count-label {
+  font-size: 22rpx;
+  color: var(--text-3);
+}
+
+/* ---------- 区块标题 ---------- */
+.sec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: var(--sp-4) 4rpx var(--sp-2);
+}
+.sec-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  letter-spacing: .5rpx;
+}
+.sec-tip {
+  font-size: 22rpx;
+  color: var(--text-3);
+}
+
+/* ---------- 收藏网格 ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-2);
+}
+.fcard {
+  min-width: 0;
+  background: var(--surface);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+  padding: 22rpx 10rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+  transition: transform .15s ease, opacity .15s ease;
+}
+.fcard:active {
+  transform: scale(.96);
+}
+.fcard-icon {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fcard-name {
+  width: 100%;
+  text-align: center;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+.fav-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--sp-3) 0 var(--sp-4);
+}
+.fav-empty-btn {
+  margin-top: var(--sp-2);
+  padding: 0 40rpx;
+}
+
+/* ---------- 最近使用列表 ---------- */
+.list {
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 116rpx;
+  padding: 20rpx 24rpx;
+  border-bottom: 2rpx solid var(--line);
+}
+.list-row:last-child {
+  border-bottom: none;
+}
+.list-row:active {
+  background: var(--surface-2);
+}
+.list-icon {
+  width: 76rpx;
+  height: 76rpx;
+  flex-shrink: 0;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.list-name-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.list-name {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+.list-beta {
+  font-size: 22rpx;
+  line-height: 34rpx;
+  padding: 0 12rpx;
+  border-radius: 999rpx;
+  color: var(--warn);
+  background: rgba(245, 158, 11, 0.14);
+}
+.list-sub {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: var(--text-3);
+}
+.list-time {
+  flex-shrink: 0;
+  text-align: right;
+}
+.list-time-rel {
+  font-size: 24rpx;
+  color: var(--text-2);
+}
+.list-time-clock {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: var(--text-3);
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* ---------- 设置 cell ---------- */
+.cells {
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.cell {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 116rpx;
+  padding: 20rpx 24rpx;
+  border-bottom: 2rpx solid var(--line);
+  transition: background .15s ease;
+}
+.cell:last-child {
+  border-bottom: none;
+}
+.cell-hover {
+  background: var(--surface-2);
+}
+.cell-icon {
+  width: 60rpx;
+  height: 60rpx;
+  flex-shrink: 0;
+  border-radius: 18rpx;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-2);
+}
+.cell-title {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+.cell-hint {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: var(--text-3);
+}
+.cell-value {
+  max-width: 300rpx;
+  font-size: 24rpx;
+  color: var(--text-2);
+  text-align: right;
+}
+.cell-arrow {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  color: var(--text-3);
+}
+
+.mine-foot {
+  margin-top: var(--sp-5);
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--text-3);
+  letter-spacing: 1rpx;
+}

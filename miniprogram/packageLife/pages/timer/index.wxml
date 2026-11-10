@@ -1,0 +1,95 @@
+<tool-shell toolId="life-timer" title="秒表倒计时" desc="秒表分段 · 5 路倒计时" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <view class="seg-tabs">
+        <view class="seg-tab {{tab==='sw'?'on':''}}" data-tab="sw" bindtap="onTab">秒表</view>
+        <view class="seg-tab {{tab==='cd'?'on':''}}" data-tab="cd" bindtap="onTab">倒计时</view>
+      </view>
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <view wx:if="{{error}}" class="card err-bar">
+      <text class="t-sm">{{error.message}}</text>
+    </view>
+
+    <block wx:if="{{tab==='sw'}}">
+      <view class="card sw-card">
+        <text class="sw-time t-mono">{{swText}}</text>
+        <view class="row wrap sw-btns">
+          <button wx:if="{{!swRunning}}" class="btn btn-primary sw-btn" bindtap="swStart">开始</button>
+          <button wx:else class="btn sw-btn" bindtap="swPause">暂停</button>
+          <button wx:if="{{swRunning && values.laps}}" class="btn sw-btn" bindtap="swLap">分段</button>
+          <button wx:if="{{swHasTime && !swRunning}}" class="btn sw-btn" bindtap="swReset">清零</button>
+        </view>
+
+        <empty-state
+          wx:if="{{values.laps && !laps.length}}"
+          title="尚无分段"
+          desc="运行中点「分段」记录每一圈，列表显示分段差值与累计"
+          icon="timer"
+        />
+
+        <view wx:if="{{laps.length}}" class="lap-list">
+          <view class="lap-row lap-head">
+            <text class="lc">段</text><text class="lc">分段</text><text class="lc">累计</text>
+          </view>
+          <view class="lap-row" wx:for="{{laps}}" wx:key="no">
+            <text class="lc">{{item.no}}</text>
+            <text class="lc t-mono">{{item.split}}</text>
+            <text class="lc t-mono">{{item.total}}</text>
+          </view>
+        </view>
+
+        <button class="btn btn-block sw-snap" bindtap="onSwSnapshot">复制计时结果</button>
+      </view>
+    </block>
+
+    <block wx:else>
+      <view class="card">
+        <view class="wrap cd-quick">
+          <button class="btn btn-sm cd-chip" data-min="1" bindtap="onCdQuick">1 分钟</button>
+          <button class="btn btn-sm cd-chip" data-min="3" bindtap="onCdQuick">3 分钟</button>
+          <button class="btn btn-sm cd-chip" data-min="5" bindtap="onCdQuick">5 分钟</button>
+          <button class="btn btn-sm cd-chip" data-min="10" bindtap="onCdQuick">10 分钟</button>
+          <button class="btn btn-sm cd-chip" data-min="25" bindtap="onCdQuick">25 分钟</button>
+        </view>
+
+        <view class="cd-add">
+          <input class="cd-input cd-h" type="number" placeholder="时" value="{{newCdH}}" data-field="newCdH" bindinput="onCdInput" />
+          <input class="cd-input" type="number" placeholder="分" value="{{newCdMin}}" data-field="newCdMin" bindinput="onCdInput" />
+          <input class="cd-input" type="number" placeholder="秒" value="{{newCdSec}}" data-field="newCdSec" bindinput="onCdInput" />
+          <input class="cd-input cd-name" placeholder="名称（可选）" value="{{newCdLabel}}" maxlength="12" bindinput="onCdLabelInput" />
+          <button class="btn btn-primary cd-add-btn" bindtap="cdAddPreset">添加</button>
+        </view>
+        <text class="t-sm t-muted cd-hint">同时最多 5 路，单路最长 3 小时；名称留空则用时长命名</text>
+      </view>
+
+      <empty-state wx:if="{{!cds.length}}" title="暂无倒计时" desc="上方输入时长，或点快捷时长添加" icon="timer" />
+
+      <view wx:for="{{cds}}" wx:key="id" class="card cd-row">
+        <view class="cd-info">
+          <text class="cd-label">{{item.label}}</text>
+          <text class="cd-time t-mono {{item.done ? 'done' : ''}}">{{item.done ? '已完成' : item.text}}</text>
+          <text class="t-sm t-muted">总时长 {{item.totalText}}</text>
+        </view>
+        <view class="row wrap cd-acts">
+          <button wx:if="{{!item.running && !item.done}}" class="btn btn-sm" data-id="{{item.id}}" bindtap="cdStart">开始</button>
+          <button wx:if="{{item.running}}" class="btn btn-sm" data-id="{{item.id}}" bindtap="cdPause">暂停</button>
+          <button class="btn btn-sm btn-danger-ghost" data-id="{{item.id}}" bindtap="cdRemove">删除</button>
+        </view>
+      </view>
+
+      <button wx:if="{{cds.length}}" class="btn btn-block" bindtap="onCdSnapshot">复制倒计时清单</button>
+    </block>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="text"
+      text="{{result.text}}"
+      meta="{{result.meta}}"
+      showCopy="{{true}}"
+      bind:copy="onCopy"
+    />
+  </view>
+</tool-shell>

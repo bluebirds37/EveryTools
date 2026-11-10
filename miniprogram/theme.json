@@ -1,0 +1,18 @@
+{
+  "light": {
+    "navBg": "#F5F6FA",
+    "navTxt": "black",
+    "bg": "#F5F6FA",
+    "tabBg": "#FFFFFF",
+    "tabOn": "#3B5BFE",
+    "tabOff": "#9AA1AC"
+  },
+  "dark": {
+    "navBg": "#14161C",
+    "navTxt": "white",
+    "bg": "#101217",
+    "tabBg": "#171A21",
+    "tabOn": "#7C93FF",
+    "tabOff": "#6C7280"
+  }
+}

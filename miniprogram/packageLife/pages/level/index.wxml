@@ -1,0 +1,47 @@
+<tool-shell toolId="life-level" title="水平仪" desc="气泡水平 · ±0.5° 锁定" tips="{{tips}}">
+  <view class="stack">
+    <empty-state wx:if="{{!supported}}" title="设备不支持" desc="{{error.message}}" icon="level" />
+
+    <view wx:else class="stack">
+      <view class="card level-card">
+        <view class="row-between level-bar">
+          <text class="tag">{{axisText}} · 量程 ±{{values.maxDeg}}°</text>
+          <text class="tag {{locked ? 'lock-on' : ''}}">{{locked ? '已水平' : '调整中'}}</text>
+        </view>
+        <view class="level-ring">
+          <view class="level-cross-h"></view>
+          <view class="level-cross-v"></view>
+          <view class="level-center-ring {{locked ? 'locked' : ''}}"></view>
+          <view
+            class="level-bubble {{locked ? 'locked' : ''}}"
+            style="left: calc(50% + {{bubbleX * 170}}rpx); top: calc(50% + {{bubbleY * 170}}rpx);"
+          ></view>
+        </view>
+        <view class="level-readout">
+          <text class="t-mono deg">纵 {{pitch}}°</text>
+          <text class="t-mono deg">横 {{roll}}°</text>
+        </view>
+      </view>
+
+      <view class="row wrap level-ops">
+        <button class="btn btn-primary level-btn" bindtap="onSnapshot">记录当前读数</button>
+        <button class="btn level-btn" bindtap="onRecalibrate">重置采样</button>
+      </view>
+
+      <result-panel
+        wx:if="{{result}}"
+        class="fade-up"
+        kind="kv"
+        kv="{{result.kv}}"
+        text="{{result.text}}"
+        meta="快照读数 · 本机加速度计"
+        showCopy="{{true}}"
+        bind:copy="onCopy"
+      />
+
+      <view class="card">
+        <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+      </view>
+    </view>
+  </view>
+</tool-shell>

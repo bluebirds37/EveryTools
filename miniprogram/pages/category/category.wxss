@@ -1,0 +1,187 @@
+.cat {
+  padding-top: 0;
+  /* 给自定义 tabBar 让出空间 */
+  padding-bottom: calc(env(safe-area-inset-bottom) + 148rpx);
+}
+
+/* ---------- 吸顶分类 tab ---------- */
+.cat-tabs-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  margin: 0 -28rpx;
+  padding: var(--sp-2) 0 var(--sp-1);
+  background: var(--bg);
+}
+.cat-tabs {
+  width: 100%;
+  white-space: nowrap;
+}
+.cattab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  height: 88rpx;
+  padding: 0 26rpx;
+  margin-left: 28rpx;
+  border-radius: 999rpx;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  font-size: 28rpx;
+  color: var(--text-2);
+  transition: background .15s ease, color .15s ease;
+}
+.cattab:last-child {
+  margin-right: 28rpx;
+}
+.cattab-name {
+  font-weight: 600;
+}
+.cattab-count {
+  font-size: 22rpx;
+  color: var(--text-3);
+  background: var(--surface-2);
+  border-radius: 999rpx;
+  padding: 2rpx 12rpx;
+}
+.cattab-line {
+  position: absolute;
+  left: 50%;
+  bottom: 10rpx;
+  transform: translateX(-50%);
+  width: 0;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: var(--brand-grad);
+  transition: width .2s ease;
+}
+.cattab-on {
+  background: var(--surface-2);
+  color: var(--brand);
+}
+.cattab-on .cattab-count {
+  background: rgba(59, 91, 254, 0.14);
+  color: var(--brand);
+}
+.cattab-on .cattab-line {
+  width: 56rpx;
+}
+
+/* ---------- 分类概览条 ---------- */
+.cat-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+  padding: 22rpx 24rpx;
+  border-radius: var(--r-lg);
+}
+.cat-head-icon {
+  width: 76rpx;
+  height: 76rpx;
+  flex-shrink: 0;
+  border-radius: 22rpx;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cat-head-title {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+.cat-head-sub {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: var(--text-2);
+}
+.cat-head-search {
+  width: 76rpx;
+  height: 76rpx;
+  flex-shrink: 0;
+  border-radius: 22rpx;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- 3 列网格 ---------- */
+.grid {
+  display: grid;
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+}
+.grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.gcard {
+  position: relative;
+  min-width: 0;
+  background: var(--surface);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+  padding: 24rpx 16rpx 18rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  transition: transform .15s ease, opacity .15s ease;
+}
+.tcard-hover {
+  transform: scale(.96);
+  opacity: .9;
+}
+.gcard-icon {
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gcard-name {
+  width: 100%;
+  text-align: center;
+  font-size: 27rpx;
+  font-weight: 600;
+}
+.gcard-desc {
+  width: 100%;
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--text-3);
+}
+.gcard-foot {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 6rpx;
+}
+.gcard-badge,
+.gcard-engine {
+  font-size: 22rpx;
+  line-height: 34rpx;
+  padding: 0 12rpx;
+  border-radius: 999rpx;
+  background: var(--surface-2);
+  color: var(--text-2);
+}
+.gcard-badge {
+  color: var(--warn);
+}
+.gcard-star {
+  position: absolute;
+  top: 10rpx;
+  right: 10rpx;
+  width: 30rpx;
+  height: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cat-empty {
+  margin-top: var(--sp-5);
+}

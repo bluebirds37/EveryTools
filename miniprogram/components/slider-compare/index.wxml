@@ -1,0 +1,17 @@
+<view wx:if="{{before && after}}" class="sc card" style="height:{{height}}rpx" bindtouchstart="onStart" bindtouchmove="onMove" bindtouchend="onEnd" bindtouchcancel="onEnd">
+  <image class="sc-img" src="{{after}}" mode="aspectFill" style="width:{{imgW}}" bindload="measure" />
+  <view class="sc-clip" style="width:{{percent}}%">
+    <image class="sc-img" src="{{before}}" mode="aspectFill" style="width:{{imgW}}" bindload="measure" />
+  </view>
+  <view class="sc-line" style="left:{{percent}}%">
+    <view class="sc-knob">
+      <grid-icon name="chevron" size="22" color="#FFFFFF" />
+    </view>
+  </view>
+  <view class="sc-tag sc-tag-l">{{beforeLabel}}</view>
+  <view class="sc-tag sc-tag-r">{{afterLabel}}</view>
+</view>
+<view wx:else class="sc-fallback card">
+  <image wx:if="{{after}}" class="sc-single" src="{{after}}" mode="widthFix" />
+  <view wx:else class="t-sm t-muted">暂无对比图</view>
+</view>

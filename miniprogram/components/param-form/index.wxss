@@ -1,0 +1,122 @@
+.pf {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.pf-val {
+  color: var(--brand);
+  font-weight: 600;
+}
+.pf-range {
+  font-size: 22rpx;
+}
+.pf-unit {
+  font-size: 24rpx;
+  color: var(--text-2);
+}
+.pf-hint {
+  font-size: 22rpx;
+  color: var(--text-3);
+  line-height: 1.5;
+  margin-top: 6rpx;
+}
+.pf-slider {
+  margin: 0 8rpx;
+}
+
+/* segment 分段器 */
+.pf-seg {
+  display: flex;
+  gap: 8rpx;
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  padding: 8rpx;
+}
+.pf-seg-item {
+  flex: 1;
+  min-height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-sm);
+  font-size: 26rpx;
+  color: var(--text-2);
+  transition: background .15s ease, color .15s ease;
+}
+.pf-seg-item.on {
+  background: var(--surface);
+  color: var(--brand);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+/* chip 预设 */
+.pf-chips {
+  gap: var(--sp-1);
+}
+.pf-chips .tag {
+  height: 88rpx;
+  padding: 0 26rpx;
+  font-size: 24rpx;
+}
+
+/* switch 行 */
+.pf-switch {
+  min-height: 88rpx;
+}
+.pf-switch-label {
+  font-size: 28rpx;
+}
+
+/* color */
+.pf-swatches {
+  gap: var(--sp-1);
+  align-items: center;
+}
+.pf-swatch {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: var(--r-sm);
+  border: 2rpx solid var(--line);
+  flex: none;
+}
+.pf-swatch.on {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 4rpx rgba(59, 91, 254, .18);
+}
+.pf-hex {
+  flex: 1;
+  min-width: 200rpx;
+  height: 88rpx;
+  font-family: "SF Mono", Menlo, monospace;
+  font-size: 24rpx;
+}
+
+/* select */
+.pf-select {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 88rpx;
+  padding: 0 24rpx;
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  font-size: 28rpx;
+}
+
+/* textarea 工具 */
+.pf-ta-tools {
+  gap: var(--sp-2);
+}
+.pf-tool {
+  font-size: 24rpx;
+  color: var(--brand);
+  /* 触控目标 ≥88rpx：文字小但点击区补足 */
+  min-height: 88rpx;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--sp-2);
+}
+.pf-ta-foot {
+  margin-top: 8rpx;
+}

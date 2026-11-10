@@ -1,0 +1,66 @@
+<tool-shell toolId="dev-cron" title="Cron 表达式" desc="解析定时表达式与下次触发" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <view class="row-between">
+        <text class="card-title">表达式</text>
+        <text class="t-sm t-dim">5 / 6 / 7 段</text>
+      </view>
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <button class="btn btn-primary btn-block" loading="{{busy}}" disabled="{{busy}}" bindtap="onRun">解析并推算</button>
+
+    <view wx:if="{{error}}" class="card err-bar">
+      <text class="t-sm">{{error.message}}</text>
+    </view>
+
+    <empty-state wx:if="{{!result && !error && !busy}}" icon="cron" title="还没有解析结果" desc="输入 Cron 表达式后点击「解析并推算」，也可点下方示例一键填入" />
+
+    <view wx:if="{{result}}" class="card fade-up">
+      <view class="row-between">
+        <text class="card-title">可读描述</text>
+        <text class="tag">{{result.zoneLabel}}</text>
+      </view>
+      <text class="t-md">{{result.summary}}</text>
+      <view wx:if="{{result.note}}" class="note">{{result.note}}</view>
+
+      <view class="divider" />
+      <view class="cron-rows">
+        <view class="cron-row cron-head">
+          <text class="c-col">字段</text>
+          <text class="c-col">写法</text>
+          <text class="c-col grow">含义</text>
+        </view>
+        <view wx:for="{{result.rows}}" wx:key="label" class="cron-row">
+          <text class="c-col">{{item.label}}</text>
+          <text class="c-col t-mono">{{item.raw}}</text>
+          <text class="c-col grow">{{item.meaning}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{result && result.runs.length}}" class="card fade-up">
+      <view class="row-between">
+        <text class="card-title">接下来 {{result.runs.length}} 次触发</text>
+        <text class="t-sm t-dim">基准 {{result.fromText}}</text>
+      </view>
+      <view wx:for="{{result.runs}}" wx:key="ms" class="run-row" data-text="{{item.text}} {{item.weekday}}" hover-class="none" bindtap="onCopyRun">
+        <text class="run-idx">{{index + 1}}</text>
+        <view class="grow">
+          <text class="t-mono run-time">{{item.text}}</text>
+          <text class="run-sub">{{item.weekday}} · {{item.iso}}</text>
+        </view>
+        <grid-icon name="copy" size="30" />
+      </view>
+    </view>
+
+    <result-panel wx:if="{{result}}" kind="text" text="{{result.text}}" meta="{{result.meta}}" showCopy="{{true}}" actions="{{actions}}" bind:copy="onCopy" bind:action="onAction" />
+
+    <view class="card">
+      <view class="card-title">内置示例</view>
+      <view class="row wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

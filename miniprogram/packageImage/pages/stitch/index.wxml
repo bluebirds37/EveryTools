@@ -1,0 +1,54 @@
+<tool-shell toolId="{{toolId}}" title="{{tool.name || '图片拼接'}}" desc="{{tool.desc}}" tips="{{['至少 2 张，最多 20 张；九宫格需正好 9 张','点击缩略图可把该图向前移动一位（顺序即拼接顺序）','不同尺寸会按最短边等比归一，不会拉伸变形','画布超过长边上限会自动逐级降尺度重排']}}">
+  <view class="stack">
+
+    <view class="card">
+      <view class="card-title">选择图片（{{files.length}}）</view>
+      <media-picker mediaType="image" multiple="{{true}}" maxCount="{{20}}" maxMB="{{40}}" bind:change="onFilesChange" bind:error="onFilesError" />
+      <view wx:if="{{files.length}}" class="order-grid">
+        <view wx:for="{{files}}" wx:key="path" class="order-cell" data-i="{{index}}" bindtap="onMove">
+          <image src="{{item.path}}" mode="aspectFill" class="order-img" />
+          <text class="order-no">{{index + 1}}</text>
+          <view class="order-del" data-i="{{index}}" catchtap="onRemove">
+            <grid-icon name="close" size="22" color="#ffffff" />
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{planInfo}}" class="row-between plan-row">
+        <text class="t-sm t-mono t-muted">预估画布 {{planInfo}}</text>
+        <text class="t-sm t-dim">点图可调整顺序</text>
+      </view>
+      <view wx:if="{{hint}}" class="note-warn t-sm">{{hint}}</view>
+    </view>
+
+    <view class="card">
+      <view class="row-between">
+        <view class="card-title no-mb">排版参数</view>
+        <text class="tag" bindtap="onSample">示例</text>
+      </view>
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <view wx:if="{{error}}" class="card err-card">
+      <view class="row">
+        <grid-icon name="alert" size="30" color="#e5484d" />
+        <text class="t-md err-text">{{error.message}}</text>
+      </view>
+      <text class="t-sm t-dim">错误码 {{error.code}}</text>
+    </view>
+
+    <button class="btn btn-primary btn-block" disabled="{{busy || files.length < 2}}" bindtap="onRun">
+      <view wx:if="{{busy}}" class="spinner"></view>
+      <text>{{busy ? '合成中…' : '生成拼接图'}}</text>
+    </button>
+
+    <view wx:if="{{result}}" class="card fade-up">
+      <view class="card-title">拼接结果</view>
+      <image src="{{outPath}}" mode="widthFix" class="out-img" bindtap="onPreview" />
+      <text class="t-sm t-mono t-muted">{{result.meta}}</text>
+    </view>
+
+    <result-panel wx:if="{{result}}" kind="image" images="{{result.images}}" meta="{{result.meta}}" showSave="{{true}}" bind:save="onSave" bind:action="onResultAction" />
+
+    <canvas type="2d" id="tb-offscreen" class="offscreen"></canvas>
+  </view>
+</tool-shell>

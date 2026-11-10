@@ -1,0 +1,101 @@
+<view wx:if="{{tool}}" class="page detail">
+  <!-- 工具大卡 -->
+  <view class="hero fade-up" style="background:{{heroSoft}};">
+    <view class="hero-icon" style="background:{{tool.accentSoftStrong}};">
+      <grid-icon name="{{tool.icon}}" size="88" color="{{tool.accent}}" />
+    </view>
+    <view class="hero-name">{{tool.name}}</view>
+    <view class="hero-desc">{{tool.desc}}</view>
+    <view class="hero-tags">
+      <text class="hero-tag">{{categoryName}}</text>
+      <text class="hero-tag hero-tag-accent" style="background:{{tool.accent}};">{{engine.label}}</text>
+      <text wx:if="{{tool.beta}}" class="hero-tag hero-tag-warn">内测</text>
+      <text wx:if="{{offline}}" class="hero-tag hero-tag-off">已下线</text>
+    </view>
+  </view>
+
+  <!-- 处理方式 -->
+  <view class="card engine-card fade-up">
+    <view class="card-title">处理方式</view>
+    <view class="engine-row">
+      <view class="engine-dot" style="background:{{tool.accent}};"></view>
+      <view class="grow engine-detail">{{engine.detail}}</view>
+    </view>
+    <view wx:if="{{privacyList.length > 0}}" class="privacy-row">
+      <text class="privacy-label">可能申请</text>
+      <view class="privacy-tags">
+        <text wx:for="{{privacyList}}" wx:key="*this" class="privacy-tag">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 支持格式与限制 -->
+  <view class="card fade-up">
+    <view class="card-title">支持格式与限制</view>
+    <view wx:for="{{limits}}" wx:key="key" class="kv-row">
+      <text class="kv-key">{{item.key}}</text>
+      <text class="kv-val">{{item.value}}</text>
+    </view>
+    <view wx:if="{{keywords.length > 0}}" class="kw-wrap">
+      <text wx:for="{{keywords}}" wx:key="*this" class="kw-tag">{{item}}</text>
+    </view>
+  </view>
+
+  <!-- 使用说明 -->
+  <view class="card fade-up">
+    <view class="card-title">使用说明</view>
+    <view wx:for="{{usageSteps}}" wx:key="*this" class="step-row">
+      <text class="step-index">{{index + 1}}</text>
+      <view class="grow step-text">{{item}}</view>
+    </view>
+  </view>
+
+  <!-- 相关工具 -->
+  <view wx:if="{{related.length > 0}}" class="fade-up">
+    <view class="sec-head">
+      <view class="sec-title">相关工具</view>
+      <view class="sec-more" bindtap="goCategory">
+        <text>更多{{categoryName}}</text>
+        <text class="sec-arrow">›</text>
+      </view>
+    </view>
+    <view class="grid grid-4">
+      <view
+        wx:for="{{related}}"
+        wx:key="id"
+        class="rcard"
+        data-id="{{item.id}}"
+        hover-class="press"
+        bindtap="onRelatedTap"
+      >
+        <view class="rcard-icon" style="background:{{item.accentSoft}};">
+          <grid-icon name="{{item.icon}}" size="40" color="{{item.accent}}" />
+        </view>
+        <view class="rcard-name ellipsis">{{item.name}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="tool-id" bindtap="onCopyId">
+    <text class="tool-id-text t-mono">{{tool.idText}}</text>
+    <grid-icon name="copy" size="24" />
+  </view>
+
+  <!-- 底部操作区 -->
+  <view class="action">
+    <view class="action-fav {{fav ? 'action-fav-on' : ''}}" hover-class="press" bindtap="onToggleFavorite">
+      <grid-icon wx:if="{{fav}}" name="starFill" size="40" color="#F59E0B" />
+      <grid-icon wx:else name="star" size="40" />
+      <text class="action-fav-text">{{fav ? '已收藏' : '收藏'}}</text>
+    </view>
+    <view class="btn btn-primary action-use {{offline ? 'action-use-off' : ''}}" hover-class="press" bindtap="onUse">
+      {{offline ? '暂未开放' : '立即使用'}}
+    </view>
+  </view>
+  <view class="safe-bottom"></view>
+</view>
+
+<view wx:else class="page detail detail-missing">
+  <empty-state icon="alert" title="找不到这个工具" desc="链接可能已失效，回到首页重新选择" />
+  <view class="btn btn-primary btn-sm missing-btn" hover-class="press" bindtap="goHome">返回首页</view>
+</view>

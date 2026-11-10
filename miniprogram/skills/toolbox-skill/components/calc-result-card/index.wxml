@@ -1,0 +1,13 @@
+<view class="crc">
+  <text class="crc-title">{{title}}</text>
+  <view class="crc-rows">
+    <view class="crc-row" wx:for="{{rows}}" wx:key="key">
+      <text class="crc-key">{{item.key}}</text>
+      <text class="crc-val">{{item.value}}</text>
+    </view>
+  </view>
+  <scroll-view class="crc-body" scroll-y wx:if="{{body}}">
+    <text class="crc-code">{{body}}</text>
+  </scroll-view>
+  <view class="crc-copy" wx:if="{{canCopy}}" bindtap="onTapCopy">复制结果</view>
+</view>

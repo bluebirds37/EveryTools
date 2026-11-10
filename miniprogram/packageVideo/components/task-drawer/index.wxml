@@ -1,0 +1,47 @@
+<view wx:if="{{visible}}" class="mask" catchtouchmove="noop" bind:tap="onClose">
+  <view class="panel fade-up" catchtap="noop">
+    <view class="head">
+      <text class="head-title">{{title}}</text>
+      <view class="head-close" bind:tap="onClose" aria-role="button">
+        <grid-icon name="close" size="32" color="var(--text-2)" />
+      </view>
+    </view>
+
+    <scroll-view wx:if="{{tasks.length}}" scroll-y class="list">
+      <view wx:for="{{tasks}}" wx:key="taskId" class="item">
+        <view class="item-main">
+          <view class="row">
+            <text class="tag {{item.status === 'done' ? 'tag-active' : ''}}">{{item.statusText}}</text>
+            <text class="t-sm t-dim">{{item.timeText}}</text>
+          </view>
+          <view class="row wrap item-meta">
+            <text wx:if="{{item.sizeText}}" class="t-sm t-muted">源 {{item.sizeText}}</text>
+            <text wx:if="{{item.resultSizeText}}" class="t-sm t-brand">结果 {{item.resultSizeText}}</text>
+            <text wx:if="{{item.status === 'failed' && item.errorCode}}" class="t-sm" style="color: var(--err)">{{item.errorCode}}</text>
+          </view>
+        </view>
+        <view class="item-acts">
+          <view wx:if="{{item.result && item.result.url}}" class="btn btn-sm act" data-task="{{item}}" bind:tap="onPreview">
+            <grid-icon name="download" size="26" color="var(--brand)" />
+            <text>预览</text>
+          </view>
+          <view wx:if="{{item.result && item.result.url}}" class="btn btn-sm act" data-task="{{item}}" bind:tap="onDownload">
+            <text>下载</text>
+          </view>
+          <view class="btn btn-sm act" data-task="{{item}}" bind:tap="onRerun">
+            <text>再处理</text>
+          </view>
+          <view class="btn btn-sm act act-danger" data-task="{{item}}" bind:tap="onDelete">
+            <grid-icon name="close" size="24" color="var(--err)" />
+          </view>
+        </view>
+      </view>
+      <view class="safe-bottom"></view>
+    </scroll-view>
+
+    <view wx:else class="empty">
+      <grid-icon name="cloud" size="56" color="var(--text-3)" />
+      <text class="t-sm t-muted">近 24 小时没有视频任务记录</text>
+    </view>
+  </view>
+</view>

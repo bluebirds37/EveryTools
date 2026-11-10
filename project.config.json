@@ -1,0 +1,43 @@
+{
+  "miniprogramRoot": "miniprogram/",
+  "description": "通用工具箱微信小程序",
+  "packOptions": {
+    "ignore": [
+      { "value": "docs", "type": "folder" },
+      { "value": "server", "type": "folder" },
+      { "value": "ai-mode-demo", "type": "folder" },
+      { "value": "scripts", "type": "folder" },
+      { "value": "node_modules", "type": "folder" }
+    ],
+    "include": []
+  },
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "coverView": true,
+    "nodeModules": false,
+    "autoAudits": false,
+    "checkInvalidKey": true,
+    "checkSiteMap": true,
+    "uploadWithSourceMap": true,
+    "compileHotReLoad": true,
+    "useMultiFrameRuntime": true,
+    "useApiHook": true,
+    "useApiHostProcess": true,
+    "enableEngineNative": false,
+    "useIsolateContext": true,
+    "minifyWXSS": true,
+    "minifyWXML": true,
+    "showES6CompileOption": false,
+    "babelSetting": { "ignore": [], "disablePlugins": [], "outputPath": "" }
+  },
+  "compileType": "miniprogram",
+  "libVersion": "latest",
+  "appid": "",
+  "projectname": "toolbox-miniprogram",
+  "condition": {},
+  "editorSetting": { "tabIndent": "insertSpaces", "tabSize": 2 }
+}

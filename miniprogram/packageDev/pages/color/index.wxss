@@ -1,0 +1,43 @@
+/* 颜色工具页 */
+.err-bar { border-left: 8rpx solid var(--err); }
+.err-text { color: var(--err); margin-top: var(--sp-1); }
+.swatch {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: var(--r-md);
+  border: 2rpx solid var(--line);
+  flex-shrink: 0;
+}
+.live-tip { margin-top: var(--sp-1); }
+.contrast-demo { margin-bottom: var(--sp-3); }
+.contrast-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding: var(--sp-4);
+  border-radius: var(--r-md);
+  border: 2rpx solid var(--line);
+}
+.cd-lg { font-size: 32rpx; }
+.cd-sm { font-size: 40rpx; font-weight: 700; }
+.scale-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.scale-cell {
+  width: 156rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+.scale-cell:active { opacity: .6; }
+.scale-chip {
+  width: 156rpx;
+  height: 88rpx;
+  border-radius: var(--r-sm);
+  border: 2rpx solid var(--line);
+}
+.scale-label { font-size: 22rpx; color: var(--text-2); }
+.scale-hex { font-size: 22rpx; }
+.sample-btn { margin: 0 var(--sp-2) var(--sp-2) 0; }

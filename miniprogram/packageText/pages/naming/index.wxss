@@ -1,0 +1,12 @@
+/* 命名转换页：仅本页特有样式 */
+.input-actions { margin-top: var(--sp-2); }
+.input-actions .btn { margin: 0 var(--sp-1) var(--sp-1) 0; }
+.style-row { display: flex; flex-direction: column; padding: var(--sp-2) 0; border-bottom: 2rpx solid var(--line); }
+.style-row:last-child { border-bottom: none; }
+.style-active .style-value { color: var(--brand); font-weight: 600; }
+.style-label { margin-bottom: 4rpx; }
+.style-value { font-size: 28rpx; word-break: break-all; }
+.err-bar { border-left: 8rpx solid var(--err); }
+.err-msg { white-space: pre-wrap; font-size: 26rpx; line-height: 1.6; }
+.err-code { margin-top: var(--sp-1); }
+.sample-btn { margin: 0 var(--sp-2) var(--sp-2) 0; }

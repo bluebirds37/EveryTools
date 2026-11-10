@@ -1,0 +1,47 @@
+/* HTTP 调试页 */
+.err-bar { border-left: 8rpx solid var(--err); }
+.err-hint { margin-top: var(--sp-1); line-height: 1.5; }
+.err-act { margin-top: var(--sp-2); }
+.base-note { margin-top: var(--sp-2); line-height: 1.5; }
+.busy-row { margin-top: var(--sp-2); gap: var(--sp-2); }
+.status { height: 56rpx; font-size: 26rpx; font-weight: 700; }
+.tag-ok { color: var(--ok); background: rgba(22, 163, 74, .12); }
+.tag-redirect { color: var(--warn); background: rgba(245, 158, 11, .14); }
+.tag-client { color: var(--err); background: rgba(229, 72, 77, .12); }
+.tag-server { color: var(--err); background: rgba(229, 72, 77, .18); font-weight: 700; }
+.tag-unknown { color: var(--text-2); }
+.warn-text { color: var(--warn); margin-top: var(--sp-1); line-height: 1.5; }
+.metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: var(--sp-3) 0 var(--sp-2);
+}
+.metric {
+  flex: 1;
+  min-width: 150rpx;
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  padding: var(--sp-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+}
+.m-val { font-size: 28rpx; font-weight: 700; font-family: "SF Mono", Menlo, monospace; }
+.m-key { font-size: 22rpx; color: var(--text-3); }
+.req-line { word-break: break-all; line-height: 1.5; }
+.act-row { margin-top: var(--sp-3); }
+.his-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 88rpx;
+  padding: 12rpx 0;
+  border-bottom: 2rpx solid var(--line);
+}
+.his-row:last-child { border-bottom: none; }
+.his-row:active { opacity: .6; }
+.his-method { flex-shrink: 0; font-family: "SF Mono", Menlo, monospace; }
+.his-url { display: block; font-size: 24rpx; max-width: 420rpx; }
+.sample-btn { margin: 0 var(--sp-2) var(--sp-2) 0; }

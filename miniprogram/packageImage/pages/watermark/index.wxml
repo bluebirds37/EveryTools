@@ -1,0 +1,95 @@
+<tool-shell toolId="{{toolId}}" title="{{tool.name || '批量水印'}}" desc="{{tool.desc}}" tips="{{['支持 50 张以内批量，逐张串行处理并显示进度','字号按图片短边比例换算，不同尺寸观感一致','平铺模式会绘制到画布外一圈，边缘不留空缺','点击缩略图可为单张覆盖水印位置']}}">
+  <view class="stack">
+
+    <view class="card">
+      <view class="card-title">选择图片（{{files.length}}）</view>
+      <media-picker mediaType="image" multiple="{{true}}" maxCount="{{50}}" maxMB="{{40}}" bind:change="onFilesChange" bind:error="onFilesError" />
+      <view wx:if="{{serverMode}}" class="note-warn t-sm">{{serverReason}}</view>
+    </view>
+
+    <view class="card">
+      <view class="row-between">
+        <view class="card-title no-mb">水印内容</view>
+        <text class="tag" bindtap="onSample">示例</text>
+      </view>
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+
+      <view wx:if="{{values.type === 'logo'}}" class="logo-box">
+        <text class="t-sm t-muted">Logo 图片</text>
+        <media-picker mediaType="image" multiple="{{false}}" maxMB="{{10}}" bind:change="onLogoChange" bind:error="onFilesError" />
+      </view>
+
+      <view class="divider"></view>
+
+      <text class="t-sm t-muted">水印位置（九宫格）</text>
+      <view class="pos-grid">
+        <view
+          wx:for="{{posList}}"
+          wx:key="value"
+          class="pos-cell {{values.position === item.value ? 'active' : ''}}"
+          data-pos="{{item.value}}"
+          bindtap="onPickPos"
+        >
+          <text class="pos-label">{{item.label}}</text>
+        </view>
+      </view>
+      <view wx:if="{{values.tile}}" class="note-info t-sm">已开启平铺，位置选择仅对单个模式生效</view>
+    </view>
+
+    <view wx:if="{{error}}" class="card err-card">
+      <view class="row">
+        <grid-icon name="alert" size="30" color="#e5484d" />
+        <text class="t-md err-text">{{error.message}}</text>
+      </view>
+      <text class="t-sm t-dim">错误码 {{error.code}}</text>
+    </view>
+
+    <button class="btn btn-primary btn-block" disabled="{{busy || !files.length}}" bindtap="onRun">
+      <view wx:if="{{busy}}" class="spinner"></view>
+      <text>{{busy ? '处理中…' : (files.length > 1 ? '批量加水印 ' + files.length + ' 张' : '加水印')}}</text>
+    </button>
+
+    <task-progress visible="{{busy && serverMode}}" stage="{{taskInfo.stage}}" percent="{{taskInfo.percent}}" message="{{taskInfo.message}}" bind:cancel="onCancelTask" />
+
+    <view wx:if="{{busy && !serverMode}}" class="card flat-card">
+      <view class="row-between">
+        <text class="t-sm t-muted">{{progress.text}}</text>
+        <text class="t-sm t-mono">{{progress.percent}}%</text>
+      </view>
+      <view class="bar"><view class="bar-in" style="width:{{progress.percent}}%"></view></view>
+    </view>
+
+    <!-- 单张位置覆盖选择条 -->
+    <view wx:if="{{pickFor >= 0}}" class="card override-card">
+      <view class="row-between">
+        <text class="t-sm">为第 {{pickFor + 1}} 张单独选择位置</text>
+        <text class="t-sm t-brand" bindtap="onPickItem" data-i="{{pickFor}}">收起</text>
+      </view>
+      <view class="pos-grid">
+        <view wx:for="{{posList}}" wx:key="value" class="pos-cell" data-pos="{{item.value}}" bindtap="onPickPos">
+          <text class="pos-label">{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+
+    <block wx:if="{{result}}">
+      <view class="card fade-up">
+        <view class="card-title">结果（{{summary.count}} 张{{summary.failed ? ' · 失败 ' + summary.failed : ''}}）</view>
+        <slider-compare wx:if="{{result.compareBefore}}" before="{{result.compareBefore}}" after="{{items[0].path}}" />
+        <view class="thumb-grid">
+          <view wx:for="{{items}}" wx:key="index" class="thumb {{item.failed ? 'thumb-fail' : ''}}" data-i="{{index}}" bindtap="onPreviewBatch">
+            <image wx:if="{{item.path}}" src="{{item.path}}" mode="aspectFill" class="thumb-img" />
+            <view wx:else class="thumb-fail-in"><grid-icon name="alert" size="26" color="#e5484d" /></view>
+            <view class="ov" data-i="{{index}}" catchtap="onPickItem">
+              <text class="ov-text">{{item.failed ? '失败' : item.position || '云'}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <result-panel kind="{{result.kind}}" images="{{result.images}}" compareBefore="{{result.compareBefore}}" meta="{{result.meta}}" showSave="{{true}}" bind:save="onSave" bind:action="onResultAction" />
+    </block>
+
+    <canvas type="2d" id="tb-offscreen" class="offscreen"></canvas>
+  </view>
+</tool-shell>

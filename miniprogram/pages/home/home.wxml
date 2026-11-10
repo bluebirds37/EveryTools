@@ -1,0 +1,92 @@
+<!-- 模板有独立作用域，只能读 data 传入的字段（WXML 文档）：
+     因此这里用「平铺字段名」而不是 item.xxx，调用处统一 data="{{...item}}"。
+     写成 <template is="toolCard" item="{{item}}" /> 时 item 不会进模板作用域，
+     结果是卡片全空白且 data-id 为空 → 点击无响应（2026-10-14 用户实机反馈即此）。 -->
+<template name="toolCard">
+  <view
+    class="tcard"
+    data-id="{{id}}"
+    hover-class="tcard-hover"
+    bindtap="onToolTap"
+    bindlongpress="onToolLongPress"
+  >
+    <view wx:if="{{fav}}" class="tcard-star">
+      <grid-icon name="starFill" size="20" color="#F59E0B" />
+    </view>
+    <view class="tcard-icon" style="background:{{accentSoft}};">
+      <grid-icon name="{{icon}}" size="44" color="{{accent}}" />
+    </view>
+    <view class="tcard-name ellipsis">{{name}}</view>
+    <view class="tcard-desc ellipsis">{{desc}}</view>
+  </view>
+</template>
+
+<view class="page home">
+  <!-- 顶部渐变卡片：问候语 + 搜索入口（非常驻输入框，节省首屏） -->
+  <view class="hero fade-up">
+    <view class="hero-greet">{{greeting}}</view>
+    <view class="hero-sub">{{onlineCount}} 个工具，多数在本机完成、不上传文件</view>
+    <view class="hero-search" hover-class="hero-search-hover" bindtap="goSearch">
+      <grid-icon name="search" size="32" color="#FFFFFF" />
+      <view class="hero-search-ph">搜索工具 / 格式 / 功能</view>
+      <view class="hero-search-btn">搜索</view>
+    </view>
+  </view>
+
+  <!-- 最近使用：无记录整块隐藏 -->
+  <block wx:if="{{showRecents}}">
+    <view class="sec-head">
+      <view class="sec-title">最近使用</view>
+    </view>
+    <scroll-view class="recents" scroll-x enable-flex>
+      <view class="rchip" wx:for="{{recents}}" wx:key="id" data-id="{{item.id}}" hover-class="tcard-hover" bindtap="onToolTap" bindlongpress="onToolLongPress">
+        <view class="rchip-icon" style="background:{{item.accentSoft}};">
+          <grid-icon name="{{item.icon}}" size="34" color="{{item.accent}}" />
+        </view>
+        <view class="rchip-text">
+          <view class="rchip-name ellipsis">{{item.name}}</view>
+          <view class="rchip-time">{{item.timeText}}</view>
+        </view>
+      </view>
+    </scroll-view>
+  </block>
+
+  <!-- 常用工具：收藏优先 + registry.recommended(8) -->
+  <view class="sec-head">
+    <view class="sec-title">常用工具</view>
+    <view class="sec-more" data-id="" bindtap="goCategory">
+      <text>全部分类</text>
+      <text class="sec-arrow">›</text>
+    </view>
+  </view>
+  <view class="grid grid-4">
+    <block wx:for="{{hot}}" wx:key="id">
+      <template is="toolCard" data="{{...item}}" />
+    </block>
+  </view>
+
+  <!-- 分类分组区块（categories() 驱动，每组最多 8 个） -->
+  <block wx:for="{{sections}}" wx:key="id" wx:for-item="sec">
+    <view class="sec-head">
+      <view class="sec-title row">
+        <view class="sec-badge" style="background:{{sec.accentSoft}};">
+          <grid-icon name="{{sec.icon}}" size="26" color="{{sec.accent}}" />
+        </view>
+        <text>{{sec.name}}</text>
+        <text class="sec-count">{{sec.count}}</text>
+      </view>
+      <view wx:if="{{sec.hasMore}}" class="sec-more" data-id="{{sec.id}}" bindtap="goCategory">
+        <text>查看全部</text>
+        <text class="sec-arrow">›</text>
+      </view>
+    </view>
+    <view class="grid grid-4">
+      <block wx:for="{{sec.items}}" wx:key="id">
+        <template is="toolCard" data="{{...item}}" />
+      </block>
+    </view>
+  </block>
+
+  <view class="home-foot">工具箱 · 本地优先，云端兜底</view>
+  <view class="safe-bottom"></view>
+</view>

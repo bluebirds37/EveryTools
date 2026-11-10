@@ -1,0 +1,19 @@
+/* JWT 解析页 */
+.err-bar { border-left: 8rpx solid var(--err); }
+.jwt-privacy { margin-top: var(--sp-2); }
+.seg-head { margin-top: var(--sp-3); }
+.seg-head:first-child { margin-top: 0; }
+.card-title { margin-bottom: var(--sp-2); }
+.warn-box {
+  margin-top: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-sm);
+  font-size: 24rpx;
+  background: var(--surface-2);
+  color: var(--err);
+  line-height: 1.5;
+}
+.warn-box.verify { color: var(--text-2); }
+.st-ok { background: rgba(22, 163, 74, .12); color: var(--ok); font-weight: 600; }
+.st-err { background: rgba(229, 72, 77, .12); color: var(--err); font-weight: 600; }
+.sample-btn { margin: 0 var(--sp-2) var(--sp-2) 0; }

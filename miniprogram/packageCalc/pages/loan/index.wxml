@@ -1,0 +1,52 @@
+<tool-shell toolId="calc-loan" title="房贷计算" desc="商贷/公积金/组合贷，逐期明细" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+      <view class="rate-note t-sm t-dim">利率来源：{{rateNote}}</view>
+    </view>
+
+    <button class="btn btn-primary btn-block" loading="{{busy}}" disabled="{{busy}}" bindtap="onRun">开始计算</button>
+
+    <view wx:if="{{error}}" class="card err-bar"><text class="t-sm">{{error.message}}</text></view>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="kv"
+      kv="{{result.kv}}"
+      meta="{{result.meta}}"
+      text="{{result.text}}"
+      showCopy="{{true}}"
+      bind:copy="onCopy"
+    />
+
+    <view wx:if="{{rowsTotal}}" class="card fade-up">
+      <view class="row-between">
+        <text class="card-title">逐期明细（共 {{rowsTotal}} 期）</text>
+        <text class="tag tag-active t-sm" data-with-schedule="1" bindtap="onCopy">复制 CSV</text>
+      </view>
+      <view class="tbl-head">
+        <text class="c">期数</text><text class="c">月供</text><text class="c">本金</text><text class="c">利息</text><text class="c">剩余</text>
+      </view>
+      <scroll-view scroll-y class="tbl-body">
+        <view class="tr" wx:for="{{rows}}" wx:key="i">
+          <text class="c t-mono">{{item.i}}</text>
+          <text class="c t-mono">{{item.payment}}</text>
+          <text class="c t-mono">{{item.principalPart}}</text>
+          <text class="c t-mono">{{item.interest}}</text>
+          <text class="c t-mono">{{item.remain}}</text>
+        </view>
+      </scroll-view>
+      <button wx:if="{{rowsShown < rowsTotal}}" class="btn btn-ghost btn-block btn-more" bindtap="onMoreRows">
+        加载更多（已显示 {{rowsShown}}/{{rowsTotal}}）
+      </button>
+    </view>
+
+    <view class="card">
+      <view class="card-title">内置示例</view>
+      <view class="wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

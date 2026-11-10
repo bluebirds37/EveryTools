@@ -1,0 +1,5 @@
+@import "../../styles/video.wxss";
+
+/* 本页：结果对比区在卡片内，微调间距 */
+.cmp { margin-top: var(--sp-2); }
+.cmp-num { font-size: 32rpx; }

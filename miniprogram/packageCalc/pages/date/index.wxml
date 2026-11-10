@@ -1,0 +1,70 @@
+<tool-shell toolId="calc-date" title="日期计算" desc="间隔/加减/倒数日/工作日/周次" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+
+      <!-- 间隔 -->
+      <block wx:if="{{values.mode === 'interval'}}">
+        <picker mode="date" value="{{values.dateA}}" data-key="dateA" bindchange="onDateChange">
+          <view class="pick-row"><text class="pick-label">开始日期</text><text class="pick-val">{{values.dateA}}</text></view>
+        </picker>
+        <picker mode="date" value="{{values.dateB}}" data-key="dateB" bindchange="onDateChange">
+          <view class="pick-row"><text class="pick-label">结束日期</text><text class="pick-val">{{values.dateB}}</text></view>
+        </picker>
+      </block>
+
+      <!-- 加减 -->
+      <block wx:if="{{values.mode === 'add'}}">
+        <picker mode="date" value="{{values.addBase}}" data-key="addBase" bindchange="onDateChange">
+          <view class="pick-row"><text class="pick-label">基准日期</text><text class="pick-val">{{values.addBase}}</text></view>
+        </picker>
+        <view class="field">
+          <view class="field-label"><text>增减量（负数=往前）</text></view>
+          <input class="input" type="digit" value="{{values.delta}}" bindinput="onDeltaInput" />
+        </view>
+      </block>
+
+      <!-- 倒数日 -->
+      <picker wx:if="{{values.mode === 'countdown'}}" mode="date" value="{{values.target}}" data-key="target" bindchange="onDateChange">
+        <view class="pick-row"><text class="pick-label">目标日期</text><text class="pick-val">{{values.target}}</text></view>
+      </picker>
+
+      <!-- 工作日 -->
+      <block wx:if="{{values.mode === 'workday'}}">
+        <picker mode="date" value="{{values.start}}" data-key="start" bindchange="onDateChange">
+          <view class="pick-row"><text class="pick-label">起始日期</text><text class="pick-val">{{values.start}}</text></view>
+        </picker>
+        <picker mode="date" value="{{values.end}}" data-key="end" bindchange="onDateChange">
+          <view class="pick-row"><text class="pick-label">截止日期</text><text class="pick-val">{{values.end}}</text></view>
+        </picker>
+      </block>
+
+      <!-- 周次季度 -->
+      <picker wx:if="{{values.mode === 'week'}}" mode="date" value="{{values.isoDate}}" data-key="isoDate" bindchange="onDateChange">
+        <view class="pick-row"><text class="pick-label">查询日期</text><text class="pick-val">{{values.isoDate}}</text></view>
+      </picker>
+    </view>
+
+    <button class="btn btn-primary btn-block" loading="{{busy}}" disabled="{{busy}}" bindtap="onRun">计算</button>
+
+    <view wx:if="{{error}}" class="card err-bar"><text class="t-sm">{{error.message}}</text></view>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="kv"
+      kv="{{result.kv}}"
+      meta="{{result.meta}}"
+      text="{{result.text}}"
+      showCopy="{{true}}"
+      bind:copy="onCopy"
+    />
+
+    <view class="card">
+      <view class="card-title">内置示例</view>
+      <view class="wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm sample-btn" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

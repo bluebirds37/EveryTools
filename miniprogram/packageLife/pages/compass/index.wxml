@@ -1,0 +1,60 @@
+<tool-shell toolId="life-compass" title="指南针" desc="磁北方位 · 平滑读数" tips="{{tips}}">
+  <view class="stack">
+    <empty-state
+      wx:if="{{unsupported}}"
+      title="设备不支持"
+      desc="{{error.message}}"
+      icon="compass"
+    />
+
+    <view wx:else class="stack">
+      <view class="card compass-card">
+        <view class="row-between compass-bar">
+          <text class="tag">{{running ? '传感器运行中' : '已暂停'}}</text>
+          <text wx:if="{{unstable}}" class="tag tag-warn">读数波动</text>
+        </view>
+
+        <view wx:if="{{values.mode === 'dial'}}" class="dial-wrap">
+          <view class="dial" style="{{dialStyle}}">
+            <view class="tick tick-n">北 N</view>
+            <view class="tick tick-e">东 E</view>
+            <view class="tick tick-s">南 S</view>
+            <view class="tick tick-w">西 W</view>
+          </view>
+          <view class="dial-pointer"></view>
+          <view class="dial-center">
+            <text class="deg-num t-mono">{{direction}}°</text>
+            <text class="deg-name">{{dirName}}</text>
+          </view>
+        </view>
+
+        <view wx:else class="bearing-wrap">
+          <text class="bearing-num t-mono">{{direction}}°</text>
+          <text class="bearing-name">面向 {{dirName}}</text>
+          <text class="t-sm t-muted">0° 正北 · 90° 正东 · 180° 正南 · 270° 正西</text>
+        </view>
+
+        <view wx:if="{{needCalibration}}" class="calib-hint">
+          <text class="t-sm">精度较低：请手持设备水平缓慢画「8」字完成校准</text>
+        </view>
+        <view wx:if="{{values.magNote}}" class="mag-note">
+          <text class="t-sm t-muted">当前 {{direction}}° 以磁北为基准，与地图真北存在磁偏角（中国东部约 −5°~−10°）</text>
+        </view>
+      </view>
+
+      <view class="row wrap compass-ops">
+        <button class="btn btn-primary compass-btn" bindtap="onToggleSensor">{{running ? '暂停传感器' : '启动传感器'}}</button>
+        <button class="btn compass-btn" disabled="{{!hasReading}}" bindtap="onCopy">复制方位角</button>
+      </view>
+
+      <view wx:if="{{error}}" class="card err-bar">
+        <text class="t-sm">{{error.message}}</text>
+        <button class="btn btn-sm retry-btn" bindtap="onToggleSensor">重新启动</button>
+      </view>
+
+      <view class="card">
+        <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+      </view>
+    </view>
+  </view>
+</tool-shell>

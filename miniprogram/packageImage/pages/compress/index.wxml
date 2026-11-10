@@ -1,0 +1,127 @@
+<tool-shell toolId="{{toolId}}" title="{{tool.name || '图片压缩'}}" desc="{{tool.desc}}" tips="{{['选择照片后可批量压缩，单次最多 50 张','目标体积模式会自动搜索合适质量并适当降分辨率','超过 15MB 或批量超 50 张会自动改用云端，无需手动切换','本机重编码会去除拍摄信息（EXIF），需保留请用云端']}}" bind:ready="onShellReady">
+  <view class="stack">
+
+    <!-- 输入区 -->
+    <view class="card">
+      <view class="card-title">选择图片</view>
+      <media-picker mediaType="image" multiple="{{true}}" maxCount="{{50}}" maxMB="{{30}}" bind:change="onFilesChange" bind:error="onFilesError" />
+      <view wx:if="{{files.length}}" class="row-between batch-tip">
+        <text class="t-sm t-muted">已选 {{files.length}} 张 · 合计 {{summary ? summary.inText : ''}}</text>
+        <text wx:if="{{serverMode}}" class="tag tag-active">{{serverReason || '云端处理'}}</text>
+      </view>
+    </view>
+
+    <!-- 参数区 -->
+    <view class="card">
+      <view class="row-between">
+        <view class="card-title">压缩参数</view>
+        <text class="tag" bindtap="onSample">示例</text>
+      </view>
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+
+      <view class="divider"></view>
+
+      <!-- 保留 EXIF：本机能力缺失 → 如实置灰 + 云端替代 -->
+      <view class="exif-row">
+        <view class="exif-left">
+          <text class="exif-label">保留拍摄信息（EXIF）</text>
+          <text class="t-sm t-dim">{{exifState === 'gps' ? '此图含位置信息' : exifState === 'yes' ? '此图含拍摄信息' : exifState === 'none' ? '此图无拍摄信息' : ''}}</text>
+        </view>
+        <view class="switch-off disabled">
+          <text class="switch-knob off"></text>
+        </view>
+      </view>
+      <view class="note-warn">
+        <grid-icon name="alert" size="26" color="#f59e0b" />
+        <text class="t-sm">本机压缩会去除拍摄信息，如需保留请用云端</text>
+      </view>
+
+      <view class="row-between cloud-row" bindtap="onToggleCloudExif">
+        <view class="exif-left">
+          <text class="exif-label">云端保留 EXIF</text>
+          <text class="t-sm t-dim">上传原图到云端处理，保留完整元数据</text>
+        </view>
+        <view class="switch {{values.cloudKeepExif ? 'on' : ''}}">
+          <text class="switch-knob"></text>
+        </view>
+      </view>
+
+      <view class="note-info t-sm">
+        导出格式固定为 JPG（Canvas 在部分机型不支持 WebP 编码，为避免失败不提供该选项）。透明 PNG 会被铺白底。
+      </view>
+    </view>
+
+    <!-- 错误 -->
+    <view wx:if="{{error}}" class="card err-card">
+      <view class="row">
+        <grid-icon name="alert" size="30" color="#e5484d" />
+        <text class="t-md err-text">{{error.message}}</text>
+      </view>
+      <text class="t-sm t-dim">错误码 {{error.code}}</text>
+    </view>
+
+    <!-- 执行 -->
+    <button class="btn btn-primary btn-block" disabled="{{busy || !files.length}}" bindtap="onRun">
+      <view wx:if="{{busy}}" class="spinner"></view>
+      <text>{{busy ? '处理中…' : (files.length > 1 ? '批量压缩 ' + files.length + ' 张' : '开始压缩')}}</text>
+    </button>
+
+    <!-- 云端进度 -->
+    <task-progress visible="{{busy && serverMode}}" stage="{{taskInfo.stage}}" percent="{{taskInfo.percent}}" message="{{taskInfo.message}}" bind:cancel="onCancelTask" />
+
+    <!-- 本机批量进度 -->
+    <view wx:if="{{busy && !serverMode}}" class="card flat-card">
+      <view class="row-between">
+        <text class="t-sm t-muted">{{progress.text}}</text>
+        <text class="t-sm t-mono">{{progress.percent}}%</text>
+      </view>
+      <view class="bar"><view class="bar-in" style="width:{{progress.percent}}%"></view></view>
+    </view>
+
+    <!-- 结果 -->
+    <block wx:if="{{result}}">
+      <view class="card fade-up">
+        <view class="card-title">压缩结果</view>
+        <view class="row wrap metric">
+          <view class="metric-item"><text class="m-val">{{summary.inText}}</text><text class="m-key">原始</text></view>
+          <view class="metric-item"><text class="m-val">{{summary.outText}}</text><text class="m-key">压缩后</text></view>
+          <view class="metric-item accent"><text class="m-val">{{summary.savedPct}}%</text><text class="m-key">共节省 {{summary.savedText}}</text></view>
+        </view>
+        <view wx:if="{{summary.kept}}" class="note-warn t-sm">{{summary.kept}} 张原图已经比目标/该质量更小，已保留原文件（压缩不会让文件变大）。</view>
+        <view wx:if="{{summary.grew}}" class="note-warn t-sm">云端返回的结果比原图更大，已保留原文件。</view>
+        <view wx:if="{{summary.overTarget}}" class="note-warn t-sm">已达最低质量仍超过目标体积，已给出当前最小结果（未达标）。</view>
+        <view wx:if="{{summary.failed}}" class="note-warn t-sm">{{summary.failed}} 张处理失败，可调整参数后重试。</view>
+
+        <slider-compare wx:if="{{result.compareBefore}}" before="{{result.compareBefore}}" after="{{items[0].path}}" />
+
+        <!-- 批量缩略图网格（完成角标） -->
+        <view wx:if="{{items.length > 1}}" class="thumb-grid">
+          <view wx:for="{{items}}" wx:key="index" class="thumb {{item.failed ? 'thumb-fail' : ''}}">
+            <image wx:if="{{item.path}}" src="{{item.path}}" mode="aspectFill" class="thumb-img" data-i="{{index}}" bindtap="onPreviewThumb" />
+            <view wx:else class="thumb-fail-in">
+              <grid-icon name="alert" size="26" color="#e5484d" />
+            </view>
+            <view wx:if="{{!item.failed}}" class="badge"></view>
+            <text class="thumb-size">{{item.failed ? '失败' : item.savedRatio + '%'}}</text>
+          </view>
+        </view>
+      </view>
+
+      <result-panel kind="{{result.kind}}" images="{{result.images}}" compareBefore="{{result.compareBefore}}" meta="{{result.meta}}" showSave="{{true}}" showShare="{{true}}" showCopy="{{false}}" bind:save="onSaveResult" bind:action="onResultAction" />
+
+      <view class="card next-card">
+        <text class="t-sm t-muted">继续处理</text>
+        <view class="row wrap gap-row">
+          <view class="tag tag-active" data-tool="image-watermark" bindtap="onNextTool">加水印</view>
+          <view class="tag tag-active" data-tool="image-crop" bindtap="onNextTool">裁剪</view>
+          <view class="tag tag-active" data-tool="image-convert" bindtap="onNextTool">转格式</view>
+          <view class="tag tag-active" data-tool="image-info" bindtap="onNextTool">看参数</view>
+        </view>
+      </view>
+    </block>
+
+    <empty-state wx:if="{{!files.length && !error}}" icon="compress" title="还没有选择图片" desc="从相册或相机选一张，立即瘦身" />
+
+    <canvas type="2d" id="tb-offscreen" class="offscreen"></canvas>
+  </view>
+</tool-shell>

@@ -1,0 +1,11 @@
+{
+  "usingComponents": {
+    "tool-shell": "/components/tool-shell/index",
+    "param-form": "/components/param-form/index",
+    "result-panel": "/components/result-panel/index",
+    "media-picker": "/components/media-picker/index",
+    "empty-state": "/components/empty-state/index",
+    "grid-icon": "/components/grid-icon/index"
+  },
+  "navigationBarTitleText": "二维码生成"
+}

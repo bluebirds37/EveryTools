@@ -1,0 +1,22 @@
+/* 房贷计算页 */
+.rate-note { margin-top: var(--sp-2); }
+.err-bar { border-left: 8rpx solid var(--err); }
+.sample-btn { margin: 0 var(--sp-2) var(--sp-2) 0; }
+.tbl-head, .tr {
+  display: flex;
+  align-items: center;
+}
+.tbl-head {
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  padding: 12rpx 0;
+  font-size: 22rpx;
+  color: var(--text-2);
+  font-weight: 600;
+}
+.tr { padding: 16rpx 0; border-bottom: 2rpx solid var(--line); font-size: 22rpx; }
+.tr:last-child { border-bottom: none; }
+.tbl-head .c, .tr .c { flex: 1; text-align: right; padding: 0 6rpx; }
+.tbl-head .c:first-child, .tr .c:first-child { text-align: left; flex: 0.6; }
+.tbl-body { max-height: 560rpx; }
+.btn-more { margin-top: var(--sp-3); }

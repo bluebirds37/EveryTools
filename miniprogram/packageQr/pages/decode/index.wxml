@@ -1,0 +1,64 @@
+<tool-shell toolId="qr-decode" title="相册识码" desc="识别截图相册里的二维码" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <view class="card-title">选择图片（最多 9 张）</view>
+      <media-picker mediaType="image" multiple="{{true}}" maxCount="{{9}}" accept="{{['jpg','jpeg','png','webp','bmp']}}" hint="相册截图 / 存下来的二维码图片" bind:change="onPick" bind:error="onPickError" />
+    </view>
+
+    <view class="card">
+      <view class="card-title">识别选项</view>
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <view wx:if="{{error}}" class="card dc-err fade-up">
+      <grid-icon name="alert" size="36" color="#E5484D" />
+      <text class="grow t-sm">{{error.message}}</text>
+    </view>
+
+    <view class="row">
+      <button class="btn btn-primary grow" disabled="{{busy || !files.length}}" bindtap="onRun">
+        <view wx:if="{{busy}}" class="spinner dc-spin" />
+        <text>{{busy ? progressText : '开始识别'}}</text>
+      </button>
+      <button wx:if="{{files.length && !busy}}" class="btn btn-ghost btn-sm" bindtap="onClear">清空</button>
+    </view>
+
+    <!-- 结果列表（按图片顺序，标注成功/未识别） -->
+    <view wx:if="{{items.length}}" class="card fade-up">
+      <view class="row-between">
+        <view class="card-title dc-res-title">识别结果</view>
+        <view class="btn btn-sm btn-ghost" bindtap="onCopyAll">复制全部</view>
+      </view>
+      <view wx:for="{{items}}" wx:key="index" class="dc-item">
+        <image class="dc-thumb" src="{{item.thumb}}" mode="aspectFill" />
+        <view class="grow">
+          <view class="row">
+            <text class="tag {{item.ok ? 'tag-active' : ''}}">{{item.ok ? '成功' : '未识别'}}</text>
+            <text wx:if="{{item.meta}}" class="t-sm t-dim dc-meta">{{item.meta}}</text>
+          </view>
+          <view class="dc-text {{item.ok ? '' : 'dc-fail'}}">{{item.ok ? item.text : item.reason}}</view>
+          <view wx:if="{{item.ok}}" class="row dc-acts">
+            <view class="btn btn-sm" data-index="{{index}}" bindtap="onCopyOne">复制</view>
+            <view class="btn btn-sm btn-ghost" data-index="{{index}}" bindtap="onRegen">生成二维码</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 汇总出口（统一复制） -->
+    <result-panel
+      wx:if="{{summaryText}}"
+      class="fade-up"
+      kind="text"
+      text="{{summaryText}}"
+      meta="{{resultMeta}}"
+      showCopy="{{true}}"
+      bind:copy="onCopyAll"
+    />
+
+    <view wx:if="{{!items.length && !busy}}" class="card">
+      <empty-state icon="search" title="还没有识别记录" desc="选择相册里的二维码图片，点「开始识别」" />
+    </view>
+  </view>
+  <canvas type="2d" id="tb-offscreen" class="dc-canvas" />
+</tool-shell>

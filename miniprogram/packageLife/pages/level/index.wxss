@@ -1,0 +1,48 @@
+/* 水平仪页 */
+.level-card { display: flex; flex-direction: column; align-items: center; padding: var(--sp-4) var(--sp-3); }
+.level-ring {
+  position: relative;
+  width: 480rpx;
+  height: 480rpx;
+  border-radius: 50%;
+  border: 6rpx solid var(--line);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.level-cross-h, .level-cross-v { position: absolute; background: var(--line); }
+.level-cross-h { left: 0; right: 0; top: 50%; height: 2rpx; }
+.level-cross-v { top: 0; bottom: 0; left: 50%; width: 2rpx; }
+.level-center-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 120rpx;
+  height: 120rpx;
+  margin: -60rpx 0 0 -60rpx;
+  border-radius: 50%;
+  border: 4rpx dashed var(--text-3);
+}
+.level-center-ring.locked { border-color: var(--ok); border-style: solid; }
+.level-bubble {
+  position: absolute;
+  width: 96rpx;
+  height: 96rpx;
+  margin: -48rpx 0 0 -48rpx;
+  border-radius: 50%;
+  background: var(--brand-grad);
+  opacity: 0.85;
+  box-shadow: var(--shadow-sm);
+}
+.level-bubble.locked { opacity: 1; }
+.level-readout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: var(--sp-4);
+}
+.deg { font-size: 30rpx; color: var(--text-2); }
+.level-bar { width: 100%; margin-bottom: var(--sp-3); }
+.tag.lock-on { background: var(--ok); color: var(--on-brand); font-weight: 600; }
+.level-ops { width: 100%; }
+.level-btn { flex: 1; min-width: 260rpx; }

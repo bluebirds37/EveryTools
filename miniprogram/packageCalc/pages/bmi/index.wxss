@@ -1,0 +1,3 @@
+/* 身体指标页 */
+.err-bar { border-left: 8rpx solid var(--err); }
+.sample-btn { margin: 0 var(--sp-2) var(--sp-2) 0; }

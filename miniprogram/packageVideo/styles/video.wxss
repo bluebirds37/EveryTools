@@ -1,0 +1,133 @@
+/* packageVideo 分包公共样式 —— 视频工具页专属（通用样式仍来自 app.wxss） */
+
+/* 视频舞台专用色令牌（深底是设计需求，深浅模式同一表达，均走变量） */
+page {
+  --v-stage: #0d0f16;
+  --v-stage-txt: #e8ebf2;
+}
+
+/* 视频舞台：16:9 深色圆角 */
+.vstage {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--v-stage);
+  box-shadow: var(--shadow-sm);
+}
+.vstage video {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+.vstage-tag {
+  position: absolute;
+  right: var(--sp-2);
+  top: var(--sp-2);
+  z-index: 2;
+  height: 44rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  color: var(--v-stage-txt);
+  background: rgba(255, 255, 255, 0.14);
+  display: inline-flex;
+  align-items: center;
+}
+
+/* 视频信息条：时长 / 体积 / 分辨率 */
+.vmeta { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: var(--sp-2); }
+.vmeta .tag { min-height: 44rpx; }
+
+/* 参数分组小标题 */
+.grp-title {
+  font-size: 24rpx;
+  color: var(--text-3);
+  font-weight: 600;
+  margin: var(--sp-3) 0 var(--sp-2);
+  letter-spacing: 1rpx;
+}
+.grp-title:first-child { margin-top: 0; }
+
+/* 预估条 */
+.estimate {
+  margin-top: var(--sp-3);
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  padding: var(--sp-3);
+  font-size: 24rpx;
+  color: var(--text-2);
+  line-height: 1.7;
+}
+.estimate b { color: var(--brand); font-weight: 700; }
+.estimate .num { font-family: "SF Mono", Menlo, monospace; }
+
+/* 错误卡：统一话术 + 重试按钮 */
+.err-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  background: var(--surface);
+  border: 2rpx solid var(--err);
+  border-radius: var(--r-md);
+  padding: var(--sp-3);
+  font-size: 26rpx;
+  color: var(--text);
+}
+.err-box .btn { flex-shrink: 0; min-height: 72rpx; height: 72rpx; }
+
+/* 结果前后对比 */
+.cmp { display: flex; align-items: flex-end; gap: var(--sp-3); margin: var(--sp-2) 0 var(--sp-3); }
+.cmp-cell { flex: 1; background: var(--surface-2); border-radius: var(--r-md); padding: var(--sp-3); text-align: center; }
+.cmp-num { font-family: "SF Mono", Menlo, monospace; font-size: 34rpx; font-weight: 700; }
+.cmp-label { font-size: 22rpx; color: var(--text-3); margin-top: 4rpx; }
+.cmp-arrow { color: var(--brand); font-size: 30rpx; padding-bottom: var(--sp-3); }
+.cmp-save {
+  align-self: center;
+  background: rgba(59, 91, 254, 0.12);
+  color: var(--brand);
+  border-radius: 999rpx;
+  padding: 6rpx 20rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+/* images 结果网格（抽帧） */
+.img-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-2); }
+.img-cell { position: relative; border-radius: var(--r-md); overflow: hidden; background: var(--surface-2); }
+.img-cell image { width: 100%; height: 200rpx; display: block; }
+.img-cell .idx {
+  position: absolute;
+  left: 8rpx;
+  top: 8rpx;
+  font-size: 20rpx;
+  font-family: "SF Mono", Menlo, monospace;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  padding: 2rpx 10rpx;
+  border-radius: 999rpx;
+}
+
+/* 动作按钮行（≥88rpx 触控目标） */
+.act-row { display: flex; gap: var(--sp-2); margin-top: var(--sp-3); flex-wrap: wrap; }
+.act-row .btn { flex: 1; min-width: 220rpx; min-height: 88rpx; }
+
+/* 历史任务入口行 */
+.entry-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 88rpx;
+  padding: 0 var(--sp-1);
+}
+.entry-row .left { display: flex; align-items: center; gap: var(--sp-2); font-size: 28rpx; font-weight: 600; }
+.entry-row .chev { color: var(--text-3); }
+
+/* 运行主按钮与取消 */
+.run-wrap { margin-top: var(--sp-4); display: flex; gap: var(--sp-2); }
+.run-wrap .btn-primary { flex: 2; }
+.run-wrap .btn-ghost { flex: 1; }

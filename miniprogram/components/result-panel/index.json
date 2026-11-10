@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "grid-icon": "/components/grid-icon/index",
+    "slider-compare": "/components/slider-compare/index"
+  }
+}

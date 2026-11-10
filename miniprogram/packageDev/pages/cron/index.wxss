@@ -1,0 +1,47 @@
+/* Cron 表达式页 */
+.err-bar { border-left: 8rpx solid var(--err); }
+.note {
+  margin-top: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  font-size: 24rpx;
+  color: var(--text-2);
+}
+.cron-rows { display: flex; flex-direction: column; }
+.cron-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: 14rpx 0;
+  border-bottom: 2rpx solid var(--line);
+  font-size: 24rpx;
+}
+.cron-row:last-child { border-bottom: none; }
+.cron-head { color: var(--text-3); font-size: 22rpx; }
+.c-col { width: 128rpx; flex-shrink: 0; }
+.run-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 88rpx;
+  padding: 12rpx 0;
+  border-bottom: 2rpx solid var(--line);
+}
+.run-row:last-child { border-bottom: none; }
+.run-row:active { opacity: .6; }
+.run-idx {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-size: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.run-time { display: block; font-size: 26rpx; }
+.run-sub { display: block; font-size: 22rpx; color: var(--text-3); word-break: break-all; }
+.sample-btn { margin: 0 var(--sp-2) var(--sp-2) 0; }

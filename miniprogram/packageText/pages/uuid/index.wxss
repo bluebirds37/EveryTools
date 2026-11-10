@@ -1,0 +1,5 @@
+/* UUID 生成页：仅本页特有样式 */
+.err-bar { border-left: 8rpx solid var(--err); }
+.err-msg { white-space: pre-wrap; font-size: 26rpx; line-height: 1.6; }
+.err-code { margin-top: var(--sp-1); }
+.sample-btn { margin: 0 var(--sp-2) var(--sp-2) 0; }

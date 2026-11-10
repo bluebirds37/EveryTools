@@ -1,0 +1,54 @@
+<view class="ts page">
+  <view class="ts-head card">
+    <view class="row">
+      <view class="ts-icon" style="background:{{accent}}14">
+        <grid-icon name="{{icon}}" size="44" color="{{accent}}" />
+      </view>
+      <view class="grow">
+        <view class="row">
+          <text class="t-lg ellipsis">{{name}}</text>
+          <text wx:if="{{beta}}" class="tag tag-active ts-beta">内测</text>
+        </view>
+        <view wx:if="{{sub}}" class="t-sm t-muted ts-sub">{{sub}}</view>
+      </view>
+      <view wx:if="{{showFavorite}}" class="ts-act" hover-class="none" bindtap="onToggleFavorite">
+        <grid-icon name="{{fav ? 'starFill' : 'star'}}" size="40" color="{{fav ? '#F59E0B' : ''}}" />
+      </view>
+      <button class="ts-act ts-share-btn" open-type="share" hover-class="none" bindtap="onShare">
+        <grid-icon name="share" size="40" />
+      </button>
+    </view>
+  </view>
+
+  <block wx:if="{{!offline}}">
+    <slot name="header" />
+    <view class="stack ts-body">
+      <slot />
+    </view>
+    <slot name="footer" />
+  </block>
+
+  <view wx:else class="card ts-off">
+    <empty-state icon="alert" title="暂未开放 · 敬请期待" desc="{{errorMsg}}" />
+  </view>
+
+  <view wx:if="{{tipCount}}" class="ts-tips card-flat">
+    <view class="row-between ts-tips-head" hover-class="none" bindtap="onToggleTips">
+      <text class="t-sm ts-tips-title">使用说明</text>
+      <view class="row">
+        <text class="t-sm t-dim">{{tipsOpen ? '收起' : '展开'}} · {{tipCount}} 条</text>
+        <view class="ts-chevron {{tipsOpen ? 'open' : ''}}">
+          <grid-icon name="chevron" size="24" />
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{tipsOpen}}" class="ts-tips-body fade-up">
+      <view wx:for="{{tips}}" wx:key="*this" class="ts-tip">
+        <view class="ts-tip-dot" style="background:{{accent}}" />
+        <text class="t-sm">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="safe-bottom" />
+</view>

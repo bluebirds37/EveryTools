@@ -1,0 +1,48 @@
+/* 表达式计算器页 */
+.err-bar { border-left: 8rpx solid var(--err); }
+.sample-btn { margin: 0 var(--sp-2) var(--sp-2) 0; }
+.ver-row { margin-bottom: var(--sp-2); display: flex; align-items: center; justify-content: space-between; }
+
+.expr-box { padding: var(--sp-2) 0; }
+.expr-input {
+  width: 100%;
+  min-height: 96rpx;
+  font-size: 34rpx;
+  font-family: Menlo, Consolas, monospace;
+  color: var(--text);
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  padding: var(--sp-2);
+  box-sizing: border-box;
+}
+
+.keypad { padding: var(--sp-2); }
+.kp-row { display: flex; margin-bottom: var(--sp-2); }
+.kp-btn {
+  flex: 1;
+  min-height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 var(--sp-1);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 28rpx;
+}
+.kp-fn { color: var(--brand); font-size: 24rpx; }
+.kp-const { color: var(--brand); }
+.kp-op { font-weight: 600; }
+.kp-hover { opacity: 0.6; }
+.run-btn { margin-top: var(--sp-1); }
+
+.hist-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18rpx 0;
+  border-bottom: 2rpx solid var(--line);
+}
+.hist-item:last-child { border-bottom: none; }
+.hist-expr { font-size: 24rpx; color: var(--text-2); flex: 1; margin-right: var(--sp-2); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.hist-val { font-size: 24rpx; color: var(--text); max-width: 40%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }

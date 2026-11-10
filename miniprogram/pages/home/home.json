@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "grid-icon": "/components/grid-icon/index"
+  },
+  "navigationBarTitleText": "工具箱",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark"
+}

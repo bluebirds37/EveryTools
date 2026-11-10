@@ -1,0 +1,69 @@
+<tool-shell toolId="calc-calculator" title="表达式计算" desc="自研解析 · DEG/RAD · 历史记录" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <view class="expr-box">
+        <textarea
+          class="expr-input"
+          value="{{values.expr}}"
+          placeholder="输入表达式，如 2+3*4 或 sin(30)"
+          auto-height
+          maxlength="200"
+          bindinput="onExprInput"
+          confirm-type="done"
+          bindconfirm="onRun"
+        />
+      </view>
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <view class="card keypad">
+      <view class="kp-row" wx:for="{{keys}}" wx:key="index" wx:for-item="row">
+        <view
+          class="kp-btn kp-{{item.t}}"
+          wx:for="{{row}}"
+          wx:key="k"
+          hover-class="kp-hover"
+          data-k="{{item.k}}"
+          data-t="{{item.t}}"
+          bindtap="onKey"
+        >{{item.k}}</view>
+      </view>
+      <button class="btn btn-primary btn-block run-btn" bindtap="onRun">计算 =</button>
+    </view>
+
+    <view wx:if="{{error}}" class="card err-bar"><text class="t-sm">{{error.message}}</text></view>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="kv"
+      kv="{{result.kv}}"
+      meta="{{result.meta}}"
+      text="{{result.text}}"
+      showCopy="{{true}}"
+      bind:copy="onCopy"
+    />
+
+    <view wx:if="{{hist.length}}" class="card fade-up">
+      <view class="row-between ver-row">
+        <text class="t-sm t-muted">历史记录（{{hist.length}}/50，点按复用）</text>
+        <text class="tag" bindtap="onHistClear">清空</text>
+      </view>
+      <view class="hist-item" wx:for="{{hist}}" wx:key="at" data-index="{{index}}" bindtap="onHistTap">
+        <text class="hist-expr">{{item.expr}}</text>
+        <text class="hist-val t-mono">= {{item.shown}}</text>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">内置示例</view>
+      <view class="wrap">
+        <button class="btn btn-sm sample-btn" data-index="0" bindtap="onSample">2+3*4</button>
+        <button class="btn btn-sm sample-btn" data-index="1" bindtap="onSample">(1+2)^3</button>
+        <button class="btn btn-sm sample-btn" data-index="2" bindtap="onSample">sin(0)</button>
+        <button class="btn btn-sm sample-btn" data-index="3" bindtap="onSample">10%+0.1</button>
+        <button class="btn btn-sm sample-btn" data-index="4" bindtap="onSample">2π</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

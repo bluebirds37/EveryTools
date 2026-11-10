@@ -1,0 +1,98 @@
+# 后端「不重建镜像」的快速更新栈（磁盘映射热更新）
+#
+# 要解决的问题：`docker compose up -d --build` 每次都跑完整 builder 阶段
+#   （下载 crate + 全量 cargo build + apt 装 ffmpeg/字体），改一行日志也要等十几分钟。
+#
+# 方案：镜像只当**运行环境**（ffmpeg/ffprobe/CJK 字体/ca 证书/测速文件，很少变），
+#   业务二进制改为从宿主机目录 bind mount 进容器：
+#     1) build 服务：rust:1-trixie 把 ./ 挂成 /src，增量编译后 install+mv 落到 ./dist；
+#     2) api 服务：跑 toolbox-server:latest，但 entrypoint 指向 /app/bin/toolbox-server(=./dist)。
+#   更新 = 「重编译 → 重启容器」，十几秒到几十秒，镜像层完全不动。
+#
+# 为什么必须在容器里编译：本机是 darwin/arm64，`cargo build` 出的是 Mach-O，
+#   放进 debian:trixie-slim(Linux) 无法执行；而 build 用的 rust:1-trixie 与运行镜像
+#   同为 Debian trixie（glibc 一致），容器里编出的 ELF 可直接挂进 api 容器运行。
+#
+# 为什么挂**目录**而不是挂单个文件：bind mount 绑定的是 inode。写成
+#   `./dist/toolbox-server:/usr/local/bin/toolbox-server:ro` 时，重编译用 mv 换文件后
+#   新 inode 不反映到既有挂载上，容器 restart 仍执行旧二进制（表现为「改了代码但服务没变」）；
+#   改用 cp 覆盖同一 inode 又会在进程正执行时报 Text file busy。目录挂载按名字解析，
+#   restart 即拿到新产物。
+#
+# 用法（一条命令，见 scripts/update.sh）：
+#   server/scripts/update.sh                                  # 编译 + 重启 + 健康检查
+#   server/scripts/update.sh --smoke                          # 再跑 C8 契约冒烟
+#   docker compose -f docker-compose.update.yml down          # 停
+#   docker compose -f docker-compose.update.yml logs -f api   # 看日志
+#
+# 只有这些情况才需要真正重建镜像：Dockerfile 的 apt 包（ffmpeg/字体）变化、
+#   scripts/gen_speedtest_files.sh 变化、或基础镜像升级。
+
+name: toolbox-dev
+
+services:
+  # ---------- 一次性编译器（跑完即退出，非常驻） ----------
+  build:
+    image: rust:1-trixie
+    working_dir: /src
+    # 先写 .tmp 再 mv：./dist/toolbox-server 对 api 容器永远原子可见，
+    # 不会出现编译到一半、重启拿到截断二进制的情况。
+    command:
+      - bash
+      - -ec
+      - |
+        echo "[build] 容器内 $(nproc 2>/dev/null || echo '?') 核，增量编译 release（首次会编译全部依赖）…"
+        cargo build --release --locked --bin toolbox-server --target-dir /target 2>&1 | tail -n 40
+        install -m 0755 /target/release/toolbox-server /out/toolbox-server.tmp
+        mv -f /out/toolbox-server.tmp /out/toolbox-server
+        ls -l /out/toolbox-server
+    volumes:
+      # 源码整目录挂载（migrations/ 必须可见：sqlx::migrate! 在编译期把 SQL 嵌进二进制）
+      - ./:/src
+      # 依赖与 target 放命名卷：macOS bind mount 上处理几万个小文件会慢一个数量级
+      - cargo-target:/target
+      - cargo-registry:/usr/local/cargo/registry
+      - ./dist:/out
+
+  # ---------- 运行体：环境来自镜像，二进制来自宿主机 ./dist ----------
+  api:
+    image: toolbox-server:latest
+    container_name: toolbox-dev-api
+    restart: unless-stopped
+    entrypoint: ["/app/bin/toolbox-server"]
+    ports:
+      # 默认 8081，避免与本机直接跑的 dev server(8080) 抢端口
+      - "${DEV_API_HOST_PORT:-8081}:8080"
+    volumes:
+      - ./dist:/app/bin:ro
+      # 上传分片/转码产物落宿主目录，方便直接查看（换成命名卷亦可）
+      - ./data/uploads:/data/uploads
+    environment:
+      # 【必填】开发库连接串。容器内访问宿主机 PG：macOS/Windows Docker Desktop 直接用
+      # host.docker.internal；Linux 需改写成宿主内网 IP，或给本服务加
+      # extra_hosts: ["host.docker.internal:host-gateway"]。
+      DATABASE_URL: ${DEV_DATABASE_URL:?DEV_DATABASE_URL 必填，例：postgresql://user:pass@host.docker.internal:15433/toolbox_dev}
+      # 【必填·密钥】只从 .env 注入；缺失时 scripts/update.sh 会生成一个开发用随机值。
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET 必填（≥32 字节），生成：openssl rand -hex 32}
+      ENVIRONMENT: dev
+      HOST: 0.0.0.0
+      PORT: "8080"
+      LOG_LEVEL: ${DEV_LOG_LEVEL:-info}
+      STORAGE_DIR: /data/uploads
+      STATIC_DIR: /data/static
+      # 本栈面向开发/联调：静默登录走本地桩（不请求微信），媒体用镜像内真实 ffmpeg。
+      # 生产仍走 docker-compose.yml，那里的三项铁律值与这里无关。
+      WECHAT_STUB: ${WECHAT_STUB:-1}
+      WECHAT_APPID: ${WECHAT_APPID:-}
+      WECHAT_APPSECRET: ${WECHAT_APPSECRET:-}
+      MEDIA_DRY_RUN: ${MEDIA_DRY_RUN:-0}
+      PROXY_ALLOW_PRIVATE_NETWORK: ${DEV_PROXY_ALLOW_PRIVATE_NETWORK:-false}
+      # 留空 → GET /fx/rates 返回 503（前端对应工具显示「未配置数据源」）
+      FX_API_KEY: ${FX_API_KEY:-}
+      FFMPEG_BIN: ffmpeg
+      FFPROBE_BIN: ffprobe
+      WATERMARK_FONT_FILE: /usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc
+
+volumes:
+  cargo-target:
+  cargo-registry:

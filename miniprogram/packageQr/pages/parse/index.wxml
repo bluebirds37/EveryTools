@@ -1,0 +1,44 @@
+<tool-shell toolId="qr-parse" title="码内容解析" desc="结构化拆解编码原文" tips="{{tips}}">
+  <view class="stack">
+    <view class="card">
+      <param-form schema="{{schema}}" values="{{values}}" bind:change="onParamChange" />
+    </view>
+
+    <view wx:if="{{error}}" class="card ps-err fade-up">
+      <grid-icon name="alert" size="36" color="#E5484D" />
+      <text class="grow t-sm">{{error.message}}</text>
+    </view>
+
+    <button class="btn btn-primary btn-block" bindtap="onRun">解析内容</button>
+
+    <result-panel
+      wx:if="{{result}}"
+      class="fade-up"
+      kind="kv"
+      kv="{{result.kv}}"
+      text="{{result.text}}"
+      meta="{{result.meta}}"
+      showCopy="{{true}}"
+      bind:copy="onCopy"
+    />
+
+    <view wx:if="{{result}}" class="card">
+      <view class="row-between">
+        <text class="t-sm t-muted">原文</text>
+        <view class="btn btn-sm btn-ghost" bindtap="onCopyKv">复制解析表</view>
+      </view>
+      <view class="code-block ps-raw">{{result.text}}</view>
+    </view>
+
+    <view wx:if="{{!result && !error}}" class="card">
+      <empty-state icon="parse" title="等待解析" desc="粘贴二维码读出的原文，或点下方示例快速体验" />
+    </view>
+
+    <view class="card">
+      <view class="card-title">内置示例（一键填入并解析）</view>
+      <view class="row wrap">
+        <button wx:for="{{samples}}" wx:key="name" class="btn btn-sm btn-ghost ps-sample" data-index="{{index}}" bindtap="onSample">{{item.name}}</button>
+      </view>
+    </view>
+  </view>
+</tool-shell>

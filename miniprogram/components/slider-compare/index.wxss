@@ -1,0 +1,68 @@
+.sc {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  touch-action: none;
+  background: var(--surface-2);
+}
+.sc-img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  min-width: 100%;
+  display: block;
+}
+.sc-clip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  overflow: hidden;
+}
+.sc-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4rpx;
+  margin-left: -2rpx;
+  background: var(--surface);
+  box-shadow: 0 0 12rpx rgba(0, 0, 0, .35);
+}
+.sc-knob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 64rpx;
+  height: 64rpx;
+  margin: -32rpx 0 0 -32rpx;
+  border-radius: 50%;
+  background: var(--brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, .3);
+}
+.sc-tag {
+  position: absolute;
+  bottom: var(--sp-2);
+  height: 44rpx;
+  padding: 0 18rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  color: var(--on-brand);
+  background: rgba(0, 0, 0, .45);
+}
+.sc-tag-l {
+  left: var(--sp-2);
+}
+.sc-tag-r {
+  right: var(--sp-2);
+}
+.sc-fallback {
+  padding: var(--sp-2);
+}
+.sc-single {
+  width: 100%;
+  border-radius: var(--r-md);
+}

@@ -1,0 +1,9 @@
+.crc { padding: 24rpx; border-radius: 28rpx; background: var(--card, #fff); }
+.crc-title { font-size: 30rpx; font-weight: 600; color: var(--text, #1F2430); }
+.crc-row { display: flex; margin-top: 12rpx; font-size: 26rpx; }
+.crc-key { width: 140rpx; color: var(--text-3, #8A93A6); }
+.crc-val { flex: 1; color: var(--text, #1F2430); }
+.crc-body { max-height: 400rpx; margin-top: 16rpx; background: var(--code-bg, #F5F7FB); border-radius: 20rpx; padding: 16rpx; }
+.crc-code { font-family: Menlo, monospace; font-size: 22rpx; color: var(--text, #1F2430); word-break: break-all; }
+.crc-copy { margin-top: 16rpx; height: 72rpx; line-height: 72rpx; text-align: center; border-radius: 36rpx; border: 2rpx solid #3B5BFE; color: #3B5BFE; font-size: 26rpx; }
+.crc-copy:active { transform: scale(0.97); }

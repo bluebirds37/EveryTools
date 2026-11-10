@@ -1,0 +1,59 @@
+/* packageVideo/components/task-drawer —— 底部滑出抽屉，颜色全部走全局 CSS 变量 */
+.mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 90;
+  background: rgba(10, 12, 18, 0.5);
+  display: flex;
+  align-items: flex-end;
+}
+.panel {
+  width: 100%;
+  max-height: 72vh;
+  background: var(--surface);
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  padding: var(--sp-4) var(--sp-4) 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow);
+}
+.head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--sp-3); }
+.head-title { font-size: 32rpx; font-weight: 700; }
+.head-close {
+  width: 88rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: -20rpx -20rpx -20rpx 0;
+}
+.list { flex: 1; min-height: 0; }
+.item {
+  padding: var(--sp-3) 0;
+  border-bottom: 2rpx solid var(--line);
+}
+.item:last-child { border-bottom: none; }
+.item-main { display: flex; flex-direction: column; gap: var(--sp-1); }
+.item-meta { gap: var(--sp-2); }
+.item-acts { display: flex; gap: var(--sp-2); margin-top: var(--sp-2); flex-wrap: wrap; }
+.act {
+  min-height: 72rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 0 var(--sp-3);
+  background: var(--surface-2);
+  font-size: 26rpx;
+}
+.act:active { opacity: .7; transform: scale(.98); }
+.act-danger { background: transparent; border: 2rpx solid var(--line); }
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-5) 0 calc(var(--sp-5) + env(safe-area-inset-bottom));
+}
